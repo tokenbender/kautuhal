@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+*.tgz
+*.tar.gz
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs/
+*.log
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+
+# Claude/AI tools
+.claude/
+.cursor/
+.windsurf/
+.cline/
+.goose/
+.copilot/
+claude-*.md
+agent-*.md
+*-conversation.md
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.temp/
+
+# OS generated files
+*~
+.fuse_hidden*
+.directory
+.Trash-*
