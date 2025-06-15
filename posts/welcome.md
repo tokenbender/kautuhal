@@ -34,7 +34,7 @@ my datasets and models have amassed several thousand downloads on hugging face, 
 
 i spent the last several months diving into multimodal rag (retrieval-augmented generation) for structured/unstructured documents and structured extraction in document visual qa by fine-tuning specialized vlms.
 
-i microblog as "@tokenbender" on twitter—constantly dissecting the latest developments, limits, and advantages of current systems.
+i microblog as [@tokenbender](https://x.com/tokenbender) on twitter—constantly dissecting the latest developments, limits, and advantages of current systems.
 
 ## what to expect
 
