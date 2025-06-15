@@ -41,7 +41,7 @@ function parseFrontmatter(markdown) {
 async function loadPosts() {
     console.log('=== STARTING loadPosts() ===');
     try {
-        const response = await fetch('posts/posts.json');
+        const response = await fetch('./posts/posts.json');
         const postFiles = await response.json();
         console.log('Posts JSON loaded:', postFiles);
         
@@ -49,7 +49,7 @@ async function loadPosts() {
         
         for (const file of postFiles) {
             console.log(`\n--- Processing ${file} ---`);
-            const postResponse = await fetch(`posts/${file}`);
+            const postResponse = await fetch(`./posts/${file}`);
             console.log(`Fetch response status: ${postResponse.status}`);
             const markdown = await postResponse.text();
             console.log(`Markdown length: ${markdown.length} chars`);
@@ -143,7 +143,7 @@ async function loadPost() {
     if (!postId) return;
     
     try {
-        const response = await fetch(`posts/${postId}.md`);
+        const response = await fetch(`./posts/${postId}.md`);
         const markdown = await response.text();
         const { metadata, content } = parseFrontmatter(markdown);
         
