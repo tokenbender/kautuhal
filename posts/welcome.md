@@ -1,6 +1,6 @@
 ---
 title: welcome
-date: 2023-08-24
+date: 2024-08-24
 excerpt: my journey from intel to llm research and the models that defined my path
 ---
 
