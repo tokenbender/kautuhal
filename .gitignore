@@ -63,3 +63,9 @@ agent-*.md
 .fuse_hidden*
 .directory
 .Trash-*
+
+# Agent files and folders
+AGENT.md
+CLAUDE.md
+TODO.md
+brainstorm/
