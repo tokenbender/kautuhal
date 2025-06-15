@@ -4,8 +4,6 @@ date: 2025-06-15
 excerpt: a comprehensive guide to effective claude code usage, context management, and building local multi-agent systems
 ---
 
-# how i bring the best out of claude code - part 1
-
 ## 1. setup requirements
 
 you need:
