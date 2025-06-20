@@ -177,29 +177,29 @@ with yourself as the water that flows through the system. you can create, read, 
 
 ### create new commands on the fly
 ```
-/project:crud-claude-commands create git-flow "automate git flow operations like creating feature branches, PRs, and merging"
+/crud-claude-commands create git-flow "automate git flow operations like creating feature branches, PRs, and merging"
 ```
 
 boom. now you have a custom git-flow command tailored to your workflow.
 
 ### read what a command does
 ```
-/project:crud-claude-commands read git-flow
+/crud-claude-commands read git-flow
 ```
 
 ### update when your needs evolve
 ```
-/project:crud-claude-commands update git-flow "enhanced git workflow with automatic PR creation and branch management"
+/crud-claude-commands update git-flow "enhanced git workflow with automatic PR creation and branch management"
 ```
 
 ### delete outdated commands
 ```
-/project:crud-claude-commands delete git-flow
+/crud-claude-commands delete git-flow
 ```
 
 ### list your entire arsenal
 ```
-/project:crud-claude-commands list
+/crud-claude-commands list
 ```
 
 here's the magic - it generates standardized templates:
@@ -251,7 +251,7 @@ issue #142 → docs/plan_142.md
 
 ### for letting claude grow with your workflow:
 ```
-/project:crud-claude-commands list
+/crud-claude-commands list
 → /page "command-library"
 ```
 
