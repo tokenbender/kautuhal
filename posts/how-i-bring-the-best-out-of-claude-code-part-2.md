@@ -12,7 +12,7 @@ that was the shallow end of the pool.
 
 this is the deep end. intermediate techniques for people who've already hit the walls of vanilla claude code and always want just a little bit more.
 
-![welcome to the future](./images/deep-end-meme.jpg)
+![welcome to the future](posts/images/deep-end-meme.jpg)
 
 ## 1. integrating claude code into tooling
 
