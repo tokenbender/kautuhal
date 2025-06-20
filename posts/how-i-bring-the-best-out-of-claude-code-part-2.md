@@ -6,7 +6,7 @@ excerpt: custom commands, multi-agent systems, and the protocols that made claud
 
 hello everyone!
 
-in [part 1](./how-i-bring-the-best-out-of-claude-code), i covered the beginner's guide to claude code. setup requirements. context management. basic workflows. the fundamentals you need to get started.
+in [part 1](https://tokenbender.github.io/kautuhal/post.html?id=how-i-bring-the-best-out-of-claude-code), i covered the beginner's guide to claude code. setup requirements. context management. basic workflows. the fundamentals you need to get started.
 
 that was the shallow end of the pool.
 
