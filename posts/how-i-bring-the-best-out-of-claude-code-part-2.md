@@ -64,13 +64,13 @@ const specialistPrompts = {
 
 i am quite chaotic in the way i work. forever solving a problem and gleaming at 3am, then forgetting the solution or losing track of it in the sea of tasks that i pick up right after. 
 
-so i built search functionality to fix that. while the [search-prompts command](https://github.com/tokenbender/agent-guides/blob/main/claude-commands/search-prompts.md) provides claude-native search, i also created a python script for deeper analysis.
+so i built [search-prompts](https://github.com/tokenbender/agent-guides/blob/main/claude-commands/search-prompts.md) to fix that.
 
 you can search through your entire conversation history, exported json sessions, and current context.
 you can use it in any way - to run analytics or to discover your preferences and have them reflected in your future commands.
 
-```python
-python scripts/extract-claude-session.py --search "redis optimization"
+```
+/search-all "redis optimization"
 ```
 
 searches through:
@@ -78,19 +78,20 @@ searches through:
 - exported json sessions
 - current context
 
-here's the actual search logic:
+here's what the command does behind the scenes:
 
-```python
-# from scripts/extract-claude-session.py
-def search_conversations(query):
-    results = []
-    for msg in messages:
-        if query.lower() in msg['content'].lower():
-            results.append({
-                'timestamp': msg['created_at'],
-                'content': msg['content'][:200] + '...'
-            })
-    return results
+```markdown
+# from search-prompts.md
+## Search Types:
+1. **search-all**: Search across all conversation sources
+2. **search-current**: Search only current session
+3. **search-project**: Search project-specific conversations
+4. **search-date**: Search by date range
+
+Returns formatted results with:
+- Timestamp and session ID
+- Matching content preview
+- Context around the match
 ```
 
 > your past conversations are a goldmine. most people just let them rot or lose it. why wait for anthropic to fix it?
@@ -234,7 +235,7 @@ the real power? rapid iteration. prototype a command, test it, refine it, share 
 
 ### for debugging:
 ```
-python scripts/extract-claude-session.py --search "null pointer kubernetes"
+/search-all "null pointer kubernetes"
 → find similar past issues
 → /analyze-function on suspect code
 → multi-mind verification of fix
