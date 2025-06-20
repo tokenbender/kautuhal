@@ -64,13 +64,13 @@ const specialistPrompts = {
 
 i am quite chaotic in the way i work. forever solving a problem and gleaming at 3am, then forgetting the solution or losing track of it in the sea of tasks that i pick up right after. 
 
-so i built [search commands](https://github.com/tokenbender/agent-guides/blob/main/claude-commands/search-prompts.md) to fix that.
+so i built search functionality to fix that. while the [search-prompts command](https://github.com/tokenbender/agent-guides/blob/main/claude-commands/search-prompts.md) provides claude-native search, i also created a python script for deeper analysis.
 
 you can search through your entire conversation history, exported json sessions, and current context.
 you can use it in any way - to run analytics or to discover your preferences and have them reflected in your future commands.
 
 ```python
-python search_conversations.py "redis optimization"
+python scripts/extract-claude-session.py --search "redis optimization"
 ```
 
 searches through:
@@ -234,7 +234,7 @@ the real power? rapid iteration. prototype a command, test it, refine it, share 
 
 ### for debugging:
 ```
-python search_conversations.py "null pointer kubernetes"
+python scripts/extract-claude-session.py --search "null pointer kubernetes"
 → find similar past issues
 → /analyze-function on suspect code
 → multi-mind verification of fix
