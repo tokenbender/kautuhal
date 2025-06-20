@@ -290,11 +290,16 @@ i personally say no more "claude said so" disasters. multiple independent verifi
 git clone https://github.com/tokenbender/agent-guides
 cd agent-guides
 
-# install commands globally
-cp -r claude-commands ~/.claude/commands/
+# option 1: install user-wide (available in all projects)
+mkdir -p ~/.config/claude/commands
+cp -r claude-commands/* ~/.config/claude/commands/
 
-# copy supporting scripts
-cp -r scripts ~/.claude/scripts/
+# option 2: install per-project
+mkdir -p .claude/commands
+cp -r claude-commands/* .claude/commands/
+
+# copy supporting scripts (adjust path as needed)
+cp -r scripts ~/claude-scripts/
 ```
 
 that's it. now you have superpowers.
