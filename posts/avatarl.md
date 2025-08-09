@@ -396,13 +396,13 @@ avatarl also allows us to train the models for equivalent of 50-60B tokens on 2B
 this is how the training and validation curves look like for a 250M parameter model, validated every 500 steps.
 
 ### Training loss against combined distribution (2k+1)
-![train_curves](posts/images/deep-end-meme.jpg)
+![train_curves](posts/images/train_loss.png)
 
 ### Average Reward Progress
-![avg_reward](posts/images/avatarl/avg_reward.png)
+![avg_reward](posts/images/avg_reward.png)
 
 ### Cross-Entropy Loss
-![ce_loss](posts/images/avatarl/ce_loss.png)
+![ce_loss](posts/images/ce_loss.png)
 
 ## Samples
 
