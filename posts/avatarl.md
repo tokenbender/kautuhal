@@ -481,8 +481,7 @@ huge thanks to everyone who reposted, shared and got it the initial attention, i
 
 modal cloud is awesome. it makes running experiments simple. no worrying about instance management or forgotten resources - it just works. it kinda suits my adhd hacker brain very well.
 
-the infrastructure is solid too. no cold starts to slow things down.
-the pricing is also very reasonable.
+the infrastructure is solid too. cold starts that take just 5-6s time let me hack things out locally and simply trigger the job with a command.
 
 
 ## sponsorship
