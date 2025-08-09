@@ -69,7 +69,10 @@ we can reimagine the same problem as a progressive reward lottery.
    - noise = nothing
    
 ```
+
+
 now how do we design this around some of the challenges we face in RL?
+
 ---
 
 ## the problems with RL in pre-training language modeling
