@@ -69,17 +69,15 @@ we can reimagine the same problem as a progressive reward lottery.
    - noise = nothing
    
 ```
-
-
-now how do we design this around some of the challenges we face in RL?
-
 ---
 
 ## the problems with RL in pre-training language modeling
 
+now how do we design this around some of the challenges we face in RL?
+
 ### intuition
 
-let us look at how we teach the model traditionally. standard pretraining with cross-entropy loss is actually a special case of REINFORCE where only the gold token gets reward 1.0 and all others get 0 [3]. so we can at least create a binary reward where gold token gets 1 and all others get 0. the challenge of framing pretraining as an rl problem isn't hard however there are a few concerning points.
+let us look at how we teach the model traditionally. standard pretraining with cross-entropy loss for predicting the next token. this can be visualised as a special case of REINFORCE algorithm where only the gold token gets reward 1.0 and all others get 0 [3]. so we can at least create a binary reward where gold token gets 1 and all others get 0. the challenge of framing pretraining as an rl problem isn't hard however there are a few concerning points.
 
 ```ascii
    broadly RL looks like this:
