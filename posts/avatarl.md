@@ -456,6 +456,15 @@ this is how the training and validation curves look like for a 250M parameter mo
 >
 > We are now reminded that our understanding is limited in comparison to the scope of relationships within us. The way that we may assess ourselves under the ideal of our being the sum of our self-interest, we may do it to others and to oneself in order to make our bodies and identities relevant, but it will be
 
+## conclusion
+
+cross entropy based next token prediction pretraining as a bitter lesson pilled approach works. i have no issues against it. think of this as an enquiry into three points:
+1. people believing without strong base model rl doesn't work - so why can't the method used for avatarl (action space filtering and smoothing) work for them?
+2. how different is the sample efficiency of learning for a model pretrained with rl?
+3. is this something that can create models with more nuanced understanding of language and benefit from better calibration of top k?
+
+i originally started this as a cacklemaxxing project (idea which if it works would make me laugh). i am just doing it for satisfying questions in my head.
+
 ## future work
 this is a very early stage of the research.
 i understand that to many trained eyes this feels incomplete.
