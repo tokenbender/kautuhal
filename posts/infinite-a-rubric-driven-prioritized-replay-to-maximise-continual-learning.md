@@ -1,6 +1,6 @@
 ---
 title: infinite - a rubric driven prioritized replay to maximise continual learning
-date: 2025-01-07
+date: 2025-08-20
 excerpt: a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design
 ---
 
