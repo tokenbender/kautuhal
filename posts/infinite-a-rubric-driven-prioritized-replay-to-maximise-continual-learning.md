@@ -122,3 +122,8 @@ we need to plan the details of the implementation.
 * replay mechanism and best priors to use as design principles
   
 anything else?
+
+this is a work in progress.
+all updates will be posted here.
+
+reach out if you think it is cool and can contribute in any way - collaboration, compute or sponsorship.
