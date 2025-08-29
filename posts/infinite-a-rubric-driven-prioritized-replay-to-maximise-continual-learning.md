@@ -272,4 +272,8 @@ broadly there are six areas of contribution where there are lots of things to be
 this is a work in progress.
 all updates will be posted here.
 
+**join the discussion:**
+- **discord**: https://discord.gg/YaYfPu4ZT4
+- **github repo**: https://github.com/tokenbender/infinite
+
 reach out if you think it is cool and can contribute in any way - collaboration, compute or sponsorship.
