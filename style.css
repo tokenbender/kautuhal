@@ -556,9 +556,10 @@ header {
 }
 
 .post-layout.no-sidenotes {
-    max-width: 1220px;
-    grid-template-columns: clamp(150px, 17vw, 205px) minmax(0, var(--measure));
-    column-gap: clamp(1rem, 2vw, 1.8rem);
+    max-width: 1280px;
+    grid-template-columns: clamp(128px, 13vw, 165px) minmax(78ch, 90ch);
+    column-gap: clamp(0.9rem, 1.8vw, 1.4rem);
+    justify-content: center;
 }
 
 .post-layout .post-content {
@@ -589,7 +590,8 @@ header {
 }
 
 .post-page.no-sidenotes .nav-container {
-    max-width: 1220px;
+    max-width: 1280px;
+    padding-left: calc(24px + clamp(128px, 13vw, 165px));
 }
 
 .post-toc-inner {
@@ -1037,6 +1039,7 @@ footer {
     .post-page.has-sidenotes .nav-container,
     .post-page.no-sidenotes .nav-container {
         max-width: 1120px;
+        padding-left: 24px;
     }
 
     .sidenote {
@@ -1114,6 +1117,7 @@ footer {
     .post-page.has-sidenotes .nav-container,
     .post-page.no-sidenotes .nav-container {
         max-width: var(--measure);
+        padding-left: 24px;
     }
 }
 
