@@ -37,6 +37,117 @@ function parseFrontmatter(markdown) {
     return { metadata, content };
 }
 
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function stripMarkdown(markdown) {
+    return markdown
+        .replace(/```[\s\S]*?```/g, ' ')
+        .replace(/`([^`]+)`/g, '$1')
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+        .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+        .replace(/^#{1,6}\s+/gm, '')
+        .replace(/[>*_~]/g, '')
+        .replace(/\n+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function truncateText(text, maxLength) {
+    if (text.length <= maxLength) {
+        return text;
+    }
+
+    return text.slice(0, maxLength).trimEnd() + '...';
+}
+
+function setMetaTag(kind, key, content) {
+    if (!content) {
+        return;
+    }
+
+    let tag = document.head.querySelector(`meta[${kind}="${key}"]`);
+    if (!tag) {
+        tag = document.createElement('meta');
+        tag.setAttribute(kind, key);
+        document.head.appendChild(tag);
+    }
+
+    tag.setAttribute('content', content);
+}
+
+function toIsoDate(dateValue) {
+    const date = new Date(dateValue);
+    if (Number.isNaN(date.getTime())) {
+        return null;
+    }
+
+    return date.toISOString();
+}
+
+function updatePostMetadata(postId, metadata, content) {
+    const title = metadata.title || 'untitled';
+    const plainContent = stripMarkdown(content);
+    const rawDescription = metadata.excerpt || plainContent;
+    const description = truncateText(rawDescription, 180);
+    const canonicalUrl = `${window.location.origin}${window.location.pathname}?id=${encodeURIComponent(postId)}`;
+
+    document.title = `${title} - tokenbender`;
+
+    const canonicalLink = document.getElementById('canonical-link');
+    if (canonicalLink) {
+        canonicalLink.setAttribute('href', canonicalUrl);
+    }
+
+    setMetaTag('name', 'description', description);
+    setMetaTag('property', 'og:title', title);
+    setMetaTag('property', 'og:description', description);
+    setMetaTag('property', 'og:url', canonicalUrl);
+    setMetaTag('name', 'twitter:title', title);
+    setMetaTag('name', 'twitter:description', description);
+
+    const isoDate = toIsoDate(metadata.date);
+    if (isoDate) {
+        setMetaTag('property', 'article:published_time', isoDate);
+    }
+
+    const structuredDataTag = document.getElementById('article-structured-data');
+    if (structuredDataTag) {
+        const schema = {
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            headline: title,
+            description,
+            author: {
+                '@type': 'Person',
+                name: 'tokenbender'
+            },
+            publisher: {
+                '@type': 'Person',
+                name: 'tokenbender'
+            },
+            url: canonicalUrl,
+            mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': canonicalUrl
+            }
+        };
+
+        if (isoDate) {
+            schema.datePublished = isoDate;
+            schema.dateModified = isoDate;
+        }
+
+        structuredDataTag.textContent = JSON.stringify(schema);
+    }
+}
+
 // load all posts from posts.json
 async function loadPosts() {
     console.log('=== STARTING loadPosts() ===');
@@ -116,10 +227,13 @@ async function loadPostList() {
     posts.forEach(post => {
         const postCard = document.createElement('div');
         postCard.className = 'post-card';
+        const safeTitle = escapeHtml(post.title);
+        const safeExcerpt = escapeHtml(post.excerpt);
+        const safeId = encodeURIComponent(post.id);
         postCard.innerHTML = `
             <div class="post-date">${formatDate(post.date)}</div>
-            <h3><a href="post.html?id=${post.id}">${post.title}</a></h3>
-            <p class="post-excerpt">${post.excerpt}</p>
+            <h3><a href="post.html?id=${safeId}">${safeTitle}</a></h3>
+            <p class="post-excerpt">${safeExcerpt}</p>
         `;
         postList.appendChild(postCard);
     });
@@ -128,6 +242,10 @@ async function loadPostList() {
 // format date
 function formatDate(dateString) {
     const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) {
+        return dateString;
+    }
+
     return date.toLocaleDateString('en-us', { 
         year: 'numeric', 
         month: 'long', 
@@ -143,21 +261,26 @@ async function loadPost() {
     if (!postId) return;
     
     try {
-        const response = await fetch(`./posts/${postId}.md`);
+        const response = await fetch(`./posts/${encodeURIComponent(postId)}.md`);
+        if (!response.ok) {
+            throw new Error(`failed to load post: ${response.status}`);
+        }
+
         const markdown = await response.text();
         const { metadata, content } = parseFrontmatter(markdown);
         
         const html = marked.parse(content);
+        const safeTitle = escapeHtml(metadata.title || 'untitled');
+        const displayDate = metadata.date || new Date().toISOString().split('T')[0];
         
         const postContent = document.getElementById('post-content');
         postContent.innerHTML = `
-            <div class="post-date">${formatDate(metadata.date || new Date().toISOString().split('t')[0])}</div>
-            <h1>${metadata.title || 'untitled'}</h1>
+            <div class="post-date">${formatDate(displayDate)}</div>
+            <h1>${safeTitle}</h1>
             ${html}
         `;
-        
-        // update page title
-        document.title = `${metadata.title || 'untitled'} - tokenbender`;
+
+        updatePostMetadata(postId, metadata, content);
         
         // render math
         renderMath(postContent);
