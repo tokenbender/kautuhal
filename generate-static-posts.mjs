@@ -171,17 +171,25 @@ function buildPostHtml(post) {
     <script type="application/ld+json">${JSON.stringify(schema)}</script>
 </head>
 <body>
-    <nav class="nav-container">
-        <a href="/index.html" class="nav-link">home</a>
-        <span class="nav-separator">/</span>
-        <a href="${escapeHtml(canonicalUrl)}" class="nav-link">post</a>
-    </nav>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <a href="/index.html" class="logo">tokenbender</a>
+                <div class="nav-links">
+                    <a href="/posts/">archive</a>
+                    <a href="${escapeHtml(canonicalUrl)}">post</a>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-    <article class="post-content" id="post-content">
-        <div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div>
-        <h1>${escapeHtml(title)}</h1>
-        ${post.html}
-    </article>
+    <main class="container">
+        <article class="post-content" id="post-content">
+            <div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div>
+            <h1>${escapeHtml(title)}</h1>
+            ${post.html}
+        </article>
+    </main>
 
     <footer>
         <p>for updates and random thoughts, follow <a href="https://x.com/tokenbender" target="_blank" rel="noopener">@tokenbender</a>.</p>
@@ -238,11 +246,17 @@ function buildPostIndexHtml(posts) {
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <nav class="nav-container">
-        <a href="/index.html" class="nav-link">home</a>
-        <span class="nav-separator">/</span>
-        <a href="/posts/" class="nav-link">archive</a>
-    </nav>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <a href="/index.html" class="logo">tokenbender</a>
+                <div class="nav-links">
+                    <a href="/index.html">home</a>
+                    <a href="/posts/">archive</a>
+                </div>
+            </div>
+        </nav>
+    </header>
 
     <main class="container">
         <div class="posts">
