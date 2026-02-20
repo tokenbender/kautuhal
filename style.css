@@ -45,7 +45,7 @@
     --sans: 'Gill Sans', 'Gill Sans MT', Calibri, sans-serif;
     --serif: 'et-book', Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
     --paper-shadow: none;
-    --measure: 64ch;
+    --measure: 74ch;
     color-scheme: dark;
 }
 
@@ -550,7 +550,7 @@ header {
     position: relative;
     z-index: 2;
     display: grid;
-    grid-template-columns: minmax(160px, 220px) minmax(0, var(--measure)) minmax(180px, 240px);
+    grid-template-columns: minmax(160px, 200px) minmax(0, var(--measure)) minmax(140px, 200px);
     column-gap: 2.2rem;
     align-items: start;
 }
@@ -765,8 +765,8 @@ header {
 .sidenote {
     float: right;
     clear: right;
-    width: 34%;
-    margin-right: -43%;
+    width: 26%;
+    margin-right: -31%;
     margin-top: 0.08rem;
     margin-left: 1rem;
     font-size: 0.8rem;
