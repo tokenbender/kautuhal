@@ -256,6 +256,73 @@ function buildPostIndexHtml(posts) {
 `;
 }
 
+function buildHomepageHtml(posts) {
+    const cards = posts.map((post) => {
+        const title = post.metadata.title || post.id;
+        const excerpt = truncateText(post.metadata.excerpt || stripMarkdown(post.content), 220);
+        return `
+                <div class="post-card">
+                    <div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div>
+                    <h3><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a></h3>
+                    <p class="post-excerpt">${escapeHtml(excerpt)}</p>
+                </div>`;
+    }).join('\n');
+
+    return `<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tokenbender - developer blog</title>
+    <meta name="description" content="Technical notes and essays from tokenbender — ml researcher.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="tokenbender">
+    <meta property="og:title" content="tokenbender - developer blog">
+    <meta property="og:description" content="Technical notes and essays from tokenbender — ml researcher.">
+    <meta property="og:url" content="${SITE_URL}/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="tokenbender - developer blog">
+    <meta name="twitter:description" content="Technical notes and essays from tokenbender — ml researcher.">
+    <link rel="canonical" href="${SITE_URL}/">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="nav-container">
+                <a href="./" class="logo">tokenbender</a>
+                <div class="nav-links">
+                    <a href="./">home</a>
+                    <a href="https://github.com/tokenbender" target="_blank">github</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>hi, i'm tokenbender</h1>
+            <p class="subtitle">ml researcher</p>
+        </section>
+
+        <section class="posts">
+            <h2>recent posts</h2>
+            <div id="post-list">${cards}
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 tokenbender. just vanilla html/css/js.</p>
+    </footer>
+</body>
+</html>
+`;
+}
+
 function buildSitemap(posts) {
     const urls = [
         `${SITE_URL}/`,
@@ -302,9 +369,10 @@ async function main() {
     posts.sort((a, b) => new Date(b.metadata.date) - new Date(a.metadata.date));
 
     await fs.writeFile(path.join(POSTS_DIR, 'index.html'), buildPostIndexHtml(posts), 'utf8');
+    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(posts), 'utf8');
     await fs.writeFile(SITEMAP_FILE, buildSitemap(posts), 'utf8');
 
-    console.log(`generated ${posts.length} static posts in posts/<slug>/ and updated sitemap.xml`);
+    console.log(`generated ${posts.length} static posts, homepage, and sitemap`);
 }
 
 main().catch((error) => {

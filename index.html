@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tokenbender - developer blog</title>
+    <meta name="description" content="Technical notes and essays from tokenbender — ml researcher.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="tokenbender">
+    <meta property="og:title" content="tokenbender - developer blog">
+    <meta property="og:description" content="Technical notes and essays from tokenbender — ml researcher.">
+    <meta property="og:url" content="https://tokenbender.com/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="tokenbender - developer blog">
+    <meta name="twitter:description" content="Technical notes and essays from tokenbender — ml researcher.">
+    <link rel="canonical" href="https://tokenbender.com/">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
@@ -30,7 +41,41 @@
         <section class="posts">
             <h2>recent posts</h2>
             <div id="post-list">
-                <!-- posts will be dynamically loaded here -->
+                <div class="post-card">
+                    <div class="post-date">August 20, 2025</div>
+                    <h3><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite - a rubric driven prioritized replay to maximise continual learning</a></h3>
+                    <p class="post-excerpt">a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design</p>
+                </div>
+
+                <div class="post-card">
+                    <div class="post-date">August 9, 2025</div>
+                    <h3><a href="/posts/avatarl/">avatarl: training language models from scratch with pure reinforcement learning</a></h3>
+                    <p class="post-excerpt">replacing cross-entropy pretraining with a principled rl objective using expert-consensus rewards over active tokens</p>
+                </div>
+
+                <div class="post-card">
+                    <div class="post-date">June 20, 2025</div>
+                    <h3><a href="/posts/how-i-bring-the-best-out-of-claude-code-part-2/">how i bring the best out of claude code - part 2</a></h3>
+                    <p class="post-excerpt">custom commands, multi-agent systems, and the protocols that made claude code actually useful</p>
+                </div>
+
+                <div class="post-card">
+                    <div class="post-date">June 15, 2025</div>
+                    <h3><a href="/posts/how-i-bring-the-best-out-of-claude-code/">how i bring the best out of claude code - part 1</a></h3>
+                    <p class="post-excerpt">a comprehensive guide to effective claude code usage, context management, and building local multi-agent systems</p>
+                </div>
+
+                <div class="post-card">
+                    <div class="post-date">January 25, 2025</div>
+                    <h3><a href="/posts/alchemical-guide-to-people/">an alchemical outlook to finding human gold</a></h3>
+                    <p class="post-excerpt">a framework for evaluating people through proof of interest, work, excellence, and exceptionalism</p>
+                </div>
+
+                <div class="post-card">
+                    <div class="post-date">August 24, 2024</div>
+                    <h3><a href="/posts/welcome/">welcome</a></h3>
+                    <p class="post-excerpt">my journey from intel to llm research and the models that defined my path</p>
+                </div>
             </div>
         </section>
     </main>
@@ -38,12 +83,5 @@
     <footer>
         <p>&copy; 2025 tokenbender. just vanilla html/css/js.</p>
     </footer>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
-    <script src="script.js"></script>
 </body>
 </html>
