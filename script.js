@@ -96,7 +96,7 @@ function updatePostMetadata(postId, metadata, content) {
     const plainContent = stripMarkdown(content);
     const rawDescription = metadata.excerpt || plainContent;
     const description = truncateText(rawDescription, 180);
-    const canonicalUrl = `${window.location.origin}${window.location.pathname}?id=${encodeURIComponent(postId)}`;
+    const canonicalUrl = `${window.location.origin}/posts/${encodeURIComponent(postId)}/`;
 
     document.title = `${title} - tokenbender`;
 
@@ -232,7 +232,7 @@ async function loadPostList() {
         const safeId = encodeURIComponent(post.id);
         postCard.innerHTML = `
             <div class="post-date">${formatDate(post.date)}</div>
-            <h3><a href="post.html?id=${safeId}">${safeTitle}</a></h3>
+            <h3><a href="/posts/${safeId}/">${safeTitle}</a></h3>
             <p class="post-excerpt">${safeExcerpt}</p>
         `;
         postList.appendChild(postCard);
@@ -259,6 +259,9 @@ async function loadPost() {
     const postId = urlParams.get('id');
     
     if (!postId) return;
+
+    window.location.replace(`/posts/${encodeURIComponent(postId)}/`);
+    return;
     
     try {
         const response = await fetch(`./posts/${encodeURIComponent(postId)}.md`);

@@ -1,0 +1,49 @@
+name: Auto Generate Static Posts
+
+on:
+    push:
+        branches:
+            - main
+            - test
+        paths:
+            - 'posts/**/*.md'
+            - 'posts/posts.json'
+            - 'generate-static-posts.mjs'
+            - '.github/workflows/auto-generate-static-posts.yml'
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+jobs:
+    generate:
+        if: github.actor != 'github-actions[bot]'
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
+
+            - name: Generate static posts and sitemap
+              run: node generate-static-posts.mjs
+
+            - name: Commit and push generated updates
+              run: |
+                  if git diff --quiet -- posts sitemap.xml; then
+                    echo "No generated changes to commit"
+                    exit 0
+                  fi
+
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+                  git add posts sitemap.xml
+                  git commit -m "chore: auto-generate static posts [skip ci]"
+                  git push
