@@ -752,6 +752,9 @@ function buildPostHtml(post) {
     const isoDate = toIsoDate(post.metadata.date);
     const toc = buildTocMarkup(post.headings);
     const relatedSection = buildRelatedPostsSection(post);
+    const hasSidenotes = post.html.includes('class="sidenote"');
+    const bodyClass = hasSidenotes ? 'post-page has-sidenotes' : 'post-page no-sidenotes';
+    const layoutClass = hasSidenotes ? 'post-layout has-sidenotes' : 'post-layout no-sidenotes';
 
     const schema = {
         '@context': 'https://schema.org',
@@ -796,7 +799,7 @@ function buildPostHtml(post) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
     <script type="application/ld+json">${JSON.stringify(schema)}</script>
 </head>
-<body>
+<body class="${bodyClass}">
     <header>
         <nav>
             <div class="nav-container">
@@ -810,7 +813,7 @@ function buildPostHtml(post) {
         </nav>
     </header>
 
-    <main class="post-layout">
+    <main class="${layoutClass}">
         ${toc.desktop}
         <article class="post-content" id="post-content">
             <h1>${escapeHtml(title)}</h1>

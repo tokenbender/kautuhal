@@ -36,7 +36,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"infinite - a rubric driven prioritized replay to maximise continual learning","description":"a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/"},"datePublished":"2025-08-20T00:00:00.000Z","dateModified":"2025-08-20T00:00:00.000Z","keywords":"continual-learning, reinforcement-learning, evaluation"}</script>
 </head>
-<body>
+<body class="post-page no-sidenotes">
     <header>
         <nav>
             <div class="nav-container">
@@ -50,7 +50,7 @@
         </nav>
     </header>
 
-    <main class="post-layout">
+    <main class="post-layout no-sidenotes">
         <aside class="post-toc"><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#abstract" data-toc-link="abstract">abstract</a></li><li class="toc-item toc-level-2"><a href="#understanding-infinite-replay" data-toc-link="understanding-infinite-replay">understanding infinite replay</a></li><li class="toc-item toc-level-2"><a href="#the-intuition" data-toc-link="the-intuition">the intuition</a></li><li class="toc-item toc-level-2"><a href="#visual-flow" data-toc-link="visual-flow">visual flow</a></li><li class="toc-item toc-level-2"><a href="#contamination-detection-and-data-integrity" data-toc-link="contamination-detection-and-data-integrity">contamination detection and data integrity</a></li><li class="toc-item toc-level-2"><a href="#implementation-architecture" data-toc-link="implementation-architecture">implementation architecture</a></li><li class="toc-item toc-level-2"><a href="#upgrade-mode-enhancing-post-trained-models" data-toc-link="upgrade-mode-enhancing-post-trained-models">upgrade mode: enhancing post-trained models</a></li><li class="toc-item toc-level-2"><a href="#evaluation-metrics-and-success-criteria" data-toc-link="evaluation-metrics-and-success-criteria">evaluation metrics and success criteria</a></li><li class="toc-item toc-level-2"><a href="#planning-the-details" data-toc-link="planning-the-details">planning the details</a></li><li class="toc-item toc-level-2"><a href="#division-by-contribution-areas" data-toc-link="division-by-contribution-areas">division by contribution areas</a></li></ol></nav></aside>
         <article class="post-content" id="post-content">
             <h1>infinite - a rubric driven prioritized replay to maximise continual learning</h1>
