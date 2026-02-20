@@ -7,12 +7,20 @@ import https from 'node:https';
 
 const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, 'posts');
+const ARCHIVE_DIR = path.join(ROOT, 'archive');
 const POSTS_INDEX_FILE = path.join(POSTS_DIR, 'posts.json');
 const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 
 const SITE_URL = 'https://tokenbender.com';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
 const AVERAGE_READING_WPM = 220;
+const CATEGORY_ORDER = ['research', 'technical', 'personal'];
+const CATEGORY_LABELS = {
+    research: 'research',
+    technical: 'technical',
+    personal: 'personal',
+    uncategorized: 'other'
+};
 
 function get(url) {
     return new Promise((resolve, reject) => {
@@ -154,6 +162,29 @@ function formatDate(value) {
     });
 }
 
+function formatMonthDay(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return value || '';
+    }
+
+    return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+    });
+}
+
+function formatYear(value) {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return 'unknown';
+    }
+
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric'
+    });
+}
+
 function normalizeTags(rawTags) {
     const values = Array.isArray(rawTags)
         ? rawTags
@@ -185,6 +216,23 @@ function normalizeRelated(rawRelated) {
     return Array.from(new Set(values
         .map((item) => String(item).trim())
         .filter(Boolean)));
+}
+
+function normalizeCategory(rawCategory) {
+    if (typeof rawCategory !== 'string') {
+        return 'uncategorized';
+    }
+
+    const normalized = rawCategory.trim().toLowerCase();
+    if (CATEGORY_ORDER.includes(normalized)) {
+        return normalized;
+    }
+
+    return 'uncategorized';
+}
+
+function getCategoryLabel(category) {
+    return CATEGORY_LABELS[category] || CATEGORY_LABELS.uncategorized;
 }
 
 function estimateReadingTimeMinutes(plainText) {
@@ -466,6 +514,8 @@ function buildPostMeta(post) {
     const parts = [];
     parts.push(`<span class="meta-item">${escapeHtml(formatDate(post.metadata.date || ''))}</span>`);
     parts.push('<span class="meta-sep">·</span>');
+    parts.push(`<span class="post-category">${escapeHtml(getCategoryLabel(post.category))}</span>`);
+    parts.push('<span class="meta-sep">·</span>');
     parts.push(`<span class="meta-item">${post.readingTimeMinutes} min read</span>`);
 
     if (post.status) {
@@ -475,7 +525,7 @@ function buildPostMeta(post) {
 
     if (post.tags.length) {
         const tagLinks = post.tags
-            .map((tag) => `<a class="post-tag" href="/posts/#tag-${slugify(tag)}">${escapeHtml(tag)}</a>`)
+            .map((tag) => `<span class="post-tag">${escapeHtml(tag)}</span>`)
             .join('');
 
         parts.push('<span class="meta-sep">·</span>');
@@ -575,6 +625,126 @@ function buildRelatedPostsSection(post) {
     return `<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul>${items}</ul></section>`;
 }
 
+function getOrderedCategoryGroups(posts) {
+    const groups = CATEGORY_ORDER.map((category) => {
+        const categoryPosts = posts.filter((post) => post.category === category);
+        return {
+            key: category,
+            label: getCategoryLabel(category),
+            posts: categoryPosts
+        };
+    }).filter((group) => group.posts.length > 0);
+
+    const uncategorizedPosts = posts.filter((post) => !CATEGORY_ORDER.includes(post.category));
+    if (uncategorizedPosts.length) {
+        groups.push({
+            key: 'uncategorized',
+            label: getCategoryLabel('uncategorized'),
+            posts: uncategorizedPosts
+        });
+    }
+
+    return groups;
+}
+
+function buildHomepageGroupedSections(posts) {
+    const groups = getOrderedCategoryGroups(posts);
+
+    return groups.map((group) => {
+        const cards = group.posts.slice(0, 3).map((post) => {
+            const title = post.metadata.title || post.id;
+            const excerpt = truncateText(post.metadata.excerpt || post.plain, 180);
+            return `<article class="post-card"><div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div><h3><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a></h3><p class="post-excerpt">${escapeHtml(excerpt)}</p></article>`;
+        }).join('');
+
+        return `<section class="category-group" id="home-${group.key}"><div class="category-group-head"><h2>${escapeHtml(group.label)}</h2><a class="see-all-link" href="/archive/#${group.key}">see all -></a></div><div class="category-post-list">${cards}</div></section>`;
+    }).join('');
+}
+
+function buildArchiveTopicSections(posts) {
+    const groups = getOrderedCategoryGroups(posts);
+
+    return groups.map((group) => {
+        const items = group.posts.map((post) => {
+            const title = post.metadata.title || post.id;
+            const excerpt = truncateText(post.metadata.excerpt || post.plain, 180);
+            return `<li><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a><span class="archive-item-meta">${escapeHtml(formatDate(post.metadata.date || ''))} · ${post.readingTimeMinutes} min</span><p>${escapeHtml(excerpt)}</p></li>`;
+        }).join('');
+
+        return `<section class="archive-group" id="${group.key}"><div class="archive-group-head"><h2>${escapeHtml(group.label)}</h2><span>${group.posts.length}</span></div><ul class="archive-topic-list">${items}</ul></section>`;
+    }).join('');
+}
+
+function buildArchiveDateSections(posts) {
+    const byYear = new Map();
+
+    posts.forEach((post) => {
+        const year = formatYear(post.metadata.date);
+        if (!byYear.has(year)) {
+            byYear.set(year, []);
+        }
+
+        byYear.get(year).push(post);
+    });
+
+    return Array.from(byYear.entries()).map(([year, yearPosts]) => {
+        const items = yearPosts.map((post) => {
+            const title = post.metadata.title || post.id;
+            return `<li><span class="archive-date-stamp">${escapeHtml(formatMonthDay(post.metadata.date || ''))}</span><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a><span class="archive-date-category">${escapeHtml(getCategoryLabel(post.category))}</span></li>`;
+        }).join('');
+
+        return `<section class="archive-year-block"><h2>${escapeHtml(year)}</h2><ul class="archive-date-list">${items}</ul></section>`;
+    }).join('');
+}
+
+function buildArchiveViewScript() {
+    return [
+        '(function () {',
+        "    const toggles = Array.from(document.querySelectorAll('[data-archive-view-toggle]'));",
+        "    const views = Array.from(document.querySelectorAll('[data-archive-view]'));",
+        '    if (!toggles.length || !views.length) {',
+        '        return;',
+        '    }',
+        '',
+        "    const resolveViewFromHash = () => {",
+        "        const hash = window.location.hash.replace('#', '').trim().toLowerCase();",
+        "        if (hash === 'date' || hash === 'view-date') {",
+        "            return 'date';",
+        '        }',
+        "        return 'topic';",
+        '    };',
+        '',
+        '    const setView = (view, updateHash) => {',
+        '        toggles.forEach((toggle) => {',
+        "            const isActive = toggle.getAttribute('data-archive-view-toggle') === view;",
+        "            toggle.classList.toggle('is-active', isActive);",
+        "            toggle.setAttribute('aria-pressed', isActive ? 'true' : 'false');",
+        '        });',
+        '',
+        '        views.forEach((section) => {',
+        "            const isActive = section.getAttribute('data-archive-view') === view;",
+        '            section.hidden = !isActive;',
+        '        });',
+        '',
+        '        if (updateHash) {',
+        "            const nextHash = view === 'date' ? '#date' : '#topic';",
+        '            history.replaceState(null, "", nextHash);',
+        '        }',
+        '    };',
+        '',
+        '    toggles.forEach((toggle) => {',
+        "        toggle.addEventListener('click', () => {",
+        "            const view = toggle.getAttribute('data-archive-view-toggle');",
+        '            setView(view, true);',
+        '        });',
+        '    });',
+        '',
+        '    setView(resolveViewFromHash(), false);',
+        "    window.addEventListener('hashchange', () => setView(resolveViewFromHash(), false));",
+        '})();'
+    ].join('\n');
+}
+
 function buildPostHtml(post) {
     const title = post.metadata.title || post.id;
     const description = truncateText(post.metadata.excerpt || post.plain, 180);
@@ -632,8 +802,8 @@ function buildPostHtml(post) {
             <div class="nav-container">
                 <a href="/index.html" class="logo">tokenbender</a>
                 <div class="nav-links">
-                    <a href="/posts/">archive</a>
-                    <a href="${escapeHtml(canonicalUrl)}">post</a>
+                    <a href="/archive/">archive</a>
+                    <a href="https://github.com/tokenbender" target="_blank" rel="noopener">github</a>
                     <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
                 </div>
             </div>
@@ -685,27 +855,19 @@ function buildPostHtml(post) {
 `;
 }
 
-function buildPostIndexHtml(posts) {
-    const cards = posts.map((post) => {
-        const title = post.metadata.title || post.id;
-        const excerpt = truncateText(post.metadata.excerpt || post.plain, 220);
-        return `
-        <div class="post-card">
-            <div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div>
-            <h3><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a></h3>
-            <p class="post-excerpt">${escapeHtml(excerpt)}</p>
-        </div>`;
-    }).join('\n');
+function buildArchiveHtml(posts) {
+    const topicSections = buildArchiveTopicSections(posts);
+    const dateSections = buildArchiveDateSections(posts);
 
     return `<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>posts - tokenbender</title>
-    <meta name="description" content="Crawlable archive of tokenbender posts.">
+    <title>archive - tokenbender</title>
+    <meta name="description" content="Browse posts by topic or timeline on tokenbender.">
     <meta name="robots" content="index,follow,max-image-preview:large">
-    <link rel="canonical" href="${SITE_URL}/posts/">
+    <link rel="canonical" href="${SITE_URL}/archive/">
     <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="/style.css">
 </head>
@@ -715,39 +877,38 @@ function buildPostIndexHtml(posts) {
             <div class="nav-container">
                 <a href="/index.html" class="logo">tokenbender</a>
                 <div class="nav-links">
-                    <a href="/index.html">home</a>
-                    <a href="/posts/">archive</a>
+                    <a href="/archive/">archive</a>
+                    <a href="https://github.com/tokenbender" target="_blank" rel="noopener">github</a>
                     <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
                 </div>
             </div>
         </nav>
     </header>
 
-    <main class="container">
-        <div class="posts">
-            <h2>all posts</h2>
-            <div class="post-list">${cards}
-            </div>
+    <main class="container archive-page">
+        <section class="archive-hero">
+            <h1>archive</h1>
+            <p>browse by topic or date.</p>
+        </section>
+
+        <div class="archive-view-switcher" aria-label="archive view">
+            <button type="button" class="archive-view-toggle is-active" data-archive-view-toggle="topic" aria-pressed="true">[by topic]</button>
+            <button type="button" class="archive-view-toggle" data-archive-view-toggle="date" aria-pressed="false">[by date]</button>
         </div>
+
+        <section class="archive-view archive-view-topic" data-archive-view="topic">${topicSections}</section>
+        <section class="archive-view archive-view-date" data-archive-view="date" hidden>${dateSections}</section>
     </main>
 
     <script>${buildThemeToggleScript()}</script>
+    <script>${buildArchiveViewScript()}</script>
 </body>
 </html>
 `;
 }
 
 function buildHomepageHtml(posts) {
-    const cards = posts.map((post) => {
-        const title = post.metadata.title || post.id;
-        const excerpt = truncateText(post.metadata.excerpt || post.plain, 220);
-        return `
-                <div class="post-card">
-                    <div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div>
-                    <h3><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a></h3>
-                    <p class="post-excerpt">${escapeHtml(excerpt)}</p>
-                </div>`;
-    }).join('\n');
+    const groupedSections = buildHomepageGroupedSections(posts);
 
     return `<!doctype html>
 <html lang="en">
@@ -777,7 +938,7 @@ function buildHomepageHtml(posts) {
             <div class="nav-container">
                 <a href="./" class="logo">tokenbender</a>
                 <div class="nav-links">
-                    <a href="./">home</a>
+                    <a href="/archive/">archive</a>
                     <a href="https://github.com/tokenbender" target="_blank">github</a>
                     <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
                 </div>
@@ -788,14 +949,10 @@ function buildHomepageHtml(posts) {
     <main class="container">
         <section class="hero">
             <h1>hi, i'm tokenbender</h1>
-            <p class="subtitle">ml researcher</p>
+            <p class="subtitle">research, technical notes, and personal frameworks.</p>
         </section>
 
-        <section class="posts">
-            <h2>recent posts</h2>
-            <div id="post-list">${cards}
-            </div>
-        </section>
+        <section class="posts grouped-posts">${groupedSections}</section>
     </main>
 
     <footer>
@@ -812,7 +969,7 @@ function buildSitemap(posts) {
     const urls = [
         `${SITE_URL}/`,
         `${SITE_URL}/index.html`,
-        `${SITE_URL}/posts/`,
+        `${SITE_URL}/archive/`,
         ...posts.map((post) => `${SITE_URL}/posts/${encodeURIComponent(post.id)}/`)
     ];
 
@@ -831,6 +988,7 @@ async function main() {
     const postFiles = JSON.parse(postsIndexRaw);
 
     await fs.mkdir(POSTS_DIR, { recursive: true });
+    await fs.mkdir(ARCHIVE_DIR, { recursive: true });
 
     const posts = [];
 
@@ -854,6 +1012,7 @@ async function main() {
             plain,
             html: headingResult.html,
             headings: headingResult.headings,
+            category: normalizeCategory(metadata.category),
             tags: normalizeTags(metadata.tags),
             status: normalizeStatus(metadata.status),
             relatedIds: normalizeRelated(metadata.related),
@@ -874,11 +1033,13 @@ async function main() {
         await fs.writeFile(path.join(outDir, 'index.html'), buildPostHtml(post), 'utf8');
     }
 
-    await fs.writeFile(path.join(POSTS_DIR, 'index.html'), buildPostIndexHtml(posts), 'utf8');
+    const archiveHtml = buildArchiveHtml(posts);
+    await fs.writeFile(path.join(ARCHIVE_DIR, 'index.html'), archiveHtml, 'utf8');
+    await fs.writeFile(path.join(POSTS_DIR, 'index.html'), archiveHtml, 'utf8');
     await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(posts), 'utf8');
     await fs.writeFile(SITEMAP_FILE, buildSitemap(posts), 'utf8');
 
-    console.log(`generated ${posts.length} static posts, homepage, and sitemap`);
+    console.log(`generated ${posts.length} static posts, archive, homepage, and sitemap`);
 }
 
 main().catch((error) => {

@@ -4,6 +4,7 @@ date: 2025-06-15
 excerpt: a comprehensive guide to effective claude code usage, context management, and building local multi-agent systems
 tags: claude-code, ai-tooling, developer-workflow
 status: evergreen
+category: technical
 ---
 
 ## 1. setup requirements

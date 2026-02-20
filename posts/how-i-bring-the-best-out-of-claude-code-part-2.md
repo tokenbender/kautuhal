@@ -4,6 +4,7 @@ date: 2025-06-20
 excerpt: custom commands, multi-agent systems, and the protocols that made claude code actually useful
 tags: claude-code, ai-tooling, multi-agent-systems
 status: evergreen
+category: technical
 ---
 
 hello everyone!
