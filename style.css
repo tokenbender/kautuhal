@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=jetbrains+mono:ital,wght@0,400;0,500;0,700;1,400&family=fira+code:wght@400;500;600&family=inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=crimson+pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=jetbrains+mono:ital,wght@0,400;0,500;0,700;1,400&family=fira+code:wght@400;500;600&family=inter:wght@400;500;600&display=swap');
 
 :root {
     --bg-color: #2a241f;
@@ -12,8 +12,9 @@
     --mono: 'jetbrains mono', 'fira code', 'sf mono', 'consolas', 'monaco', 'courier new', monospace;
     --display: 'jetbrains mono', 'fira code', monospace;
     --sans: 'inter', -apple-system, blinkmacsystemfont, sans-serif;
+    --serif: 'crimson pro', 'times new roman', serif;
     --paper-shadow: inset 0 0 40px rgba(0, 0, 0, 0.2);
-    --measure: 68ch;
+    --measure: 66ch;
 }
 
 
@@ -31,13 +32,13 @@
 body {
     font-family: var(--sans);
     font-size: 16px;
-    line-height: 1.65;
+    line-height: 1.7;
     font-weight: 400;
     color: var(--text-color);
     background-color: var(--bg-color);
     background-image: 
-        radial-gradient(ellipse at top left, rgba(139, 69, 19, 0.03) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom right, rgba(160, 82, 45, 0.03) 0%, transparent 50%);
+        radial-gradient(ellipse at top left, rgba(181, 120, 43, 0.06) 0%, transparent 52%),
+        radial-gradient(ellipse at bottom right, rgba(110, 72, 29, 0.08) 0%, transparent 45%);
     transition: background-color 0.3s ease, color 0.3s ease;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -58,8 +59,8 @@ body::before {
             0deg,
             transparent,
             transparent 2px,
-            rgba(139, 69, 19, 0.03) 2px,
-            rgba(139, 69, 19, 0.03) 4px
+            rgba(139, 69, 19, 0.015) 2px,
+            rgba(139, 69, 19, 0.015) 4px
         );
     pointer-events: none;
     z-index: 1;
@@ -128,27 +129,29 @@ header {
 }
 
 .hero {
-    padding: 6rem 0 4rem;
+    padding: 6.5rem 0 4.5rem;
     text-align: center;
 }
 
 .hero h1 {
-    font-size: 2.5rem;
+    font-size: clamp(2.2rem, 1.8rem + 1.8vw, 3.2rem);
     font-weight: 700;
     margin-bottom: 1.5rem;
     letter-spacing: -0.02em;
     line-height: 1.2;
     color: var(--text-color);
-    font-family: var(--mono);
-    text-shadow: 2px 2px 4px rgba(139, 69, 19, 0.1);
+    font-family: var(--serif);
+    text-shadow: 2px 2px 6px rgba(139, 69, 19, 0.14);
 }
 
 .subtitle {
-    font-size: 1.125rem;
+    font-size: 1.06rem;
     color: var(--text-secondary);
     font-weight: 400;
     letter-spacing: 0;
-    font-family: var(--mono);
+    font-family: var(--sans);
+    text-transform: lowercase;
+    letter-spacing: 0.04em;
 }
 
 .posts {
@@ -166,14 +169,14 @@ header {
 }
 
 .post-card {
-    padding: 2.5rem 2rem;
+    padding: 2.4rem 2rem;
     margin-bottom: 1.5rem;
     background: linear-gradient(135deg, 
         var(--bg-color) 0%, 
         var(--bg-secondary) 100%);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
-    box-shadow: var(--shadow), var(--paper-shadow);
+    border-radius: 6px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.14), var(--paper-shadow);
     transition: all 0.3s ease;
     position: relative;
 }
@@ -186,15 +189,15 @@ header {
     right: 0;
     bottom: 0;
     background: radial-gradient(circle at 20% 80%, 
-        rgba(139, 69, 19, 0.05) 0%, 
+        rgba(218, 165, 32, 0.06) 0%, 
         transparent 50%);
     border-radius: 4px;
     pointer-events: none;
 }
 
 .post-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.15), var(--paper-shadow);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(139, 69, 19, 0.2), var(--paper-shadow);
 }
 
 .post-card h3 {
@@ -202,7 +205,7 @@ header {
     font-size: 1.375rem;
     font-weight: 600;
     letter-spacing: -0.01em;
-    font-family: var(--mono);
+    font-family: var(--serif);
 }
 
 .post-card a {
@@ -233,15 +236,14 @@ header {
 .post-content {
     max-width: var(--measure);
     margin: 0 auto;
-    padding: 3.5rem 2.5rem;
+    padding: 3.8rem 2.6rem;
     animation: fadeIn 0.6s ease;
-    background: linear-gradient(to bottom, 
-        transparent 0%, 
-        rgba(42, 36, 31, 0.3) 10%,
-        rgba(42, 36, 31, 0.5) 90%,
-        transparent 100%);
-    border-radius: 8px;
-    box-shadow: var(--paper-shadow);
+    background: linear-gradient(to bottom,
+        rgba(40, 34, 29, 0.28) 0%,
+        rgba(40, 34, 29, 0.62) 100%);
+    border-radius: 10px;
+    border: 1px solid rgba(104, 84, 58, 0.45);
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.22), var(--paper-shadow);
     position: relative;
 }
 
@@ -263,7 +265,7 @@ header {
     margin-bottom: 2rem;
     letter-spacing: -0.02em;
     line-height: 1.25;
-    font-family: var(--mono);
+    font-family: var(--serif);
     color: var(--accent-color);
     text-shadow: 1px 1px 2px rgba(139, 69, 19, 0.1);
 }
@@ -273,7 +275,7 @@ header {
     font-weight: 600;
     margin: 3.25rem 0 1.5rem;
     letter-spacing: -0.01em;
-    font-family: var(--mono);
+    font-family: var(--serif);
     color: var(--text-color);
     position: relative;
     padding-bottom: 0.5rem;
@@ -296,19 +298,25 @@ header {
     font-weight: 600;
     margin: 2.25rem 0 1rem;
     letter-spacing: 0;
-    font-family: var(--mono);
+    font-family: var(--serif);
     text-wrap: balance;
 }
 
 .post-content p {
     margin-bottom: 1.75rem;
-    font-size: clamp(1.04rem, 1rem + 0.25vw, 1.14rem);
-    letter-spacing: 0.005em;
-    line-height: 1.82;
-    font-family: var(--sans);
+    font-size: clamp(1.1rem, 1.02rem + 0.25vw, 1.2rem);
+    letter-spacing: 0.003em;
+    line-height: 1.88;
+    font-family: var(--serif);
     color: var(--text-color);
     text-wrap: pretty;
     hyphens: auto;
+}
+
+.post-content > p:first-of-type {
+    font-size: clamp(1.16rem, 1.08rem + 0.3vw, 1.28rem);
+    line-height: 1.82;
+    color: #e0d4c8;
 }
 
 .post-content pre {
@@ -318,11 +326,11 @@ header {
     border-radius: 4px;
     padding: 1.5rem;
     overflow-x: auto;
-    margin: 2rem -1rem;
+    margin: 2.2rem 0;
     font-size: 0.9rem;
     line-height: 1.6;
-    border: 1px solid var(--border-color);
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #584935;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.12), 0 10px 20px rgba(0, 0, 0, 0.12);
     position: relative;
 }
 
@@ -343,26 +351,26 @@ header {
 
 .post-content blockquote {
     border-left: 3px solid var(--accent-color);
-    padding: 1rem 1.5rem;
+    padding: 1.2rem 1.5rem;
     margin: 2rem 0;
-    font-style: italic;
+    font-style: normal;
     color: var(--text-secondary);
-    font-size: 1.05rem;
-    line-height: 1.8;
+    font-size: 1.12rem;
+    line-height: 1.86;
     background: linear-gradient(to right, 
         rgba(139, 69, 19, 0.05) 0%, 
         transparent 100%);
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 6px 6px 0;
     position: relative;
-    font-family: var(--sans);
+    font-family: var(--serif);
 }
 
 .post-content blockquote::before {
     content: '"';
     position: absolute;
-    top: -10px;
+    top: -14px;
     left: 10px;
-    font-size: 3rem;
+    font-size: 3.2rem;
     color: var(--accent-color);
     opacity: 0.3;
     font-family: var(--mono);
@@ -387,12 +395,14 @@ header {
 .post-content a {
     color: var(--accent-color);
     text-decoration: none;
-    border-bottom: 1px solid transparent;
-    transition: border-color 0.2s ease;
+    border-bottom: 1px solid rgba(218, 165, 32, 0.45);
+    text-underline-offset: 0.16em;
+    transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .post-content a:hover {
-    border-bottom-color: var(--accent-color);
+    color: #f0be49;
+    border-bottom-color: #f0be49;
 }
 
 .katex-display {
@@ -416,13 +426,14 @@ footer {
 
 .post-content ul, .post-content ol {
     margin-bottom: 1.75rem;
-    padding-left: 1.5rem;
-    font-family: var(--sans);
+    padding-left: 1.55rem;
+    font-family: var(--serif);
 }
 
 .post-content li {
-    margin-bottom: 0.65rem;
-    line-height: 1.82;
+    margin-bottom: 0.72rem;
+    line-height: 1.86;
+    font-size: 1.08rem;
 }
 
 .post-content table {
@@ -464,7 +475,7 @@ footer {
 
 .post-content strong {
     color: #e4d7cc;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .reading-progress {
@@ -486,7 +497,7 @@ footer {
 
 @media (max-width: 600px) {
     .hero h1 {
-        font-size: 2.5rem;
+        font-size: clamp(1.95rem, 1.7rem + 2.1vw, 2.35rem);
     }
     
     .nav-links {
@@ -499,10 +510,18 @@ footer {
 
     .post-content {
         max-width: 100%;
-        padding: 2.25rem 1.25rem;
+        padding: 2.2rem 1.1rem;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
     }
 
     .post-content p {
+        font-size: 1.06rem;
+        line-height: 1.84;
+    }
+
+    .post-content li {
         font-size: 1.03rem;
     }
 }
