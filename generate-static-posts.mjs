@@ -12,6 +12,7 @@ const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 
 const SITE_URL = 'https://tokenbender.com';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
+const AVERAGE_READING_WPM = 220;
 
 function get(url) {
     return new Promise((resolve, reject) => {
@@ -52,6 +53,26 @@ async function loadMarkedParser() {
     return candidate;
 }
 
+function parseFrontmatterValue(key, rawValue) {
+    const stripped = rawValue
+        .trim()
+        .replace(/^"(.*)"$/s, '$1')
+        .replace(/^'(.*)'$/s, '$1');
+
+    if (['tags', 'related'].includes(key)) {
+        const listString = stripped.startsWith('[') && stripped.endsWith(']')
+            ? stripped.slice(1, -1)
+            : stripped;
+
+        return listString
+            .split(',')
+            .map((item) => item.trim().replace(/^"(.*)"$/s, '$1').replace(/^'(.*)'$/s, '$1'))
+            .filter(Boolean);
+    }
+
+    return stripped;
+}
+
 function parseFrontmatter(markdown) {
     const match = markdown.match(/^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/);
 
@@ -64,10 +85,18 @@ function parseFrontmatter(markdown) {
     const metadata = {};
 
     frontmatter.split('\n').forEach((line) => {
-        const [key, ...value] = line.split(':');
-        if (key && value.length > 0) {
-            metadata[key.trim()] = value.join(':').trim().replace(/^"|"$/g, '');
+        const separator = line.indexOf(':');
+        if (separator < 0) {
+            return;
         }
+
+        const key = line.slice(0, separator).trim();
+        const rawValue = line.slice(separator + 1);
+        if (!key) {
+            return;
+        }
+
+        metadata[key] = parseFrontmatterValue(key, rawValue);
     });
 
     return { metadata, content };
@@ -123,6 +152,187 @@ function formatDate(value) {
         month: 'long',
         day: 'numeric'
     });
+}
+
+function normalizeTags(rawTags) {
+    const values = Array.isArray(rawTags)
+        ? rawTags
+        : typeof rawTags === 'string'
+            ? rawTags.split(',')
+            : [];
+
+    return Array.from(new Set(values
+        .map((tag) => String(tag).trim().toLowerCase())
+        .filter(Boolean)));
+}
+
+function normalizeStatus(rawStatus) {
+    if (typeof rawStatus !== 'string') {
+        return null;
+    }
+
+    const normalized = rawStatus.trim().toLowerCase();
+    return normalized || null;
+}
+
+function normalizeRelated(rawRelated) {
+    const values = Array.isArray(rawRelated)
+        ? rawRelated
+        : typeof rawRelated === 'string'
+            ? rawRelated.split(',')
+            : [];
+
+    return Array.from(new Set(values
+        .map((item) => String(item).trim())
+        .filter(Boolean)));
+}
+
+function estimateReadingTimeMinutes(plainText) {
+    if (!plainText) {
+        return 1;
+    }
+
+    const words = plainText.split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.ceil(words / AVERAGE_READING_WPM));
+}
+
+function slugify(value) {
+    return value
+        .toLowerCase()
+        .replace(/&(?:[a-z]+|#\d+);/gi, ' ')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+}
+
+function stripHtmlTags(html) {
+    return html.replace(/<[^>]+>/g, '');
+}
+
+function extractFootnotes(markdown) {
+    const lines = markdown.split('\n');
+    const footnotes = {};
+    const keptLines = [];
+
+    for (let index = 0; index < lines.length; index += 1) {
+        const line = lines[index];
+        const match = line.match(/^\[\^([^\]]+)\]:\s*(.*)$/);
+
+        if (!match) {
+            keptLines.push(line);
+            continue;
+        }
+
+        const key = match[1].trim();
+        const noteLines = [match[2]];
+
+        while (index + 1 < lines.length) {
+            const nextLine = lines[index + 1];
+            if (nextLine.trim() === '') {
+                noteLines.push('');
+                index += 1;
+                continue;
+            }
+
+            if (/^( {2,}|\t)/.test(nextLine)) {
+                noteLines.push(nextLine.replace(/^( {2,}|\t)/, ''));
+                index += 1;
+                continue;
+            }
+
+            break;
+        }
+
+        footnotes[key] = noteLines.join('\n').trim();
+    }
+
+    return {
+        contentWithoutFootnotes: keptLines.join('\n'),
+        footnotes
+    };
+}
+
+function renderInlineMarkdown(marked, markdown) {
+    if (typeof marked.parseInline === 'function') {
+        return marked.parseInline(markdown);
+    }
+
+    const rendered = marked.parse(markdown).trim();
+    return rendered.replace(/^<p>/, '').replace(/<\/p>$/, '');
+}
+
+function replaceFootnoteReferences(marked, html, footnotes, postId) {
+    const footnoteKeys = Object.keys(footnotes);
+    if (!footnoteKeys.length) {
+        return html;
+    }
+
+    const assignedNumbers = new Map();
+    let counter = 0;
+
+    return html.replace(/\[\^([^\]]+)\]/g, (match, rawKey) => {
+        const key = rawKey.trim();
+        const noteMarkdown = footnotes[key];
+
+        if (!noteMarkdown) {
+            return match;
+        }
+
+        if (!assignedNumbers.has(key)) {
+            counter += 1;
+            assignedNumbers.set(key, counter);
+        }
+
+        const number = assignedNumbers.get(key);
+        const toggleId = `sn-${slugify(postId)}-${number}`;
+        const noteHtml = renderInlineMarkdown(marked, noteMarkdown);
+
+        return `<label for="${toggleId}" class="sidenote-number">${number}</label><input type="checkbox" id="${toggleId}" class="sidenote-toggle"><span class="sidenote"><span class="sidenote-prefix">${number}. </span>${noteHtml}</span>`;
+    });
+}
+
+function addHeadingIdsAndCollect(html) {
+    const headings = [];
+    const slugCounts = new Map();
+
+    const updatedHtml = html.replace(/<h([23])([^>]*)>([\s\S]*?)<\/h\1>/g, (fullMatch, level, attrs, innerHtml) => {
+        const plainHeading = stripHtmlTags(innerHtml)
+            .replace(/&(?:[a-z]+|#\d+);/gi, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        if (!plainHeading) {
+            return fullMatch;
+        }
+
+        const existingIdMatch = attrs.match(/\sid="([^"]+)"/);
+        let headingId = existingIdMatch ? existingIdMatch[1] : slugify(plainHeading);
+
+        if (!headingId) {
+            headingId = `section-${headings.length + 1}`;
+        }
+
+        const count = slugCounts.get(headingId) || 0;
+        slugCounts.set(headingId, count + 1);
+        if (count > 0) {
+            headingId = `${headingId}-${count + 1}`;
+        }
+
+        headings.push({
+            level: Number(level),
+            text: plainHeading,
+            id: headingId
+        });
+
+        const attrsWithoutId = attrs.replace(/\sid="[^"]*"/, '');
+        return `<h${level}${attrsWithoutId} id="${headingId}">${innerHtml}</h${level}>`;
+    });
+
+    return {
+        html: updatedHtml,
+        headings
+    };
 }
 
 function buildThemeBootstrapScript() {
@@ -210,12 +420,168 @@ function buildThemeToggleScript() {
     ].join('\n');
 }
 
+function buildTocEnhancementScript() {
+    return [
+        '(function () {',
+        "    const links = Array.from(document.querySelectorAll('[data-toc-link]'));",
+        '    if (!links.length) {',
+        '        return;',
+        '    }',
+        '',
+        '    const mapping = links.map((link) => {',
+        "        const headingId = link.getAttribute('data-toc-link');",
+        '        return {',
+        '            link,',
+        '            heading: document.getElementById(headingId)',
+        '        };',
+        '    }).filter((entry) => entry.heading);',
+        '',
+        '    if (!mapping.length) {',
+        '        return;',
+        '    }',
+        '',
+        '    const setActive = (id) => {',
+        '        mapping.forEach((entry) => {',
+        "            entry.link.classList.toggle('is-active', entry.heading.id === id);",
+        '        });',
+        '    };',
+        '',
+        '    const update = () => {',
+        '        let activeId = mapping[0].heading.id;',
+        '        mapping.forEach((entry) => {',
+        '            if (entry.heading.getBoundingClientRect().top <= 140) {',
+        '                activeId = entry.heading.id;',
+        '            }',
+        '        });',
+        '        setActive(activeId);',
+        '    };',
+        '',
+        '    update();',
+        "    window.addEventListener('scroll', update, { passive: true });",
+        '})();'
+    ].join('\n');
+}
+
+function buildPostMeta(post) {
+    const parts = [];
+    parts.push(`<span class="meta-item">${escapeHtml(formatDate(post.metadata.date || ''))}</span>`);
+    parts.push('<span class="meta-sep">·</span>');
+    parts.push(`<span class="meta-item">${post.readingTimeMinutes} min read</span>`);
+
+    if (post.status) {
+        parts.push('<span class="meta-sep">·</span>');
+        parts.push(`<span class="post-status">${escapeHtml(post.status)}</span>`);
+    }
+
+    if (post.tags.length) {
+        const tagLinks = post.tags
+            .map((tag) => `<a class="post-tag" href="/posts/#tag-${slugify(tag)}">${escapeHtml(tag)}</a>`)
+            .join('');
+
+        parts.push('<span class="meta-sep">·</span>');
+        parts.push(`<span class="post-tags">${tagLinks}</span>`);
+    }
+
+    return `<div class="post-meta">${parts.join('')}</div>`;
+}
+
+function buildTocMarkup(headings) {
+    if (headings.length < 3) {
+        return {
+            desktop: '<aside class="post-toc post-toc-empty" aria-hidden="true"></aside>',
+            mobile: ''
+        };
+    }
+
+    const items = headings.map((heading) => {
+        return `<li class="toc-item toc-level-${heading.level}"><a href="#${escapeHtml(heading.id)}" data-toc-link="${escapeHtml(heading.id)}">${escapeHtml(heading.text)}</a></li>`;
+    }).join('');
+
+    const nav = `<nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol>${items}</ol></nav>`;
+
+    return {
+        desktop: `<aside class="post-toc">${nav}</aside>`,
+        mobile: `<details class="post-toc-mobile"><summary>contents</summary>${nav}</details>`
+    };
+}
+
+function selectRelatedPosts(posts, currentPost, maxItems) {
+    const byId = new Map(posts.map((post) => [post.id, post]));
+    const selected = [];
+    const selectedIds = new Set();
+
+    currentPost.relatedIds.forEach((id) => {
+        const match = byId.get(id);
+        if (match && match.id !== currentPost.id && !selectedIds.has(match.id)) {
+            selected.push(match);
+            selectedIds.add(match.id);
+        }
+    });
+
+    const currentTagSet = new Set(currentPost.tags);
+    const scored = posts
+        .filter((post) => post.id !== currentPost.id && !selectedIds.has(post.id))
+        .map((post) => {
+            const overlap = post.tags.filter((tag) => currentTagSet.has(tag)).length;
+            const timestamp = new Date(post.metadata.date).getTime() || 0;
+            return { post, overlap, timestamp };
+        })
+        .filter((item) => item.overlap > 0)
+        .sort((left, right) => {
+            if (right.overlap !== left.overlap) {
+                return right.overlap - left.overlap;
+            }
+
+            return right.timestamp - left.timestamp;
+        });
+
+    scored.forEach((item) => {
+        if (selected.length >= maxItems) {
+            return;
+        }
+
+        if (!selectedIds.has(item.post.id)) {
+            selected.push(item.post);
+            selectedIds.add(item.post.id);
+        }
+    });
+
+    posts.forEach((post) => {
+        if (selected.length >= maxItems) {
+            return;
+        }
+
+        if (post.id !== currentPost.id && !selectedIds.has(post.id)) {
+            selected.push(post);
+            selectedIds.add(post.id);
+        }
+    });
+
+    return selected.slice(0, maxItems);
+}
+
+function buildRelatedPostsSection(post) {
+    if (!post.relatedPosts.length) {
+        return '';
+    }
+
+    const items = post.relatedPosts.map((relatedPost) => {
+        const title = relatedPost.metadata.title || relatedPost.id;
+        const excerpt = truncateText(relatedPost.metadata.excerpt || relatedPost.plain, 160);
+
+        return `<li><a href="/posts/${encodeURIComponent(relatedPost.id)}/">${escapeHtml(title)}</a><p>${escapeHtml(excerpt)}</p></li>`;
+    }).join('');
+
+    return `<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul>${items}</ul></section>`;
+}
+
 function buildPostHtml(post) {
     const title = post.metadata.title || post.id;
-    const plain = stripMarkdown(post.content);
-    const description = truncateText(post.metadata.excerpt || plain, 180);
+    const description = truncateText(post.metadata.excerpt || post.plain, 180);
     const canonicalUrl = `${SITE_URL}/posts/${encodeURIComponent(post.id)}/`;
     const isoDate = toIsoDate(post.metadata.date);
+    const toc = buildTocMarkup(post.headings);
+    const relatedSection = buildRelatedPostsSection(post);
 
     const schema = {
         '@context': 'https://schema.org',
@@ -231,6 +597,10 @@ function buildPostHtml(post) {
     if (isoDate) {
         schema.datePublished = isoDate;
         schema.dateModified = isoDate;
+    }
+
+    if (post.tags.length) {
+        schema.keywords = post.tags.join(', ');
     }
 
     return `<!doctype html>
@@ -270,12 +640,16 @@ function buildPostHtml(post) {
         </nav>
     </header>
 
-    <main class="container">
+    <main class="post-layout">
+        ${toc.desktop}
         <article class="post-content" id="post-content">
-            <div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div>
             <h1>${escapeHtml(title)}</h1>
+            ${buildPostMeta(post)}
+            ${toc.mobile}
             ${post.html}
+            ${relatedSection}
         </article>
+        <aside class="post-margin-column" aria-hidden="true"></aside>
     </main>
 
     <footer>
@@ -283,6 +657,7 @@ function buildPostHtml(post) {
     </footer>
 
     <script>${buildThemeToggleScript()}</script>
+    <script>${buildTocEnhancementScript()}</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
@@ -313,7 +688,7 @@ function buildPostHtml(post) {
 function buildPostIndexHtml(posts) {
     const cards = posts.map((post) => {
         const title = post.metadata.title || post.id;
-        const excerpt = truncateText(post.metadata.excerpt || stripMarkdown(post.content), 220);
+        const excerpt = truncateText(post.metadata.excerpt || post.plain, 220);
         return `
         <div class="post-card">
             <div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div>
@@ -365,7 +740,7 @@ function buildPostIndexHtml(posts) {
 function buildHomepageHtml(posts) {
     const cards = posts.map((post) => {
         const title = post.metadata.title || post.id;
-        const excerpt = truncateText(post.metadata.excerpt || stripMarkdown(post.content), 220);
+        const excerpt = truncateText(post.metadata.excerpt || post.plain, 220);
         return `
                 <div class="post-card">
                     <div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div>
@@ -464,19 +839,40 @@ async function main() {
         const raw = await fs.readFile(filePath, 'utf8');
         const { metadata, content } = parseFrontmatter(raw);
         const id = fileName.replace(/\.md$/, '');
-        const html = marked.parse(content);
 
-        const post = { id, metadata, content, html };
-        posts.push(post);
+        const { contentWithoutFootnotes, footnotes } = extractFootnotes(content);
+        let html = marked.parse(contentWithoutFootnotes);
+        html = replaceFootnoteReferences(marked, html, footnotes, id);
 
-        const outDir = path.join(POSTS_DIR, id);
-        await fs.mkdir(outDir, { recursive: true });
+        const headingResult = addHeadingIdsAndCollect(html);
+        const plain = stripMarkdown(contentWithoutFootnotes);
 
-        const outPath = path.join(outDir, 'index.html');
-        await fs.writeFile(outPath, buildPostHtml(post), 'utf8');
+        posts.push({
+            id,
+            metadata,
+            content: contentWithoutFootnotes,
+            plain,
+            html: headingResult.html,
+            headings: headingResult.headings,
+            tags: normalizeTags(metadata.tags),
+            status: normalizeStatus(metadata.status),
+            relatedIds: normalizeRelated(metadata.related),
+            readingTimeMinutes: estimateReadingTimeMinutes(plain),
+            relatedPosts: []
+        });
     }
 
-    posts.sort((a, b) => new Date(b.metadata.date) - new Date(a.metadata.date));
+    posts.sort((left, right) => new Date(right.metadata.date) - new Date(left.metadata.date));
+
+    posts.forEach((post) => {
+        post.relatedPosts = selectRelatedPosts(posts, post, 3);
+    });
+
+    for (const post of posts) {
+        const outDir = path.join(POSTS_DIR, post.id);
+        await fs.mkdir(outDir, { recursive: true });
+        await fs.writeFile(path.join(outDir, 'index.html'), buildPostHtml(post), 'utf8');
+    }
 
     await fs.writeFile(path.join(POSTS_DIR, 'index.html'), buildPostIndexHtml(posts), 'utf8');
     await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(posts), 'utf8');

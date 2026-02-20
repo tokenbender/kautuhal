@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"how i bring the best out of claude code - part 2","description":"custom commands, multi-agent systems, and the protocols that made claude code actually useful","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/how-i-bring-the-best-out-of-claude-code-part-2/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/how-i-bring-the-best-out-of-claude-code-part-2/"},"datePublished":"2025-06-20T00:00:00.000Z","dateModified":"2025-06-20T00:00:00.000Z"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"how i bring the best out of claude code - part 2","description":"custom commands, multi-agent systems, and the protocols that made claude code actually useful","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/how-i-bring-the-best-out-of-claude-code-part-2/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/how-i-bring-the-best-out-of-claude-code-part-2/"},"datePublished":"2025-06-20T00:00:00.000Z","dateModified":"2025-06-20T00:00:00.000Z","keywords":"claude-code, ai-tooling, multi-agent-systems"}</script>
 </head>
 <body>
     <header>
@@ -50,25 +50,27 @@
         </nav>
     </header>
 
-    <main class="container">
+    <main class="post-layout">
+        <aside class="post-toc"><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#1-integrating-claude-code-into-tooling" data-toc-link="1-integrating-claude-code-into-tooling">1. integrating claude code into tooling</a></li><li class="toc-item toc-level-2"><a href="#2-what-are-these-systems" data-toc-link="2-what-are-these-systems">2. what are these systems?</a></li><li class="toc-item toc-level-2"><a href="#3-multi-mind-solving-the-hallucination-problem" data-toc-link="3-multi-mind-solving-the-hallucination-problem">3. multi-mind: solving the hallucination problem</a></li><li class="toc-item toc-level-2"><a href="#4-conversation-search-your-second-brain" data-toc-link="4-conversation-search-your-second-brain">4. conversation search: your second brain</a></li><li class="toc-item toc-level-2"><a href="#5-session-paging-my-fav-infinite-context-hack" data-toc-link="5-session-paging-my-fav-infinite-context-hack">5. session paging: my fav infinite context hack</a></li><li class="toc-item toc-level-2"><a href="#6-deep-code-analysis-that-thinks" data-toc-link="6-deep-code-analysis-that-thinks">6. deep code analysis that thinks</a></li><li class="toc-item toc-level-2"><a href="#7-crud-commands-build-your-own-commands" data-toc-link="7-crud-commands-build-your-own-commands">7. crud commands: build your own commands</a></li><li class="toc-item toc-level-3"><a href="#create-new-commands-on-the-fly" data-toc-link="create-new-commands-on-the-fly">create new commands on the fly</a></li><li class="toc-item toc-level-3"><a href="#read-what-a-command-does" data-toc-link="read-what-a-command-does">read what a command does</a></li><li class="toc-item toc-level-3"><a href="#update-when-your-needs-evolve" data-toc-link="update-when-your-needs-evolve">update when your needs evolve</a></li><li class="toc-item toc-level-3"><a href="#delete-outdated-commands" data-toc-link="delete-outdated-commands">delete outdated commands</a></li><li class="toc-item toc-level-3"><a href="#list-your-entire-arsenal" data-toc-link="list-your-entire-arsenal">list your entire arsenal</a></li><li class="toc-item toc-level-2"><a href="#8-the-workflow-that-actually-works" data-toc-link="8-the-workflow-that-actually-works">8. the workflow that actually works</a></li><li class="toc-item toc-level-3"><a href="#for-architecture-reviews" data-toc-link="for-architecture-reviews">for architecture reviews:</a></li><li class="toc-item toc-level-3"><a href="#for-debugging" data-toc-link="for-debugging">for debugging:</a></li><li class="toc-item toc-level-3"><a href="#for-long-projects" data-toc-link="for-long-projects">for long projects:</a></li><li class="toc-item toc-level-3"><a href="#for-letting-claude-grow-with-your-workflow" data-toc-link="for-letting-claude-grow-with-your-workflow">for letting claude grow with your workflow:</a></li><li class="toc-item toc-level-2"><a href="#9-what-protocols-are-being-enforced" data-toc-link="9-what-protocols-are-being-enforced">9. what protocols are being enforced?</a></li><li class="toc-item toc-level-2"><a href="#10-how-is-multi-agent-design-different" data-toc-link="10-how-is-multi-agent-design-different">10. how is multi-agent design different?</a></li><li class="toc-item toc-level-2"><a href="#12-setup-is-trivial" data-toc-link="12-setup-is-trivial">12. setup is trivial</a></li><li class="toc-item toc-level-2"><a href="#13-the-philosophy" data-toc-link="13-the-philosophy">13. the philosophy</a></li><li class="toc-item toc-level-2"><a href="#14-what-i-m-building-next" data-toc-link="14-what-i-m-building-next">14. what i m building next</a></li></ol></nav></aside>
         <article class="post-content" id="post-content">
-            <div class="post-date">June 20, 2025</div>
             <h1>how i bring the best out of claude code - part 2</h1>
+            <div class="post-meta"><span class="meta-item">June 20, 2025</span><span class="meta-sep">·</span><span class="meta-item">6 min read</span><span class="meta-sep">·</span><span class="post-status">evergreen</span><span class="meta-sep">·</span><span class="post-tags"><a class="post-tag" href="/posts/#tag-claude-code">claude-code</a><a class="post-tag" href="/posts/#tag-ai-tooling">ai-tooling</a><a class="post-tag" href="/posts/#tag-multi-agent-systems">multi-agent-systems</a></span></div>
+            <details class="post-toc-mobile"><summary>contents</summary><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#1-integrating-claude-code-into-tooling" data-toc-link="1-integrating-claude-code-into-tooling">1. integrating claude code into tooling</a></li><li class="toc-item toc-level-2"><a href="#2-what-are-these-systems" data-toc-link="2-what-are-these-systems">2. what are these systems?</a></li><li class="toc-item toc-level-2"><a href="#3-multi-mind-solving-the-hallucination-problem" data-toc-link="3-multi-mind-solving-the-hallucination-problem">3. multi-mind: solving the hallucination problem</a></li><li class="toc-item toc-level-2"><a href="#4-conversation-search-your-second-brain" data-toc-link="4-conversation-search-your-second-brain">4. conversation search: your second brain</a></li><li class="toc-item toc-level-2"><a href="#5-session-paging-my-fav-infinite-context-hack" data-toc-link="5-session-paging-my-fav-infinite-context-hack">5. session paging: my fav infinite context hack</a></li><li class="toc-item toc-level-2"><a href="#6-deep-code-analysis-that-thinks" data-toc-link="6-deep-code-analysis-that-thinks">6. deep code analysis that thinks</a></li><li class="toc-item toc-level-2"><a href="#7-crud-commands-build-your-own-commands" data-toc-link="7-crud-commands-build-your-own-commands">7. crud commands: build your own commands</a></li><li class="toc-item toc-level-3"><a href="#create-new-commands-on-the-fly" data-toc-link="create-new-commands-on-the-fly">create new commands on the fly</a></li><li class="toc-item toc-level-3"><a href="#read-what-a-command-does" data-toc-link="read-what-a-command-does">read what a command does</a></li><li class="toc-item toc-level-3"><a href="#update-when-your-needs-evolve" data-toc-link="update-when-your-needs-evolve">update when your needs evolve</a></li><li class="toc-item toc-level-3"><a href="#delete-outdated-commands" data-toc-link="delete-outdated-commands">delete outdated commands</a></li><li class="toc-item toc-level-3"><a href="#list-your-entire-arsenal" data-toc-link="list-your-entire-arsenal">list your entire arsenal</a></li><li class="toc-item toc-level-2"><a href="#8-the-workflow-that-actually-works" data-toc-link="8-the-workflow-that-actually-works">8. the workflow that actually works</a></li><li class="toc-item toc-level-3"><a href="#for-architecture-reviews" data-toc-link="for-architecture-reviews">for architecture reviews:</a></li><li class="toc-item toc-level-3"><a href="#for-debugging" data-toc-link="for-debugging">for debugging:</a></li><li class="toc-item toc-level-3"><a href="#for-long-projects" data-toc-link="for-long-projects">for long projects:</a></li><li class="toc-item toc-level-3"><a href="#for-letting-claude-grow-with-your-workflow" data-toc-link="for-letting-claude-grow-with-your-workflow">for letting claude grow with your workflow:</a></li><li class="toc-item toc-level-2"><a href="#9-what-protocols-are-being-enforced" data-toc-link="9-what-protocols-are-being-enforced">9. what protocols are being enforced?</a></li><li class="toc-item toc-level-2"><a href="#10-how-is-multi-agent-design-different" data-toc-link="10-how-is-multi-agent-design-different">10. how is multi-agent design different?</a></li><li class="toc-item toc-level-2"><a href="#12-setup-is-trivial" data-toc-link="12-setup-is-trivial">12. setup is trivial</a></li><li class="toc-item toc-level-2"><a href="#13-the-philosophy" data-toc-link="13-the-philosophy">13. the philosophy</a></li><li class="toc-item toc-level-2"><a href="#14-what-i-m-building-next" data-toc-link="14-what-i-m-building-next">14. what i m building next</a></li></ol></nav></details>
             <p>hello everyone!</p>
 <p>in <a href="https://tokenbender.github.io/kautuhal/post.html?id=how-i-bring-the-best-out-of-claude-code">part 1</a>, i covered the beginner&#39;s guide to claude code. setup requirements. context management. basic workflows. the fundamentals you need to get started.</p>
 <p>that was the shallow end of the pool.</p>
 <p>this is the deep end. intermediate techniques for people who&#39;ve already hit the walls of vanilla claude code and always want just a little bit more.</p>
 <p><img src="posts/images/deep-end-meme.jpg" alt="welcome to the future"></p>
-<h2>1. integrating claude code into tooling</h2>
+<h2 id="1-integrating-claude-code-into-tooling">1. integrating claude code into tooling</h2>
 <p>in part 1, i mentioned building a local multi-agent system. let me show you what that actually looks like.</p>
 <p>everything i&#39;m about to show you comes from my <a href="https://github.com/tokenbender/agent-guides">agent-guides</a> repository. it&#39;s all open source, ready to use.</p>
-<h2>2. what are these systems?</h2>
+<h2 id="2-what-are-these-systems">2. what are these systems?</h2>
 <p>they&#39;re custom commands and tools that transform claude code from a chat interface into a cognitive prosthetic. </p>
 <p>i built <a href="https://github.com/tokenbender/agent-guides">agent-guides</a> because vanilla claude code kept failing me in predictable ways. lost insights. repeated work. single-point failures.</p>
 <blockquote>
 <p>the more specific your tooling, the more powerful your workflow becomes. everything i feel like doing multiple times as a prompt, should be a command.</p>
 </blockquote>
-<h2>3. multi-mind: solving the hallucination problem</h2>
+<h2 id="3-multi-mind-solving-the-hallucination-problem">3. multi-mind: solving the hallucination problem</h2>
 <p>remember how models confidently tell you wrong things? or how you are not sure if the model is being sycophantic? if only it could have opposing viewpoints.</p>
 <p><a href="https://github.com/tokenbender/agent-guides/blob/main/claude-commands/multi-mind.md">multi-mind</a> fixes that.</p>
 <pre><code>/multi-mind &quot;find security vulnerabilities in our auth system&quot;
@@ -93,7 +95,7 @@ const specialistPrompts = {
 <blockquote>
 <p>independent verification kills hallucinations. caught a timing attack that single-agent analysis completely missed.</p>
 </blockquote>
-<h2>4. conversation search: your second brain</h2>
+<h2 id="4-conversation-search-your-second-brain">4. conversation search: your second brain</h2>
 <p>i am quite chaotic in the way i work. forever solving a problem and gleaming at 3am, then forgetting the solution or losing track of it in the sea of tasks that i pick up right after. </p>
 <p>so i built <a href="https://github.com/tokenbender/agent-guides/blob/main/claude-commands/search-prompts.md">search-prompts</a> to fix that.</p>
 <p>you can search through your entire conversation history, exported json sessions, and current context.
@@ -122,7 +124,7 @@ Returns formatted results with:
 <blockquote>
 <p>your past conversations are a goldmine. most people just let them rot or lose it. why wait for anthropic to fix it?</p>
 </blockquote>
-<h2>5. session paging: my fav infinite context hack</h2>
+<h2 id="5-session-paging-my-fav-infinite-context-hack">5. session paging: my fav infinite context hack</h2>
 <p>claude&#39;s context fills up. work gets lost. 
 being originally from electrical background, i couldn&#39;t help but see the need of a paging equivalent mechanism in claude code.</p>
 <p>say no to context loss with <a href="https://github.com/tokenbender/agent-guides/blob/main/claude-commands/page.md">page command</a>.</p>
@@ -154,7 +156,7 @@ Key accomplishments and current state...
 <blockquote>
 <p>treat context like os memory. page out, page in, never lose work.</p>
 </blockquote>
-<h2>6. deep code analysis that thinks</h2>
+<h2 id="6-deep-code-analysis-that-thinks">6. deep code analysis that thinks</h2>
 <p>while reviewing code, claude can analyze it in depth, finding hidden complexity, edge cases, and optimization opportunities. i do not like simple explanations derived from docstrings and comments.</p>
 <p><a href="https://github.com/tokenbender/agent-guides/blob/main/claude-commands/analyze-function.md">analyze-function</a> goes beyond description.</p>
 <pre><code>/analyze-function &quot;def batch_process(items, workers=4):&quot;
@@ -178,25 +180,25 @@ Key accomplishments and current state...
 5. **Optimization Opportunities**: Parallel processing, caching
 </code></pre>
 <p>saved me from wasting several gpu hours on something which was a complete blindspot to me.</p>
-<h2>7. crud commands: build your own commands</h2>
+<h2 id="7-crud-commands-build-your-own-commands">7. crud commands: build your own commands</h2>
 <p>famous saying : &quot;teach a man to run commands, and you feed his curiosity for a day. teach a man to build commands, and you feed him for a lifetime.&quot;</p>
 <p>if you ever find yourself typing the same prompts over and over? just don&#39;t.</p>
 <p>that&#39;s exactly why i built <a href="https://github.com/tokenbender/agent-guides/blob/main/claude-commands/crud-claude-commands.md">crud-claude-commands</a>. by the time i wrote my third commnand, i was clear that i needed a meta-command system.</p>
 <p>with yourself as the water that flows through the system. you can create, read, update, delete, and list commands. it allows you to build a library of reusable commands that fit your workflow.</p>
-<h3>create new commands on the fly</h3>
+<h3 id="create-new-commands-on-the-fly">create new commands on the fly</h3>
 <pre><code>/crud-claude-commands create git-flow &quot;automate git flow operations like creating feature branches, PRs, and merging&quot;
 </code></pre>
 <p>boom. now you have a custom git-flow command tailored to your workflow.</p>
-<h3>read what a command does</h3>
+<h3 id="read-what-a-command-does">read what a command does</h3>
 <pre><code>/crud-claude-commands read git-flow
 </code></pre>
-<h3>update when your needs evolve</h3>
+<h3 id="update-when-your-needs-evolve">update when your needs evolve</h3>
 <pre><code>/crud-claude-commands update git-flow &quot;enhanced git workflow with automatic PR creation and branch management&quot;
 </code></pre>
-<h3>delete outdated commands</h3>
+<h3 id="delete-outdated-commands">delete outdated commands</h3>
 <pre><code>/crud-claude-commands delete git-flow
 </code></pre>
-<h3>list your entire arsenal</h3>
+<h3 id="list-your-entire-arsenal">list your entire arsenal</h3>
 <pre><code>/crud-claude-commands list
 </code></pre>
 <p>here&#39;s the magic - it generates standardized templates:</p>
@@ -217,30 +219,30 @@ Automates git flow operations...
 <p>stop repeating yourself. if you do something twice, make it a command.</p>
 </blockquote>
 <p>the real power? rapid iteration. prototype a command, test it, refine it, share it. your personal command library grows organically with your needs.</p>
-<h2>8. the workflow that actually works</h2>
-<h3>for architecture reviews:</h3>
+<h2 id="8-the-workflow-that-actually-works">8. the workflow that actually works</h2>
+<h3 id="for-architecture-reviews">for architecture reviews:</h3>
 <pre><code>/multi-mind &quot;review our microservices for bottlenecks&quot;
 → 5 specialists work in parallel
 → cross-pollination finds blind spots
 → /page &quot;architecture-review-final&quot;
 </code></pre>
-<h3>for debugging:</h3>
+<h3 id="for-debugging">for debugging:</h3>
 <pre><code>/search-all &quot;null pointer kubernetes&quot;
 → find similar past issues
 → /analyze-function on suspect code
 → multi-mind verification of fix
 </code></pre>
-<h3>for long projects:</h3>
+<h3 id="for-long-projects">for long projects:</h3>
 <pre><code>issue #142 → docs/plan_142.md
 → work until context fills
 → /page &quot;issue-142-session-1&quot;  
 → resume seamlessly next day
 </code></pre>
-<h3>for letting claude grow with your workflow:</h3>
+<h3 id="for-letting-claude-grow-with-your-workflow">for letting claude grow with your workflow:</h3>
 <pre><code>/crud-claude-commands list
 → /page &quot;command-library&quot;
 </code></pre>
-<h2>9. what protocols are being enforced?</h2>
+<h2 id="9-what-protocols-are-being-enforced">9. what protocols are being enforced?</h2>
 <blockquote>
 <p>we want to put systems in place that accumulate knowledge bases, behavior trajectories, preferences, serve as a goldmine for future agents. we want to do things that snowball into something bigger.</p>
 </blockquote>
@@ -254,12 +256,12 @@ unix philosophy for ai assistance.</p>
 page out before you lose work.</p>
 <p><strong>knowledge reuse is key.</strong>
 every conversation builds lasting value.</p>
-<h2>10. how is multi-agent design different?</h2>
+<h2 id="10-how-is-multi-agent-design-different">10. how is multi-agent design different?</h2>
 <p><strong>error decorrelation</strong>: agents make different mistakes. consensus filters out individual errors.</p>
 <p><strong>specialist depth</strong>: focused expertise beats generalist responses every time.</p>
 <p><strong>progressive refinement</strong>: cross-pollination rounds systematically improve quality.</p>
 <p>i personally say no more &quot;claude said so&quot; disasters. multiple independent verification or it didn&#39;t happen.</p>
-<h2>12. setup is trivial</h2>
+<h2 id="12-setup-is-trivial">12. setup is trivial</h2>
 <pre><code class="language-bash">git clone https://github.com/tokenbender/agent-guides
 cd agent-guides
 
@@ -279,7 +281,7 @@ cp -r scripts /path/to/your/project/.claude/scripts/
 ├── analyze-function.md # deep code reasoning
 └── crud-claude-commands.md # dynamic command creation
 </code></pre>
-<h2>13. the philosophy</h2>
+<h2 id="13-the-philosophy">13. the philosophy</h2>
 <p>these aren&#39;t just tools. they&#39;re a different way of thinking about ai assistance.</p>
 <ul>
 <li><strong>augment, don&#39;t replace</strong>: enhance claude&#39;s native abilities</li>
@@ -291,7 +293,7 @@ cp -r scripts /path/to/your/project/.claude/scripts/
 <p>“People SHOULD be doubted. Many people misunderstand this concept. Doubting people is just a part of getting to know them. What many people call ‘trust’ is really just giving up on trying to understand others, and that very act is far worse than doubting. It is actually ‘apathy.”</p>
 </blockquote>
 <p>― Shinobu Kaitani, Liar Game, Volume 4</p>
-<h2>14. what i&#39;m building next</h2>
+<h2 id="14-what-i-m-building-next">14. what i&#39;m building next</h2>
 <p>and for my final trick, i am building something to aid my experimentation and RL research in my main quest <a href="https://github.com/tokenbender/avataRL">avataRL</a>.
 a complete auto-track changes, kick-off experiments, observe and auto-merge results system.</p>
 <p>all of that and more in the next post.</p>
@@ -299,7 +301,9 @@ a complete auto-track changes, kick-off experiments, observe and auto-merge resu
 <p>grab <a href="https://github.com/tokenbender/agent-guides">agent-guides</a> and build your own cognitive prosthetics.</p>
 <p>until then, be well everyone.</p>
 
+            <section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul><li><a href="/posts/how-i-bring-the-best-out-of-claude-code/">how i bring the best out of claude code - part 1</a><p>a comprehensive guide to effective claude code usage, context management, and building local multi-agent systems</p></li><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite - a rubric driven prioritized replay to maximise continual learning</a><p>a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design</p></li><li><a href="/posts/avatarl/">avatarl: training language models from scratch with pure reinforcement learning</a><p>replacing cross-entropy pretraining with a principled rl objective using expert-consensus rewards over active tokens</p></li></ul></section>
         </article>
+        <aside class="post-margin-column" aria-hidden="true"></aside>
     </main>
 
     <footer>
@@ -364,6 +368,43 @@ a complete auto-track changes, kick-off experiments, observe and auto-merge resu
             media.addListener(onChange);
         }
     }
+})();</script>
+    <script>(function () {
+    const links = Array.from(document.querySelectorAll('[data-toc-link]'));
+    if (!links.length) {
+        return;
+    }
+
+    const mapping = links.map((link) => {
+        const headingId = link.getAttribute('data-toc-link');
+        return {
+            link,
+            heading: document.getElementById(headingId)
+        };
+    }).filter((entry) => entry.heading);
+
+    if (!mapping.length) {
+        return;
+    }
+
+    const setActive = (id) => {
+        mapping.forEach((entry) => {
+            entry.link.classList.toggle('is-active', entry.heading.id === id);
+        });
+    };
+
+    const update = () => {
+        let activeId = mapping[0].heading.id;
+        mapping.forEach((entry) => {
+            if (entry.heading.getBoundingClientRect().top <= 140) {
+                activeId = entry.heading.id;
+            }
+        });
+        setActive(activeId);
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
 })();</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

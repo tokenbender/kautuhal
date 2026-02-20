@@ -2,6 +2,8 @@
 title: infinite - a rubric driven prioritized replay to maximise continual learning
 date: 2025-08-20
 excerpt: a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design
+tags: continual-learning, reinforcement-learning, evaluation
+status: research
 ---
 
 > "an infinite game is played for the purpose of continuing the play. not for winning or achieving a specific end." — James P. Carse

@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"avatarl: training language models from scratch with pure reinforcement learning","description":"replacing cross-entropy pretraining with a principled rl objective using expert-consensus rewards over active tokens","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/avatarl/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/avatarl/"},"datePublished":"2025-08-09T00:00:00.000Z","dateModified":"2025-08-09T00:00:00.000Z"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"avatarl: training language models from scratch with pure reinforcement learning","description":"replacing cross-entropy pretraining with a principled rl objective using expert-consensus rewards over active tokens","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/avatarl/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/avatarl/"},"datePublished":"2025-08-09T00:00:00.000Z","dateModified":"2025-08-09T00:00:00.000Z","keywords":"reinforcement-learning, language-models, pretraining"}</script>
 </head>
 <body>
     <header>
@@ -50,18 +50,20 @@
         </nav>
     </header>
 
-    <main class="container">
+    <main class="post-layout">
+        <aside class="post-toc"><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#abstract" data-toc-link="abstract">abstract</a></li><li class="toc-item toc-level-2"><a href="#understanding-avatarl" data-toc-link="understanding-avatarl">understanding avatarl</a></li><li class="toc-item toc-level-3"><a href="#standard-pretraining-one-hot-encoded-lottery" data-toc-link="standard-pretraining-one-hot-encoded-lottery">standard pretraining = one-hot encoded lottery</a></li><li class="toc-item toc-level-3"><a href="#avatarl-progressive-reward-lottery" data-toc-link="avatarl-progressive-reward-lottery">avatarl = progressive reward lottery</a></li><li class="toc-item toc-level-2"><a href="#the-problems-with-rl-in-pre-training-language-modeling" data-toc-link="the-problems-with-rl-in-pre-training-language-modeling">the problems with RL in pre-training language modeling</a></li><li class="toc-item toc-level-3"><a href="#intuition" data-toc-link="intuition">intuition</a></li><li class="toc-item toc-level-2"><a href="#how-to-combine-the-reality-and-the-critic" data-toc-link="how-to-combine-the-reality-and-the-critic">how to combine the reality and the critic?</a></li><li class="toc-item toc-level-3"><a href="#the-expert-consensus-problem-active-token-smoothing" data-toc-link="the-expert-consensus-problem-active-token-smoothing">the expert consensus problem → active-token smoothing</a></li><li class="toc-item toc-level-3"><a href="#the-expert-consensus" data-toc-link="the-expert-consensus">the expert consensus</a></li><li class="toc-item toc-level-3"><a href="#the-mathematical-model-of-the-reward-signal" data-toc-link="the-mathematical-model-of-the-reward-signal">the mathematical model of the reward signal</a></li><li class="toc-item toc-level-2"><a href="#results" data-toc-link="results">results</a></li><li class="toc-item toc-level-3"><a href="#training-loss-against-combined-distribution-2k1" data-toc-link="training-loss-against-combined-distribution-2k1">Training loss against combined distribution (2k+1)</a></li><li class="toc-item toc-level-3"><a href="#average-reward-progress" data-toc-link="average-reward-progress">Average Reward Progress</a></li><li class="toc-item toc-level-3"><a href="#cross-entropy-loss" data-toc-link="cross-entropy-loss">Cross-Entropy Loss</a></li><li class="toc-item toc-level-2"><a href="#samples" data-toc-link="samples">Samples</a></li><li class="toc-item toc-level-3"><a href="#generated-text-examples" data-toc-link="generated-text-examples">Generated Text Examples</a></li><li class="toc-item toc-level-2"><a href="#conclusion" data-toc-link="conclusion">conclusion</a></li><li class="toc-item toc-level-2"><a href="#future-work" data-toc-link="future-work">future work</a></li><li class="toc-item toc-level-2"><a href="#acknowledgements" data-toc-link="acknowledgements">acknowledgements</a></li><li class="toc-item toc-level-2"><a href="#sponsorship" data-toc-link="sponsorship">sponsorship</a></li><li class="toc-item toc-level-2"><a href="#code" data-toc-link="code">code</a></li><li class="toc-item toc-level-2"><a href="#references" data-toc-link="references">references</a></li></ol></nav></aside>
         <article class="post-content" id="post-content">
-            <div class="post-date">August 9, 2025</div>
             <h1>avatarl: training language models from scratch with pure reinforcement learning</h1>
+            <div class="post-meta"><span class="meta-item">August 9, 2025</span><span class="meta-sep">·</span><span class="meta-item">17 min read</span><span class="meta-sep">·</span><span class="post-status">research</span><span class="meta-sep">·</span><span class="post-tags"><a class="post-tag" href="/posts/#tag-reinforcement-learning">reinforcement-learning</a><a class="post-tag" href="/posts/#tag-language-models">language-models</a><a class="post-tag" href="/posts/#tag-pretraining">pretraining</a></span></div>
+            <details class="post-toc-mobile"><summary>contents</summary><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#abstract" data-toc-link="abstract">abstract</a></li><li class="toc-item toc-level-2"><a href="#understanding-avatarl" data-toc-link="understanding-avatarl">understanding avatarl</a></li><li class="toc-item toc-level-3"><a href="#standard-pretraining-one-hot-encoded-lottery" data-toc-link="standard-pretraining-one-hot-encoded-lottery">standard pretraining = one-hot encoded lottery</a></li><li class="toc-item toc-level-3"><a href="#avatarl-progressive-reward-lottery" data-toc-link="avatarl-progressive-reward-lottery">avatarl = progressive reward lottery</a></li><li class="toc-item toc-level-2"><a href="#the-problems-with-rl-in-pre-training-language-modeling" data-toc-link="the-problems-with-rl-in-pre-training-language-modeling">the problems with RL in pre-training language modeling</a></li><li class="toc-item toc-level-3"><a href="#intuition" data-toc-link="intuition">intuition</a></li><li class="toc-item toc-level-2"><a href="#how-to-combine-the-reality-and-the-critic" data-toc-link="how-to-combine-the-reality-and-the-critic">how to combine the reality and the critic?</a></li><li class="toc-item toc-level-3"><a href="#the-expert-consensus-problem-active-token-smoothing" data-toc-link="the-expert-consensus-problem-active-token-smoothing">the expert consensus problem → active-token smoothing</a></li><li class="toc-item toc-level-3"><a href="#the-expert-consensus" data-toc-link="the-expert-consensus">the expert consensus</a></li><li class="toc-item toc-level-3"><a href="#the-mathematical-model-of-the-reward-signal" data-toc-link="the-mathematical-model-of-the-reward-signal">the mathematical model of the reward signal</a></li><li class="toc-item toc-level-2"><a href="#results" data-toc-link="results">results</a></li><li class="toc-item toc-level-3"><a href="#training-loss-against-combined-distribution-2k1" data-toc-link="training-loss-against-combined-distribution-2k1">Training loss against combined distribution (2k+1)</a></li><li class="toc-item toc-level-3"><a href="#average-reward-progress" data-toc-link="average-reward-progress">Average Reward Progress</a></li><li class="toc-item toc-level-3"><a href="#cross-entropy-loss" data-toc-link="cross-entropy-loss">Cross-Entropy Loss</a></li><li class="toc-item toc-level-2"><a href="#samples" data-toc-link="samples">Samples</a></li><li class="toc-item toc-level-3"><a href="#generated-text-examples" data-toc-link="generated-text-examples">Generated Text Examples</a></li><li class="toc-item toc-level-2"><a href="#conclusion" data-toc-link="conclusion">conclusion</a></li><li class="toc-item toc-level-2"><a href="#future-work" data-toc-link="future-work">future work</a></li><li class="toc-item toc-level-2"><a href="#acknowledgements" data-toc-link="acknowledgements">acknowledgements</a></li><li class="toc-item toc-level-2"><a href="#sponsorship" data-toc-link="sponsorship">sponsorship</a></li><li class="toc-item toc-level-2"><a href="#code" data-toc-link="code">code</a></li><li class="toc-item toc-level-2"><a href="#references" data-toc-link="references">references</a></li></ol></nav></details>
             <blockquote>
 <p>&quot;if you know the way broadly you will see it in all things&quot; — Miyamoto Musashi</p>
 </blockquote>
-<h2>abstract</h2>
+<h2 id="abstract">abstract</h2>
 <p>standard language model pre-training relies on a cross-entropy objective, which rigidly teaches the model that only a single token is the correct continuation for a given context. this is a fundamentally incomplete representation of language, where multiple continuations are often plausible.</p>
 <p>avatarl addresses this by replacing the traditional cross-entropy objective with a sophisticated <strong>reinforcement learning (rl) framework</strong>. during the pre-training phase, a player model learns from a <strong>continuous reward signal</strong> derived from a pre-trained critic and ground-truth reality. this allows the player to learn a rich, distributional understanding of language, rewarding it for predicting tokens that are not just the single &#39;correct&#39; answer but are also plausible alternatives, as judged by the critic. this approach represents a more principled pre-training objective, designed to create models with a deeper and more nuanced understanding of language from the very beginning [1].</p>
 <hr>
-<h2>understanding avatarl</h2>
+<h2 id="understanding-avatarl">understanding avatarl</h2>
 <p>imagine you&#39;re teaching a child (the player model) how to play a piano. </p>
 <p><strong>traditional pretraining</strong>: the piano student sits with a strict teacher who slaps their hand every time they hit the wrong key. &quot;No! Only C# here! Never D!&quot; The student memorizes thousands of songs note-by-note and is terrified of mistakes. this creates a technically perfect but robotic player who can only reproduce what they&#39;ve memorized.</p>
 <p><strong>avatarl&#39;s rl approach</strong>: the student plays in a jazz club with an experienced critic watching. instead of punishment, they get applause. loud cheers for perfect notes, moderate clapping for harmonious alternatives, polite claps for creative attempts. the critic (a seasoned jazz pianist) whispers suggestions: &quot;try a B♭ there, it creates tension&quot; the student learns not just what&#39;s &quot;correct&quot; but what&#39;s musically meaningful.</p>
@@ -74,7 +76,7 @@
 <li><strong>critic</strong>: provides expertise without dictating every note</li>
 </ul>
 <p>the best part starts when the student starts improvising - they play their own ideas (student top-k), consider the critic&#39;s suggestions (critic top-k), while keeping the original melody in mind (ground truth). over time, they develop their own style while respecting musical theory. this is reinforcement learning i.e. learning through rewards rather than rigid correction, discovering patterns through exploration rather than memorization. </p>
-<h3>standard pretraining =&gt; one-hot encoded lottery</h3>
+<h3 id="standard-pretraining-one-hot-encoded-lottery">standard pretraining =&gt; one-hot encoded lottery</h3>
 <p>there is RL everywhere for those with the eyes to see.
 this is your traditional pretraining but you can also think of it as REINFORCE with binary rewards.</p>
 <pre><code class="language-ascii">   standard cross-entropy loss
@@ -90,7 +92,7 @@ this is your traditional pretraining but you can also think of it as REINFORCE w
    - hit anything else = lose
    
 </code></pre>
-<h3>avatarl =&gt; progressive reward lottery</h3>
+<h3 id="avatarl-progressive-reward-lottery">avatarl =&gt; progressive reward lottery</h3>
 <p>we can reimagine the same problem as a progressive reward lottery.</p>
 <pre><code class="language-ascii">   avatarl&#39;s continuous rewards
    
@@ -108,9 +110,9 @@ this is your traditional pretraining but you can also think of it as REINFORCE w
    
 </code></pre>
 <hr>
-<h2>the problems with RL in pre-training language modeling</h2>
+<h2 id="the-problems-with-rl-in-pre-training-language-modeling">the problems with RL in pre-training language modeling</h2>
 <p>now how do we design this around some of the challenges we face in RL?</p>
-<h3>intuition</h3>
+<h3 id="intuition">intuition</h3>
 <p>let us look at how we teach the model traditionally. standard pretraining with cross-entropy loss for predicting the next token. this can be visualised as a special case of REINFORCE algorithm where only the gold token gets reward 1.0 and all others get 0 [3]. so we can at least create a binary reward where gold token gets 1 and all others get 0. the challenge of framing pretraining as an rl problem isn&#39;t hard however there are a few concerning points.</p>
 <pre><code class="language-ascii">   broadly RL looks like this:
 
@@ -175,8 +177,8 @@ this is your traditional pretraining but you can also think of it as REINFORCE w
 </code></pre>
 <p>notation used above: <code>s_t</code> = context at time t (tokens so far); <code>a*_t</code> = ground-truth next token; <code>A_t</code> = student top-k ∪ critic top-k ∪ <code>{a*_t}</code> (deduped, ≤ <code>2k+1</code>); <code>π_θ(a|s_t)</code> = student policy over tokens; <code>r_i</code> = reward for action <code>a_i ∈ A_t</code>.</p>
 <p>in <strong>avatarl reward mechanism</strong>. instead of a sparse <code>+1</code> for the correct token and <code>0</code> for all others, we construct an &quot;ideal&quot; reward model at each step that provides a dense, continuous reward signal for any potential action. this reward model is an <strong>expert consensus</strong>.</p>
-<h2>how to combine the reality and the critic?</h2>
-<h3>the expert consensus problem → active-token smoothing</h3>
+<h2 id="how-to-combine-the-reality-and-the-critic">how to combine the reality and the critic?</h2>
+<h3 id="the-expert-consensus-problem-active-token-smoothing">the expert consensus problem → active-token smoothing</h3>
 <p>there’s a subtle problem with expert consensus if we’re not careful. if the reality expert
 is one-hot, rewards become ultra-sparse and the student gets almost no exploration signal.
 if we lean only on the critic, we cap the student at the critic’s quality and inherit its
@@ -250,7 +252,7 @@ final rewards r_i over A_t → used by REINFORCE
    
    &quot;many things could work here; we score them consistently.&quot;
 </code></pre>
-<h3>the expert consensus</h3>
+<h3 id="the-expert-consensus">the expert consensus</h3>
 <p>we can combine their reward signals using a <strong>weighted geometric mean</strong>:</p>
 <pre><code class="language-ascii">   
    reality (70% weight)         critic (30% weight)
@@ -304,7 +306,7 @@ final rewards r_i over A_t → used by REINFORCE
               and proportionally capped per position (≤ 1.5)
 </code></pre>
 <p><strong>intuition</strong>: for a token to receive higher rewards, both experts must agree. the smoothed reality expert ensures the ground truth is strongly preferred without completely vetoing alternatives, while the critic expert provides a smooth gradient of preferences for all plausible tokens. the resulting probabilities serve directly as positive rewards.</p>
-<h3>the mathematical model of the reward signal</h3>
+<h3 id="the-mathematical-model-of-the-reward-signal">the mathematical model of the reward signal</h3>
 <p>a key insight of avatarl is that we do not create a reward for a <em>single</em> action the student takes. instead, we first construct a <strong>dense reward landscape</strong> for <em>active filtered tokens</em>, and then we evaluate the student&#39;s policy against this landscape.</p>
 <p><strong>1. defining the experts mathematically</strong></p>
 <p>let <code>a</code> be a potential action (a token) and <code>a*</code> be the ground-truth token from the dataset.</p>
@@ -372,21 +374,21 @@ loss = -sum(log_prob(action) * reward for action in action_space)  # update all 
 <li><strong>reward computations</strong>: ~2k+1 (one per action in space)</li>
 <li><strong>gradient updates</strong>: 1 (single policy gradient step)</li>
 </ul>
-<h2>results</h2>
+<h2 id="results">results</h2>
 <p>avatarl has been completely open sourced and researched in the open from day 1.
 hence what you see are the earliest results after getting it to work.</p>
 <p>we successfully validated the approach on a model in size range of 30M-250M parameters using avatarl. in each case, we used a critic model of size 30M parameters. around 2B tokens were used for training where the dataset used for this was <a href="https://huggingface.co/datasets/Skylion007/openwebtext">openwebtext</a>. </p>
 <p>for the same param size, the avatarl trained model can reach similar cross entropy loss as a standard pretrained model.</p>
 <p>avatarl also allows us to train the models for equivalent of 50-60B tokens on 2B tokens of data because of the dense reward signal.</p>
 <p>this is how the training and validation curves look like for a 250M parameter model, validated every 500 steps.</p>
-<h3>Training loss against combined distribution (2k+1)</h3>
+<h3 id="training-loss-against-combined-distribution-2k1">Training loss against combined distribution (2k+1)</h3>
 <p><img src="posts/images/train_loss.png" alt="train_curves"></p>
-<h3>Average Reward Progress</h3>
+<h3 id="average-reward-progress">Average Reward Progress</h3>
 <p><img src="posts/images/avg_reward.png" alt="avg_reward"></p>
-<h3>Cross-Entropy Loss</h3>
+<h3 id="cross-entropy-loss">Cross-Entropy Loss</h3>
 <p><img src="posts/images/ce_loss.png" alt="ce_loss"></p>
-<h2>Samples</h2>
-<h3>Generated Text Examples</h3>
+<h2 id="samples">Samples</h2>
+<h3 id="generated-text-examples">Generated Text Examples</h3>
 <p><strong>Prompt:</strong> <em>&quot;The true meaning of life is often&quot;</em></p>
 <hr>
 <h4>Sample 1</h4>
@@ -431,7 +433,7 @@ hence what you see are the earliest results after getting it to work.</p>
 <p>The true meaning of life is often about a certain general understanding of our existence and how we cope with our suffering. This is how people of a certain age, or a particular religious persuasion, perceive our existence.</p>
 <p>We are now reminded that our understanding is limited in comparison to the scope of relationships within us. The way that we may assess ourselves under the ideal of our being the sum of our self-interest, we may do it to others and to oneself in order to make our bodies and identities relevant, but it will be</p>
 </blockquote>
-<h2>conclusion</h2>
+<h2 id="conclusion">conclusion</h2>
 <p>cross entropy based next token prediction pretraining as a bitter lesson pilled approach works. i have no issues against it. think of this as an enquiry into three points:</p>
 <ol>
 <li>people believing without strong base model rl doesn&#39;t work - so why can&#39;t the method used for avatarl (action space filtering and smoothing) work for them?</li>
@@ -439,7 +441,7 @@ hence what you see are the earliest results after getting it to work.</p>
 <li>is this something that can create models with more nuanced understanding of language and benefit from better calibration of top k?</li>
 </ol>
 <p>i originally started this as a cacklemaxxing project (idea which if it works would make me laugh). i am just doing it for satisfying questions in my head.</p>
-<h2>future work</h2>
+<h2 id="future-work">future work</h2>
 <p>this is a very early stage of the research.
 i understand that to many trained eyes this feels incomplete.
 i am also primarily a hacker and you may sniff it across my work.</p>
@@ -451,18 +453,18 @@ i am also primarily a hacker and you may sniff it across my work.</p>
 <p>if you wish to pick these ideas for yourself or if you wish to collaborate, let me know.
 i would appreciate any support in the form of sponsorship, compute or research collaboration.</p>
 <p>i would be sharing discussion on the approaches that i took but didn&#39;t succeed as well.</p>
-<h2>acknowledgements</h2>
+<h2 id="acknowledgements">acknowledgements</h2>
 <p><a href="https://x.com/ChinmayKak">Chinmay Kak</a>, who discussed this with me on call and instantly started hacking the idea using GRPO. The skeleton code for the earliest version was written by him.</p>
 <p><a href="https://x.com/twofifteenam">Telt</a> for the support and compute.</p>
 <p><a href="https://x.com/ravithejads">Ravi Theja</a> for taking initiative on his own to put me in touch with @except_raised.</p>
 <p>huge thanks to everyone who reposted, shared and got it the initial attention, i appreciate all of you.</p>
 <p>modal cloud is awesome. it makes running experiments simple. no worrying about instance management or forgotten resources - it just works. it kinda suits my adhd hacker brain very well.</p>
 <p>the infrastructure is solid too. cold starts that take just 5-6s time let me hack things out locally and simply trigger the job with a command.</p>
-<h2>sponsorship</h2>
+<h2 id="sponsorship">sponsorship</h2>
 <p>this work was sponsored for compute credits by <a href="https://x.com/except_raised">@except_raised</a>, <a href="https://x.com/twofifteenam">@twofifteenam</a> and <a href="https://x.com/modal_labs">@modal_labs</a></p>
-<h2>code</h2>
+<h2 id="code">code</h2>
 <p>everything is open sourced and available on <a href="https://github.com/tokenbender/avataRL">github</a>.</p>
-<h2>references</h2>
+<h2 id="references">references</h2>
 <p>[1] Dong, Q., Dong, L., Tang, Y., Ye, T., Sun, Y., Sui, Z., &amp; Wei, F. (2025). Reinforcement Pre-Training. arXiv:2506.08007.</p>
 <p>[2] Hong, J., Dragan, A., &amp; Levine, S. (2024). Q-SFT: Q-Learning for Language Models via Supervised Fine-Tuning. arXiv:2411.05193.</p>
 <p>[3] Norouzi, M., Bengio, S., Chen, Z., Jaitly, N., Schuster, M., Wu, Y., &amp; Schuurmans, D. (2016). Reward Augmented Maximum Likelihood for Neural Structured Prediction. NeurIPS 2016.</p>
@@ -473,7 +475,9 @@ i would appreciate any support in the form of sponsorship, compute or research c
 <p>[8] Agarwal, R., Schwarzer, M., Castro, P. S., Courville, A., &amp; Bellemare, M. G. (2022). Reincarnating Reinforcement Learning: Reusing Prior Computation to Accelerate Progress. NeurIPS 2022. arXiv:2206.01626.</p>
 <p>[9] Furlanello, T., Lipton, Z., Tschannen, M., Itti, L., &amp; Anandkumar, A. (2018). Born Again Neural Networks. Proceedings of ICML 2018, PMLR 80:1607-1616. arXiv:1805.04770.</p>
 
+            <section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite - a rubric driven prioritized replay to maximise continual learning</a><p>a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design</p></li><li><a href="/posts/how-i-bring-the-best-out-of-claude-code-part-2/">how i bring the best out of claude code - part 2</a><p>custom commands, multi-agent systems, and the protocols that made claude code actually useful</p></li><li><a href="/posts/how-i-bring-the-best-out-of-claude-code/">how i bring the best out of claude code - part 1</a><p>a comprehensive guide to effective claude code usage, context management, and building local multi-agent systems</p></li></ul></section>
         </article>
+        <aside class="post-margin-column" aria-hidden="true"></aside>
     </main>
 
     <footer>
@@ -538,6 +542,43 @@ i would appreciate any support in the form of sponsorship, compute or research c
             media.addListener(onChange);
         }
     }
+})();</script>
+    <script>(function () {
+    const links = Array.from(document.querySelectorAll('[data-toc-link]'));
+    if (!links.length) {
+        return;
+    }
+
+    const mapping = links.map((link) => {
+        const headingId = link.getAttribute('data-toc-link');
+        return {
+            link,
+            heading: document.getElementById(headingId)
+        };
+    }).filter((entry) => entry.heading);
+
+    if (!mapping.length) {
+        return;
+    }
+
+    const setActive = (id) => {
+        mapping.forEach((entry) => {
+            entry.link.classList.toggle('is-active', entry.heading.id === id);
+        });
+    };
+
+    const update = () => {
+        let activeId = mapping[0].heading.id;
+        mapping.forEach((entry) => {
+            if (entry.heading.getBoundingClientRect().top <= 140) {
+                activeId = entry.heading.id;
+            }
+        });
+        setActive(activeId);
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
 })();</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

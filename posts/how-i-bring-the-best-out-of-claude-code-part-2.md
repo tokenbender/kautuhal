@@ -2,6 +2,8 @@
 title: how i bring the best out of claude code - part 2
 date: 2025-06-20
 excerpt: custom commands, multi-agent systems, and the protocols that made claude code actually useful
+tags: claude-code, ai-tooling, multi-agent-systems
+status: evergreen
 ---
 
 hello everyone!

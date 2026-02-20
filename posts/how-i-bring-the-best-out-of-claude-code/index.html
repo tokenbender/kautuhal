@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"how i bring the best out of claude code - part 1","description":"a comprehensive guide to effective claude code usage, context management, and building local multi-agent systems","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/how-i-bring-the-best-out-of-claude-code/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/how-i-bring-the-best-out-of-claude-code/"},"datePublished":"2025-06-15T00:00:00.000Z","dateModified":"2025-06-15T00:00:00.000Z"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"how i bring the best out of claude code - part 1","description":"a comprehensive guide to effective claude code usage, context management, and building local multi-agent systems","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/how-i-bring-the-best-out-of-claude-code/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/how-i-bring-the-best-out-of-claude-code/"},"datePublished":"2025-06-15T00:00:00.000Z","dateModified":"2025-06-15T00:00:00.000Z","keywords":"claude-code, ai-tooling, developer-workflow"}</script>
 </head>
 <body>
     <header>
@@ -50,18 +50,20 @@
         </nav>
     </header>
 
-    <main class="container">
+    <main class="post-layout">
+        <aside class="post-toc"><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#1-setup-requirements" data-toc-link="1-setup-requirements">1. setup requirements</a></li><li class="toc-item toc-level-2"><a href="#2-most-important-thing-context-management" data-toc-link="2-most-important-thing-context-management">2. most important thing: context management</a></li><li class="toc-item toc-level-2"><a href="#3-parallel-claude-code-usage" data-toc-link="3-parallel-claude-code-usage">3. parallel claude code usage</a></li><li class="toc-item toc-level-2"><a href="#4-execution-strategy" data-toc-link="4-execution-strategy">4. execution strategy</a></li><li class="toc-item toc-level-2"><a href="#5-iteration-and-updating-context" data-toc-link="5-iteration-and-updating-context">5. iteration and updating context</a></li><li class="toc-item toc-level-2"><a href="#6-working-compactly" data-toc-link="6-working-compactly">6. working compactly</a></li><li class="toc-item toc-level-2"><a href="#7-integrating-claude-code-into-tooling" data-toc-link="7-integrating-claude-code-into-tooling">7. integrating claude code into tooling</a></li><li class="toc-item toc-level-2"><a href="#8-final-thoughts" data-toc-link="8-final-thoughts">8. final thoughts</a></li></ol></nav></aside>
         <article class="post-content" id="post-content">
-            <div class="post-date">June 15, 2025</div>
             <h1>how i bring the best out of claude code - part 1</h1>
-            <h2>1. setup requirements</h2>
+            <div class="post-meta"><span class="meta-item">June 15, 2025</span><span class="meta-sep">·</span><span class="meta-item">3 min read</span><span class="meta-sep">·</span><span class="post-status">evergreen</span><span class="meta-sep">·</span><span class="post-tags"><a class="post-tag" href="/posts/#tag-claude-code">claude-code</a><a class="post-tag" href="/posts/#tag-ai-tooling">ai-tooling</a><a class="post-tag" href="/posts/#tag-developer-workflow">developer-workflow</a></span></div>
+            <details class="post-toc-mobile"><summary>contents</summary><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#1-setup-requirements" data-toc-link="1-setup-requirements">1. setup requirements</a></li><li class="toc-item toc-level-2"><a href="#2-most-important-thing-context-management" data-toc-link="2-most-important-thing-context-management">2. most important thing: context management</a></li><li class="toc-item toc-level-2"><a href="#3-parallel-claude-code-usage" data-toc-link="3-parallel-claude-code-usage">3. parallel claude code usage</a></li><li class="toc-item toc-level-2"><a href="#4-execution-strategy" data-toc-link="4-execution-strategy">4. execution strategy</a></li><li class="toc-item toc-level-2"><a href="#5-iteration-and-updating-context" data-toc-link="5-iteration-and-updating-context">5. iteration and updating context</a></li><li class="toc-item toc-level-2"><a href="#6-working-compactly" data-toc-link="6-working-compactly">6. working compactly</a></li><li class="toc-item toc-level-2"><a href="#7-integrating-claude-code-into-tooling" data-toc-link="7-integrating-claude-code-into-tooling">7. integrating claude code into tooling</a></li><li class="toc-item toc-level-2"><a href="#8-final-thoughts" data-toc-link="8-final-thoughts">8. final thoughts</a></li></ol></nav></details>
+            <h2 id="1-setup-requirements">1. setup requirements</h2>
 <p>you need a set of requirements, preferably issues in a repo. take the requirement url and download and save it into an <code>issues/</code> folder or have github integration with claude code. then create a file like <code>&lt;issue_no&gt;.md</code> or whatever you prefer.</p>
 <blockquote>
 <p><strong>note:</strong> your requirements list is very crucial, and you should treat it like a wish list for work to be done.</p>
 </blockquote>
 <p>the more vague you are in describing what you want, the higher the chance you won&#39;t get what you wanted. ideally, your instructions should be as unambiguous as a program.</p>
 <p>you also want to be aware of what is already known by the model.</p>
-<h2>2. most important thing: context management</h2>
+<h2 id="2-most-important-thing-context-management">2. most important thing: context management</h2>
 <p>a common pattern:</p>
 <pre><code>[claude code] --&gt; [todo list]
                (fresh context)
@@ -74,7 +76,7 @@
 <blockquote>
 <p>the todo list is nice, but as you consume things in longer context in claude code, it becomes hard to keep up. so we store it inside the <code>todo.md</code>.</p>
 </blockquote>
-<h2>3. parallel claude code usage</h2>
+<h2 id="3-parallel-claude-code-usage">3. parallel claude code usage</h2>
 <p>if you&#39;re using multiple claude code windows in parallel, assign each one an issue and its corresponding docs, todos, and requirements. this way, everything is tracked automatically.</p>
 <p>currently, i don&#39;t use claude code in parallel much because it tends to create new files for everything, prompt to edit existing files directly, and update code based on outdated or flawed understanding.</p>
 <p>that&#39;s why i often ask it to detail its plan so i can do smell checks and question intentions like <em>&quot;oh, you were aiming to do xyz. then why modify abc?&quot;</em></p>
@@ -82,37 +84,39 @@
 <blockquote>
 <p>i avoid this by running it manually myself, providing a snippet of the error so it can best debug it.</p>
 </blockquote>
-<h2>4. execution strategy</h2>
+<h2 id="4-execution-strategy">4. execution strategy</h2>
 <p>once you&#39;re going through each item, do it step by step while enforcing quality standards. you decide how frequently to execute and ensure there are no blindspots.</p>
 <blockquote>
 <p>personally, i avoid diving into thousands of loc i haven&#39;t written or understood.</p>
 </blockquote>
-<h2>5. iteration and updating context</h2>
+<h2 id="5-iteration-and-updating-context">5. iteration and updating context</h2>
 <p>as i implement and ensure smooth execution, i iterate with errors and debug, then go back and update crucial observations in the planning docs.</p>
 <blockquote>
 <p>this allows the model to build better understanding of the issue and what is already known.</p>
 </blockquote>
-<h2>6. working compactly</h2>
+<h2 id="6-working-compactly">6. working compactly</h2>
 <p>in an ideal world, you work on one issue end-to-end in one session.</p>
 <p>but usually, context fills out faster and faster. you&#39;ll find yourself using &quot;compact&quot; more often.</p>
 <p>if you ever run out of context during execution, claude auto-compacts or asks you to go back to a previous node.</p>
 <blockquote>
 <p>this is useful when i see a model ignoring feedback and going in loops. in such cases, i jump to a clean node where i was satisfied, compact, generate a summary, and start fresh.</p>
 </blockquote>
-<h2>7. integrating claude code into tooling</h2>
+<h2 id="7-integrating-claude-code-into-tooling">7. integrating claude code into tooling</h2>
 <p>now that claude code sdk exists, you can add it to your tools.</p>
 <p>i&#39;ve been using it in shell scripts and proto files. my protocols reflect opinionated views of deep research methodologies and how i debug or visit the ecosystem.</p>
 <p>for instance, my ecosystem has <code>issues/</code> and <code>todo.md</code> folders. i use a shell script to invoke tasks in specific ways and let claude interact with other claude instances.</p>
 <blockquote>
 <p>essentially, i&#39;m building a local multi-agent system of my own.</p>
 </blockquote>
-<h2>8. final thoughts</h2>
+<h2 id="8-final-thoughts">8. final thoughts</h2>
 <p>what are these systems? what protocols are being enforced? how is multi-agent design different? what gives it an edge over standard usage?</p>
 <p>these are things i&#39;d like to cover in part 2.</p>
 <hr>
 <p>until then, be well everyone!</p>
 
+            <section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul><li><a href="/posts/how-i-bring-the-best-out-of-claude-code-part-2/">how i bring the best out of claude code - part 2</a><p>custom commands, multi-agent systems, and the protocols that made claude code actually useful</p></li><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite - a rubric driven prioritized replay to maximise continual learning</a><p>a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design</p></li><li><a href="/posts/avatarl/">avatarl: training language models from scratch with pure reinforcement learning</a><p>replacing cross-entropy pretraining with a principled rl objective using expert-consensus rewards over active tokens</p></li></ul></section>
         </article>
+        <aside class="post-margin-column" aria-hidden="true"></aside>
     </main>
 
     <footer>
@@ -177,6 +181,43 @@
             media.addListener(onChange);
         }
     }
+})();</script>
+    <script>(function () {
+    const links = Array.from(document.querySelectorAll('[data-toc-link]'));
+    if (!links.length) {
+        return;
+    }
+
+    const mapping = links.map((link) => {
+        const headingId = link.getAttribute('data-toc-link');
+        return {
+            link,
+            heading: document.getElementById(headingId)
+        };
+    }).filter((entry) => entry.heading);
+
+    if (!mapping.length) {
+        return;
+    }
+
+    const setActive = (id) => {
+        mapping.forEach((entry) => {
+            entry.link.classList.toggle('is-active', entry.heading.id === id);
+        });
+    };
+
+    const update = () => {
+        let activeId = mapping[0].heading.id;
+        mapping.forEach((entry) => {
+            if (entry.heading.getBoundingClientRect().top <= 140) {
+                activeId = entry.heading.id;
+            }
+        });
+        setActive(activeId);
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
 })();</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

@@ -2,6 +2,8 @@
 title: welcome
 date: 2024-08-24
 excerpt: my journey from intel to llm research and the models that defined my path
+tags: meta, llm, engineering
+status: evergreen
 ---
 
 i'm tokenbender. i love working with large language models.

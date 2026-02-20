@@ -2,6 +2,8 @@
 title: avatarl: training language models from scratch with pure reinforcement learning
 date: 2025-08-09
 excerpt: replacing cross-entropy pretraining with a principled rl objective using expert-consensus rewards over active tokens
+tags: reinforcement-learning, language-models, pretraining
+status: research
 ---
 
 > "if you know the way broadly you will see it in all things" — Miyamoto Musashi
@@ -520,5 +522,4 @@ everything is open sourced and available on [github](https://github.com/tokenben
 [8] Agarwal, R., Schwarzer, M., Castro, P. S., Courville, A., & Bellemare, M. G. (2022). Reincarnating Reinforcement Learning: Reusing Prior Computation to Accelerate Progress. NeurIPS 2022. arXiv:2206.01626.
 
 [9] Furlanello, T., Lipton, Z., Tschannen, M., Itti, L., & Anandkumar, A. (2018). Born Again Neural Networks. Proceedings of ICML 2018, PMLR 80:1607-1616. arXiv:1805.04770.
-
 

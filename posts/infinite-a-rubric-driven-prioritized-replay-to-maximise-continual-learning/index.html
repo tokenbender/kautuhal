@@ -34,7 +34,7 @@
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
-    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"infinite - a rubric driven prioritized replay to maximise continual learning","description":"a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/"},"datePublished":"2025-08-20T00:00:00.000Z","dateModified":"2025-08-20T00:00:00.000Z"}</script>
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"infinite - a rubric driven prioritized replay to maximise continual learning","description":"a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/"},"datePublished":"2025-08-20T00:00:00.000Z","dateModified":"2025-08-20T00:00:00.000Z","keywords":"continual-learning, reinforcement-learning, evaluation"}</script>
 </head>
 <body>
     <header>
@@ -50,14 +50,16 @@
         </nav>
     </header>
 
-    <main class="container">
+    <main class="post-layout">
+        <aside class="post-toc"><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#abstract" data-toc-link="abstract">abstract</a></li><li class="toc-item toc-level-2"><a href="#understanding-infinite-replay" data-toc-link="understanding-infinite-replay">understanding infinite replay</a></li><li class="toc-item toc-level-2"><a href="#the-intuition" data-toc-link="the-intuition">the intuition</a></li><li class="toc-item toc-level-2"><a href="#visual-flow" data-toc-link="visual-flow">visual flow</a></li><li class="toc-item toc-level-2"><a href="#contamination-detection-and-data-integrity" data-toc-link="contamination-detection-and-data-integrity">contamination detection and data integrity</a></li><li class="toc-item toc-level-2"><a href="#implementation-architecture" data-toc-link="implementation-architecture">implementation architecture</a></li><li class="toc-item toc-level-2"><a href="#upgrade-mode-enhancing-post-trained-models" data-toc-link="upgrade-mode-enhancing-post-trained-models">upgrade mode: enhancing post-trained models</a></li><li class="toc-item toc-level-2"><a href="#evaluation-metrics-and-success-criteria" data-toc-link="evaluation-metrics-and-success-criteria">evaluation metrics and success criteria</a></li><li class="toc-item toc-level-2"><a href="#planning-the-details" data-toc-link="planning-the-details">planning the details</a></li><li class="toc-item toc-level-2"><a href="#division-by-contribution-areas" data-toc-link="division-by-contribution-areas">division by contribution areas</a></li></ol></nav></aside>
         <article class="post-content" id="post-content">
-            <div class="post-date">August 20, 2025</div>
             <h1>infinite - a rubric driven prioritized replay to maximise continual learning</h1>
+            <div class="post-meta"><span class="meta-item">August 20, 2025</span><span class="meta-sep">·</span><span class="meta-item">6 min read</span><span class="meta-sep">·</span><span class="post-status">research</span><span class="meta-sep">·</span><span class="post-tags"><a class="post-tag" href="/posts/#tag-continual-learning">continual-learning</a><a class="post-tag" href="/posts/#tag-reinforcement-learning">reinforcement-learning</a><a class="post-tag" href="/posts/#tag-evaluation">evaluation</a></span></div>
+            <details class="post-toc-mobile"><summary>contents</summary><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#abstract" data-toc-link="abstract">abstract</a></li><li class="toc-item toc-level-2"><a href="#understanding-infinite-replay" data-toc-link="understanding-infinite-replay">understanding infinite replay</a></li><li class="toc-item toc-level-2"><a href="#the-intuition" data-toc-link="the-intuition">the intuition</a></li><li class="toc-item toc-level-2"><a href="#visual-flow" data-toc-link="visual-flow">visual flow</a></li><li class="toc-item toc-level-2"><a href="#contamination-detection-and-data-integrity" data-toc-link="contamination-detection-and-data-integrity">contamination detection and data integrity</a></li><li class="toc-item toc-level-2"><a href="#implementation-architecture" data-toc-link="implementation-architecture">implementation architecture</a></li><li class="toc-item toc-level-2"><a href="#upgrade-mode-enhancing-post-trained-models" data-toc-link="upgrade-mode-enhancing-post-trained-models">upgrade mode: enhancing post-trained models</a></li><li class="toc-item toc-level-2"><a href="#evaluation-metrics-and-success-criteria" data-toc-link="evaluation-metrics-and-success-criteria">evaluation metrics and success criteria</a></li><li class="toc-item toc-level-2"><a href="#planning-the-details" data-toc-link="planning-the-details">planning the details</a></li><li class="toc-item toc-level-2"><a href="#division-by-contribution-areas" data-toc-link="division-by-contribution-areas">division by contribution areas</a></li></ol></nav></details>
             <blockquote>
 <p>&quot;an infinite game is played for the purpose of continuing the play. not for winning or achieving a specific end.&quot; — James P. Carse</p>
 </blockquote>
-<h2>abstract</h2>
+<h2 id="abstract">abstract</h2>
 <p>continual learning systems face a fundamental challenge: how to efficiently retain and build upon previously learned knowledge while adapting to new information. traditional training methods often suffer from catastrophic forgetting and inefficient resource utilization.</p>
 <p>infinite introduces a <strong>rubric-driven prioritized replay mechanism</strong> that transforms how continual learning systems select, prioritize, and replay experiences. by implementing a diverse and adaptive evaluation framework, infinite aims to ensure that the most educationally valuable experiences are replayed with optimal frequency.</p>
 <p><strong>key innovations:</strong></p>
@@ -70,10 +72,10 @@
 </ul>
 <p>this approach addresses both (1) minimizing forgetfulness across multiple domains over long horizons, and (2) upgrading post-trained models when original training data is unavailable.</p>
 <hr>
-<h2>understanding infinite replay</h2>
+<h2 id="understanding-infinite-replay">understanding infinite replay</h2>
 <p>imagine you&#39;re training an AI system to master multiple domains. these domains are not necessarily related to each other. they may also vary in complexity. you want to have a single base model that can learn from all of these domains. but also it should be able to learn from new domains as they come in. currently we don&#39;t have anything that tackles this effectively. my question is: how do we do this with what we already have?</p>
 <p>there are many approaches to this problem. most of them being architecture level changes. i want to explore the possibility of doing this with the assumption that it is already possible given the right training methodology.</p>
-<h2>the intuition</h2>
+<h2 id="the-intuition">the intuition</h2>
 <p>the idea borrows from spaced repetition mechanisms - replay the most important experiences with highest frequency while maintaining minimal coverage of stable areas.</p>
 <p><strong>concrete mechanisms:</strong></p>
 <p><strong>performance band assignment:</strong></p>
@@ -97,7 +99,7 @@ more training → performance recovery → higher band → reduced sampling
 <p><strong>distributed state tracking:</strong>
 each domain maintains: <code>acc_ema</code>, <code>performance_band</code>, <code>last_seen_step</code>, <code>grade_uncertainty</code></p>
 <p>this creates a self-regulating system where struggling domains automatically receive more attention while stable domains are maintained with minimal overhead.</p>
-<h2>visual flow</h2>
+<h2 id="visual-flow">visual flow</h2>
 <pre><code>INFINITE: Rubric-Driven Prioritized Replay for Continual Learning
 ═══════════════════════════════════════════════════════════════════
 
@@ -164,7 +166,7 @@ each domain maintains: <code>acc_ema</code>, <code>performance_band</code>, <cod
 
 PROCESS FLOW: Domains → Evaluation → Detection → Scheduling → Execution → Learning
 </code></pre>
-<h2>contamination detection and data integrity</h2>
+<h2 id="contamination-detection-and-data-integrity">contamination detection and data integrity</h2>
 <p>before any training begins, infinite implements comprehensive contamination detection to ensure evaluation data hasn&#39;t leaked into training sets:</p>
 <p><strong>pre-training validation protocol:</strong></p>
 <ul>
@@ -176,7 +178,7 @@ PROCESS FLOW: Domains → Evaluation → Detection → Scheduling → Execution 
 <li>persist contamination logs for reproducibility and compliance</li>
 </ul>
 <p><strong>why this matters:</strong> contaminated evaluation data leads to inflated performance metrics and false confidence in model capabilities. this validation step ensures legitimate measurement of continual learning progress.</p>
-<h2>implementation architecture</h2>
+<h2 id="implementation-architecture">implementation architecture</h2>
 <p><strong>core training loop (every step k):</strong></p>
 <ol>
 <li><p><strong>domain state tracking</strong></p>
@@ -229,7 +231,7 @@ domain_shares = softmax(priorities + anti_starvation_epsilon)
     last_seen_step: int      # staleness tracking
     grade_uncertainty: float # variance in recent rubric scores
 </code></pre>
-<h2>upgrade mode: enhancing post-trained models</h2>
+<h2 id="upgrade-mode-enhancing-post-trained-models">upgrade mode: enhancing post-trained models</h2>
 <p>upgrade mode addresses a critical real-world scenario: you have a well-trained model M0, but original training data is unavailable. you want to add new capabilities without losing existing skills.</p>
 <p><strong>initialization workflow:</strong></p>
 <ol>
@@ -252,7 +254,7 @@ domain_shares = softmax(priorities + anti_starvation_epsilon)
 <li><strong>automatic rollback</strong>: return to previous checkpoint if regression exceeds thresholds</li>
 <li><strong>human-in-the-loop gating</strong>: require manual review after repeated safety violations</li>
 </ul>
-<h2>evaluation metrics and success criteria</h2>
+<h2 id="evaluation-metrics-and-success-criteria">evaluation metrics and success criteria</h2>
 <p><strong>forgetting and retention tracking:</strong></p>
 <ul>
 <li><strong>backward transfer (BWT)</strong>: performance change on earlier domains after learning new ones</li>
@@ -286,7 +288,7 @@ infinite_full = mixed_single_batch_alternation
 <li>third alert: reduce new domain sampling temporarily</li>
 <li>final gate: halt training and require human review after H failed evaluations</li>
 </ul>
-<h2>planning the details</h2>
+<h2 id="planning-the-details">planning the details</h2>
 <p>we need to plan the details of the implementation.</p>
 <ul>
 <li>choice of base model?</li>
@@ -298,7 +300,7 @@ infinite_full = mixed_single_batch_alternation
 <li>rough timeline?</li>
 <li>what people with various backgrounds can contribute?</li>
 </ul>
-<h2>division by contribution areas</h2>
+<h2 id="division-by-contribution-areas">division by contribution areas</h2>
 <p>broadly there are six areas of contribution where there are lots of things to be done: </p>
 <ul>
 <li>contamination check scripts - to test the base/instruct model on the domains we pick </li>
@@ -317,7 +319,9 @@ all updates will be posted here.</p>
 </ul>
 <p>reach out if you think it is cool and can contribute in any way - collaboration, compute or sponsorship.</p>
 
+            <section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul><li><a href="/posts/avatarl/">avatarl: training language models from scratch with pure reinforcement learning</a><p>replacing cross-entropy pretraining with a principled rl objective using expert-consensus rewards over active tokens</p></li><li><a href="/posts/how-i-bring-the-best-out-of-claude-code-part-2/">how i bring the best out of claude code - part 2</a><p>custom commands, multi-agent systems, and the protocols that made claude code actually useful</p></li><li><a href="/posts/how-i-bring-the-best-out-of-claude-code/">how i bring the best out of claude code - part 1</a><p>a comprehensive guide to effective claude code usage, context management, and building local multi-agent systems</p></li></ul></section>
         </article>
+        <aside class="post-margin-column" aria-hidden="true"></aside>
     </main>
 
     <footer>
@@ -382,6 +386,43 @@ all updates will be posted here.</p>
             media.addListener(onChange);
         }
     }
+})();</script>
+    <script>(function () {
+    const links = Array.from(document.querySelectorAll('[data-toc-link]'));
+    if (!links.length) {
+        return;
+    }
+
+    const mapping = links.map((link) => {
+        const headingId = link.getAttribute('data-toc-link');
+        return {
+            link,
+            heading: document.getElementById(headingId)
+        };
+    }).filter((entry) => entry.heading);
+
+    if (!mapping.length) {
+        return;
+    }
+
+    const setActive = (id) => {
+        mapping.forEach((entry) => {
+            entry.link.classList.toggle('is-active', entry.heading.id === id);
+        });
+    };
+
+    const update = () => {
+        let activeId = mapping[0].heading.id;
+        mapping.forEach((entry) => {
+            if (entry.heading.getBoundingClientRect().top <= 140) {
+                activeId = entry.heading.id;
+            }
+        });
+        setActive(activeId);
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
 })();</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
