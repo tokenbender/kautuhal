@@ -7,6 +7,22 @@
     <meta name="description" content="Crawlable archive of tokenbender posts.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <link rel="canonical" href="https://tokenbender.com/posts/">
+    <script>(function () {
+    const storageKey = 'tokenbender-theme';
+    const root = document.documentElement;
+    let storedTheme = null;
+    try {
+        storedTheme = window.localStorage.getItem(storageKey);
+    } catch (error) {}
+
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+        root.setAttribute('data-theme', storedTheme);
+        return;
+    }
+
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    root.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
+})();</script>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -17,6 +33,7 @@
                 <div class="nav-links">
                     <a href="/index.html">home</a>
                     <a href="/posts/">archive</a>
+                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
                 </div>
             </div>
         </nav>
@@ -64,5 +81,65 @@
             </div>
         </div>
     </main>
+
+    <script>(function () {
+    const storageKey = 'tokenbender-theme';
+    const root = document.documentElement;
+    const toggle = document.querySelector('[data-theme-toggle]');
+
+    const getTheme = () => root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+
+    const renderToggle = (activeTheme) => {
+        if (!toggle) {
+            return;
+        }
+
+        const targetTheme = activeTheme === 'light' ? 'dark' : 'light';
+        toggle.textContent = targetTheme;
+        toggle.setAttribute('aria-label', `switch to ${targetTheme} theme`);
+        toggle.setAttribute('aria-pressed', activeTheme === 'light' ? 'true' : 'false');
+    };
+
+    const setTheme = (theme, persist) => {
+        root.setAttribute('data-theme', theme);
+        renderToggle(theme);
+        if (persist) {
+            try {
+                window.localStorage.setItem(storageKey, theme);
+            } catch (error) {}
+        }
+    };
+
+    setTheme(getTheme(), false);
+
+    if (toggle) {
+        toggle.addEventListener('click', () => {
+            const nextTheme = getTheme() === 'light' ? 'dark' : 'light';
+            setTheme(nextTheme, true);
+        });
+    }
+
+    if (window.matchMedia) {
+        const media = window.matchMedia('(prefers-color-scheme: light)');
+        const onChange = (event) => {
+            let storedTheme = null;
+            try {
+                storedTheme = window.localStorage.getItem(storageKey);
+            } catch (error) {}
+
+            if (storedTheme === 'light' || storedTheme === 'dark') {
+                return;
+            }
+
+            setTheme(event.matches ? 'light' : 'dark', false);
+        };
+
+        if (typeof media.addEventListener === 'function') {
+            media.addEventListener('change', onChange);
+        } else if (typeof media.addListener === "function") {
+            media.addListener(onChange);
+        }
+    }
+})();</script>
 </body>
 </html>

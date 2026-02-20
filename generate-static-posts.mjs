@@ -125,6 +125,91 @@ function formatDate(value) {
     });
 }
 
+function buildThemeBootstrapScript() {
+    return [
+        '(function () {',
+        "    const storageKey = 'tokenbender-theme';",
+        '    const root = document.documentElement;',
+        '    let storedTheme = null;',
+        '    try {',
+        '        storedTheme = window.localStorage.getItem(storageKey);',
+        '    } catch (error) {}',
+        '',
+        "    if (storedTheme === 'light' || storedTheme === 'dark') {",
+        "        root.setAttribute('data-theme', storedTheme);",
+        '        return;',
+        '    }',
+        '',
+        "    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;",
+        "    root.setAttribute('data-theme', prefersLight ? 'light' : 'dark');",
+        '})();'
+    ].join('\n');
+}
+
+function buildThemeToggleScript() {
+    return [
+        '(function () {',
+        "    const storageKey = 'tokenbender-theme';",
+        '    const root = document.documentElement;',
+        "    const toggle = document.querySelector('[data-theme-toggle]');",
+        '',
+        "    const getTheme = () => root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';",
+        '',
+        '    const renderToggle = (activeTheme) => {',
+        '        if (!toggle) {',
+        '            return;',
+        '        }',
+        '',
+        "        const targetTheme = activeTheme === 'light' ? 'dark' : 'light';",
+        '        toggle.textContent = targetTheme;',
+        "        toggle.setAttribute('aria-label', `switch to ${targetTheme} theme`);",
+        "        toggle.setAttribute('aria-pressed', activeTheme === 'light' ? 'true' : 'false');",
+        '    };',
+        '',
+        '    const setTheme = (theme, persist) => {',
+        "        root.setAttribute('data-theme', theme);",
+        '        renderToggle(theme);',
+        '        if (persist) {',
+        '            try {',
+        '                window.localStorage.setItem(storageKey, theme);',
+        '            } catch (error) {}',
+        '        }',
+        '    };',
+        '',
+        '    setTheme(getTheme(), false);',
+        '',
+        '    if (toggle) {',
+        "        toggle.addEventListener('click', () => {",
+        "            const nextTheme = getTheme() === 'light' ? 'dark' : 'light';",
+        '            setTheme(nextTheme, true);',
+        '        });',
+        '    }',
+        '',
+        '    if (window.matchMedia) {',
+        "        const media = window.matchMedia('(prefers-color-scheme: light)');",
+        '        const onChange = (event) => {',
+        '            let storedTheme = null;',
+        '            try {',
+        '                storedTheme = window.localStorage.getItem(storageKey);',
+        '            } catch (error) {}',
+        '',
+        "            if (storedTheme === 'light' || storedTheme === 'dark') {",
+        '                return;',
+        '            }',
+        '',
+        "            setTheme(event.matches ? 'light' : 'dark', false);",
+        '        };',
+        '',
+        "        if (typeof media.addEventListener === 'function') {",
+        "            media.addEventListener('change', onChange);",
+        '        } else if (typeof media.addListener === "function") {',
+        '            media.addListener(onChange);',
+        '        }',
+        '    }',
+        '})();'
+    ].join('\n');
+}
+
 function buildPostHtml(post) {
     const title = post.metadata.title || post.id;
     const plain = stripMarkdown(post.content);
@@ -165,6 +250,7 @@ function buildPostHtml(post) {
     <meta name="twitter:title" content="${escapeHtml(title)}">
     <meta name="twitter:description" content="${escapeHtml(description)}">
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
+    <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
@@ -178,6 +264,7 @@ function buildPostHtml(post) {
                 <div class="nav-links">
                     <a href="/posts/">archive</a>
                     <a href="${escapeHtml(canonicalUrl)}">post</a>
+                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
                 </div>
             </div>
         </nav>
@@ -195,6 +282,7 @@ function buildPostHtml(post) {
         <p>for updates and random thoughts, follow <a href="https://x.com/tokenbender" target="_blank" rel="noopener">@tokenbender</a>.</p>
     </footer>
 
+    <script>${buildThemeToggleScript()}</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
@@ -243,6 +331,7 @@ function buildPostIndexHtml(posts) {
     <meta name="description" content="Crawlable archive of tokenbender posts.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <link rel="canonical" href="${SITE_URL}/posts/">
+    <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -253,6 +342,7 @@ function buildPostIndexHtml(posts) {
                 <div class="nav-links">
                     <a href="/index.html">home</a>
                     <a href="/posts/">archive</a>
+                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
                 </div>
             </div>
         </nav>
@@ -265,6 +355,8 @@ function buildPostIndexHtml(posts) {
             </div>
         </div>
     </main>
+
+    <script>${buildThemeToggleScript()}</script>
 </body>
 </html>
 `;
@@ -299,6 +391,7 @@ function buildHomepageHtml(posts) {
     <meta name="twitter:title" content="tokenbender - developer blog">
     <meta name="twitter:description" content="Technical notes and essays from tokenbender — ml researcher.">
     <link rel="canonical" href="${SITE_URL}/">
+    <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
@@ -311,6 +404,7 @@ function buildHomepageHtml(posts) {
                 <div class="nav-links">
                     <a href="./">home</a>
                     <a href="https://github.com/tokenbender" target="_blank">github</a>
+                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
                 </div>
             </div>
         </nav>
@@ -332,6 +426,8 @@ function buildHomepageHtml(posts) {
     <footer>
         <p>&copy; 2025 tokenbender. just vanilla html/css/js.</p>
     </footer>
+
+    <script>${buildThemeToggleScript()}</script>
 </body>
 </html>
 `;

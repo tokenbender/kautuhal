@@ -38,6 +38,7 @@
     --accent-color: #daa520;
     --code-bg: #342d26;
     --border-color: #4a3f33;
+    --table-head-bg: rgba(52, 45, 38, 0.55);
     --shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     --mono: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
     --display: 'et-book', Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
@@ -45,6 +46,33 @@
     --serif: 'et-book', Palatino, 'Palatino Linotype', 'Palatino LT STD', 'Book Antiqua', Georgia, serif;
     --paper-shadow: none;
     --measure: 64ch;
+    color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+    --bg-color: #fffff8;
+    --bg-secondary: #fffef7;
+    --text-color: #111111;
+    --text-secondary: #5d5851;
+    --accent-color: #8b5e00;
+    --code-bg: #f5efe3;
+    --border-color: #d9cdb8;
+    --table-head-bg: rgba(219, 207, 184, 0.45);
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        --bg-color: #fffff8;
+        --bg-secondary: #fffef7;
+        --text-color: #111111;
+        --text-secondary: #5d5851;
+        --accent-color: #8b5e00;
+        --code-bg: #f5efe3;
+        --border-color: #d9cdb8;
+        --table-head-bg: rgba(219, 207, 184, 0.45);
+        color-scheme: light;
+    }
 }
 
 
@@ -156,6 +184,33 @@ header {
 .nav-links a:hover {
     color: var(--accent-color);
     border-bottom-color: rgba(218, 165, 32, 0.65);
+}
+
+.theme-toggle {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 1px solid transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+    padding: 0 0 0.1rem;
+    text-transform: lowercase;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-toggle:hover {
+    color: var(--accent-color);
+    border-bottom-color: rgba(218, 165, 32, 0.65);
+}
+
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
 }
 
 .nav-link {
@@ -355,14 +410,14 @@ header {
 }
 
 .post-content pre {
-    background: #241f1b;
+    background: var(--code-bg);
     border-radius: 2px;
     padding: 1.1rem;
     overflow-x: auto;
     margin: 1.8rem 0;
     font-size: 0.9rem;
     line-height: 1.6;
-    border: 1px solid #534233;
+    border: 1px solid var(--border-color);
     box-shadow: none;
     position: relative;
 }
@@ -478,7 +533,7 @@ footer {
 
 .post-content th {
     color: var(--text-color);
-    background-color: rgba(52, 45, 38, 0.55);
+    background-color: var(--table-head-bg);
     font-weight: 600;
 }
 
@@ -493,7 +548,7 @@ footer {
 }
 
 .post-content strong {
-    color: #e4d7cc;
+    color: var(--text-color);
     font-weight: 700;
 }
 
