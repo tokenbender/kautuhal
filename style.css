@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=google+sans+code:wght@400;500;600;700&display=swap');
 
 :root {
-    --bg-color: #241f1a;
-    --bg-secondary: #1d1814;
-    --text-color: #d8cbc0;
-    --text-secondary: #a39587;
+    --bg-color: #1f1a16;
+    --bg-secondary: #1b1713;
+    --text-color: #d9cdc2;
+    --text-secondary: #a8998a;
     --accent-color: #daa520;
     --code-bg: #342d26;
     --border-color: #4a3f33;
@@ -13,7 +13,7 @@
     --display: 'google sans code', 'sf mono', 'consolas', monospace;
     --sans: 'google sans code', 'sf mono', 'consolas', 'monaco', 'courier new', monospace;
     --serif: 'google sans code', 'sf mono', 'consolas', 'monaco', 'courier new', monospace;
-    --paper-shadow: inset 0 0 26px rgba(0, 0, 0, 0.15);
+    --paper-shadow: none;
     --measure: 66ch;
 }
 
@@ -41,9 +41,7 @@ body {
     font-weight: 400;
     color: var(--text-color);
     background-color: var(--bg-color);
-    background-image:
-        radial-gradient(ellipse at top left, rgba(176, 120, 42, 0.08) 0%, transparent 56%),
-        radial-gradient(ellipse at bottom right, rgba(88, 58, 24, 0.12) 0%, transparent 46%);
+    background-image: none;
     transition: background-color 0.3s ease, color 0.3s ease;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -59,10 +57,8 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background:
-        radial-gradient(110% 70% at 12% 0%, rgba(218, 165, 32, 0.045) 0%, transparent 62%),
-        radial-gradient(90% 60% at 88% 100%, rgba(83, 56, 26, 0.18) 0%, transparent 70%);
-    opacity: 0.45;
+    background: none;
+    opacity: 0;
     pointer-events: none;
     z-index: 1;
 }
@@ -79,12 +75,10 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: saturate(180%) blur(20px);
-    background: linear-gradient(to bottom, 
-        rgba(42, 36, 31, 0.95) 0%, 
-        rgba(42, 36, 31, 0.85) 100%);
+    backdrop-filter: none;
+    background: rgba(31, 26, 22, 0.96);
     border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: none;
 }
 
 
@@ -154,7 +148,7 @@ header {
 }
 
 .hero {
-    padding: 5.8rem 0 3.8rem;
+    padding: 4.6rem 0 2.8rem;
     text-align: center;
 }
 
@@ -180,7 +174,7 @@ header {
 }
 
 .posts {
-    padding: 2.4rem 0;
+    padding: 2rem 0;
 }
 
 .posts h2 {
@@ -194,15 +188,13 @@ header {
 }
 
 .post-card {
-    padding: 2.1rem 1.8rem;
+    padding: 1.8rem 1.6rem;
     margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, 
-        var(--bg-color) 0%, 
-        var(--bg-secondary) 100%);
+    background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), var(--paper-shadow);
-    transition: all 0.3s ease;
+    box-shadow: none;
+    transition: border-color 0.2s ease;
     position: relative;
 }
 
@@ -211,9 +203,9 @@ header {
 }
 
 .post-card:hover {
-    transform: translateY(-1px);
-    border-color: rgba(218, 165, 32, 0.45);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16), var(--paper-shadow);
+    transform: none;
+    border-color: rgba(218, 165, 32, 0.5);
+    box-shadow: none;
 }
 
 .post-card h3 {
@@ -252,12 +244,12 @@ header {
 .post-content {
     max-width: var(--measure);
     margin: 0 auto;
-    padding: 3.5rem 2.4rem;
-    animation: fadeIn 0.6s ease;
-    background: rgba(32, 27, 22, 0.74);
+    padding: 3rem 2.2rem;
+    animation: none;
+    background: var(--bg-secondary);
     border-radius: 10px;
     border: 1px solid rgba(104, 84, 58, 0.4);
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2), var(--paper-shadow);
+    box-shadow: none;
     position: relative;
 }
 
@@ -280,14 +272,14 @@ header {
     letter-spacing: -0.02em;
     line-height: 1.25;
     font-family: var(--serif);
-    color: var(--accent-color);
+    color: var(--text-color);
     text-shadow: none;
 }
 
 .post-content h2 {
     font-size: clamp(1.5rem, 1.3rem + 0.8vw, 2rem);
     font-weight: 600;
-    margin: 2.8rem 0 1.35rem;
+    margin: 2.5rem 0 1.1rem;
     letter-spacing: -0.01em;
     font-family: var(--serif);
     color: var(--text-color);
@@ -301,7 +293,7 @@ header {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 52px;
+    width: 40px;
     height: 2px;
     background: var(--accent-color);
     opacity: 0.5;
@@ -317,10 +309,10 @@ header {
 }
 
 .post-content p {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.35rem;
     font-size: clamp(1.1rem, 1.02rem + 0.25vw, 1.2rem);
     letter-spacing: 0.003em;
-    line-height: 1.82;
+    line-height: 1.76;
     font-family: var(--serif);
     color: var(--text-color);
     text-wrap: pretty;
@@ -330,19 +322,19 @@ header {
 .post-content > p:first-of-type {
     font-size: clamp(1.16rem, 1.08rem + 0.3vw, 1.28rem);
     line-height: 1.78;
-    color: #e6dbd0;
+    color: #dfd4c9;
 }
 
 .post-content pre {
     background: #2f2822;
-    border-radius: 4px;
+    border-radius: 3px;
     padding: 1.5rem;
     overflow-x: auto;
     margin: 2.2rem 0;
     font-size: 0.9rem;
     line-height: 1.6;
     border: 1px solid #534233;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.14);
+    box-shadow: none;
     position: relative;
 }
 
@@ -363,13 +355,13 @@ header {
 
 .post-content blockquote {
     border-left: 3px solid var(--accent-color);
-    padding: 1.05rem 1.4rem;
+    padding: 0.95rem 1.2rem;
     margin: 2rem 0;
     font-style: normal;
     color: var(--text-secondary);
     font-size: 1.08rem;
     line-height: 1.8;
-    background: rgba(139, 69, 19, 0.045);
+    background: rgba(139, 69, 19, 0.03);
     border-radius: 0 6px 6px 0;
     position: relative;
     font-family: var(--serif);
@@ -378,11 +370,11 @@ header {
 .post-content blockquote::before {
     content: '"';
     position: absolute;
-    top: -8px;
+    top: -4px;
     left: 10px;
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     color: var(--accent-color);
-    opacity: 0.22;
+    opacity: 0.15;
     font-family: var(--mono);
 }
 
@@ -403,16 +395,17 @@ header {
 }
 
 .post-content a {
-    color: var(--accent-color);
-    text-decoration: none;
-    border-bottom: 1px solid rgba(218, 165, 32, 0.45);
+    color: var(--text-color);
+    text-decoration: underline;
+    text-decoration-color: rgba(218, 165, 32, 0.58);
+    border-bottom: none;
     text-underline-offset: 0.16em;
     transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .post-content a:hover {
-    color: #f0be49;
-    border-bottom-color: #f0be49;
+    color: var(--text-color);
+    text-decoration-color: var(--accent-color);
 }
 
 .katex-display {
@@ -442,7 +435,7 @@ footer {
 
 .post-content li {
     margin-bottom: 0.62rem;
-    line-height: 1.78;
+    line-height: 1.72;
     font-size: 1.08rem;
 }
 
