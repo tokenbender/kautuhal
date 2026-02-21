@@ -651,13 +651,13 @@ function buildHomepageGroupedSections(posts) {
     const groups = getOrderedCategoryGroups(posts);
 
     return groups.map((group) => {
-        const cards = group.posts.slice(0, 3).map((post) => {
+        const items = group.posts.map((post) => {
             const title = post.metadata.title || post.id;
-            const excerpt = truncateText(post.metadata.excerpt || post.plain, 180);
-            return `<article class="post-card"><div class="post-date">${escapeHtml(formatDate(post.metadata.date || ''))}</div><h3><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a></h3><p class="post-excerpt">${escapeHtml(excerpt)}</p></article>`;
+            const dateLabel = formatMonthDay(post.metadata.date || '');
+            return `<li><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a><span class="home-post-meta">${escapeHtml(dateLabel)} · ${post.readingTimeMinutes} min</span></li>`;
         }).join('');
 
-        return `<section class="category-group" id="home-${group.key}"><div class="category-group-head"><h2>${escapeHtml(group.label)}</h2><a class="see-all-link" href="/archive/#${group.key}">see all -></a></div><div class="category-post-list">${cards}</div></section>`;
+        return `<section class="category-group" id="home-${group.key}"><div class="category-group-head"><h2>${escapeHtml(group.label)}</h2><span class="category-count">${group.posts.length}</span></div><ul class="category-post-list">${items}</ul><a class="see-all-link" href="/archive/#${group.key}">see all -></a></section>`;
     }).join('');
 }
 
@@ -935,7 +935,7 @@ function buildHomepageHtml(posts) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
 </head>
-<body>
+<body class="home-page">
     <header>
         <nav>
             <div class="nav-container">
@@ -950,9 +950,11 @@ function buildHomepageHtml(posts) {
     </header>
 
     <main class="container">
-        <section class="hero">
-            <h1>hi, i'm tokenbender</h1>
-            <p class="subtitle">research, technical notes, and personal frameworks.</p>
+        <section class="home-intro">
+            <h1>this is tokenbender's website.</h1>
+            <p>i write about reinforcement learning research, practical engineering workflows, and personal frameworks for doing better work over long horizons.</p>
+            <p><span>guide:</span> start with <a href="/posts/welcome/">welcome</a> for context, browse everything in <a href="/archive/">archive</a>, or jump directly into a category below.</p>
+            <p><span>navigation:</span> use <a href="/archive/#topic">archive by topic</a> when you want themes, and <a href="/archive/#date">archive by date</a> when you want chronology.</p>
         </section>
 
         <section class="posts grouped-posts">${groupedSections}</section>
