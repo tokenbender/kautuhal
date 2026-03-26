@@ -301,8 +301,8 @@ header {
 .home-portrait img {
     display: block;
     width: 100%;
-    aspect-ratio: 4 / 5;
-    height: auto;
+    aspect-ratio: 6 / 7;
+    max-height: min(55vh, 420px);
     object-fit: cover;
     object-position: center 12%;
     border-radius: 20px;
@@ -1147,6 +1147,13 @@ footer {
 
     .archive-date-list li {
         grid-template-columns: 64px minmax(0, 1fr) auto;
+    }
+}
+
+@media (max-width: 1100px) {
+    .home-hero {
+        grid-template-columns: minmax(0, 1.08fr) clamp(220px, 24vw, 280px);
+        gap: clamp(1.2rem, 3vw, 2.5rem);
     }
 }
 
