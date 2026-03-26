@@ -996,7 +996,7 @@ function buildArchiveHtml(posts) {
 function buildHomepageHeroHtml() {
     const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
 
-    return `<section class="home-hero" aria-labelledby="home-author-name"><div class="home-identity"><p class="home-identity-eyebrow">developer blog</p><h2 class="home-identity-name" id="home-author-name">${escapeHtml(AUTHOR_NAME)}</h2><p class="home-identity-handle">writes here as <span>${escapeHtml(AUTHOR_HANDLE)}</span></p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}"><figcaption>${escapeHtml(AUTHOR_NAME)} / ${escapeHtml(AUTHOR_HANDLE)}</figcaption></figure></section>`;
+    return `<section class="home-hero" aria-labelledby="home-author-name"><div class="home-identity"><p class="home-identity-eyebrow">developer blog</p><h2 class="home-identity-name" id="home-author-name">${escapeHtml(AUTHOR_NAME)}</h2><p class="home-identity-handle">writes here as <span>${escapeHtml(AUTHOR_HANDLE)}</span></p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}" loading="eager" decoding="async" fetchpriority="high"></figure></section>`;
 }
 
 function buildHomepageStructuredData() {
