@@ -299,9 +299,7 @@ header {
 .home-portrait img {
     display: block;
     width: 100%;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    object-position: center;
+    height: auto;
     border-radius: 18px;
     border: 1px solid var(--border-color);
     background: var(--bg-secondary);

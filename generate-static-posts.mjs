@@ -17,6 +17,8 @@ const AUTHOR_NAME = 'Abhishek Harshvardhan Mishra';
 const AUTHOR_HANDLE = 'tokenbender';
 const AUTHOR_IMAGE_PATH = '/IMG_20250407_212513%20Copy.JPG';
 const AUTHOR_IMAGE_URL = `${SITE_URL}${AUTHOR_IMAGE_PATH}`;
+const AUTHOR_IMAGE_WIDTH = 1781;
+const AUTHOR_IMAGE_HEIGHT = 2091;
 const HOMEPAGE_TITLE = `${AUTHOR_NAME} (${AUTHOR_HANDLE}) - developer blog`;
 const HOMEPAGE_DESCRIPTION = `Technical notes and essays from ${AUTHOR_NAME} (${AUTHOR_HANDLE}) on efficient training, reinforcement learning, and agentic research workflows.`;
 const HOMEPAGE_HERO_SUMMARY = 'ML researcher focused on efficient training, reinforcement learning research, agentic workflows, and personal systems for doing better work over long horizons.';
@@ -994,7 +996,7 @@ function buildArchiveHtml(posts) {
 function buildHomepageHeroHtml() {
     const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
 
-    return `<section class="home-hero" aria-labelledby="home-author-name"><div class="home-identity"><p class="home-identity-eyebrow">developer blog</p><h2 class="home-identity-name" id="home-author-name">${escapeHtml(AUTHOR_NAME)}</h2><p class="home-identity-handle">writes here as <span>${escapeHtml(AUTHOR_HANDLE)}</span></p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="1600" height="1600"><figcaption>${escapeHtml(AUTHOR_NAME)} / ${escapeHtml(AUTHOR_HANDLE)}</figcaption></figure></section>`;
+    return `<section class="home-hero" aria-labelledby="home-author-name"><div class="home-identity"><p class="home-identity-eyebrow">developer blog</p><h2 class="home-identity-name" id="home-author-name">${escapeHtml(AUTHOR_NAME)}</h2><p class="home-identity-handle">writes here as <span>${escapeHtml(AUTHOR_HANDLE)}</span></p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}"><figcaption>${escapeHtml(AUTHOR_NAME)} / ${escapeHtml(AUTHOR_HANDLE)}</figcaption></figure></section>`;
 }
 
 function buildHomepageStructuredData() {
