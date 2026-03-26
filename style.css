@@ -253,16 +253,6 @@ header {
     max-width: 52ch;
 }
 
-.home-identity-eyebrow {
-    margin-bottom: 0.7rem;
-    font-family: var(--sans);
-    font-size: 0.76rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-secondary);
-}
-
 .home-identity-name {
     margin: 0;
     font-size: clamp(2.65rem, 2.2rem + 1.7vw, 4rem);
