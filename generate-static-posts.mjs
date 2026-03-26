@@ -9,9 +9,17 @@ const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, 'posts');
 const ARCHIVE_DIR = path.join(ROOT, 'archive');
 const POSTS_INDEX_FILE = path.join(POSTS_DIR, 'posts.json');
+const HOMEPAGE_INTRO_FILE = path.join(ROOT, 'docs', 'homepage-intro.md');
 const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 
 const SITE_URL = 'https://tokenbender.com';
+const AUTHOR_NAME = 'Abhishek Harshvardhan Mishra';
+const AUTHOR_HANDLE = 'tokenbender';
+const AUTHOR_IMAGE_PATH = '/IMG_20250407_212513%20Copy.JPG';
+const AUTHOR_IMAGE_URL = `${SITE_URL}${AUTHOR_IMAGE_PATH}`;
+const HOMEPAGE_TITLE = `${AUTHOR_NAME} (${AUTHOR_HANDLE}) - developer blog`;
+const HOMEPAGE_DESCRIPTION = `Technical notes and essays from ${AUTHOR_NAME} (${AUTHOR_HANDLE}) on efficient training, reinforcement learning, and agentic research workflows.`;
+const HOMEPAGE_HERO_SUMMARY = 'ML researcher focused on efficient training, reinforcement learning research, agentic workflows, and personal systems for doing better work over long horizons.';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
 const AVERAGE_READING_WPM = 220;
 const CATEGORY_ORDER = ['research', 'technical', 'personal'];
@@ -233,6 +241,79 @@ function normalizeCategory(rawCategory) {
 
 function getCategoryLabel(category) {
     return CATEGORY_LABELS[category] || CATEGORY_LABELS.uncategorized;
+}
+
+function getDefaultHomepageIntroMarkdown() {
+    return [
+        "# this is tokenbender's website.",
+        '',
+        'i write about efficient training and reinforcement learning research, new agentic research workflows, and personal frameworks for doing better work over long horizons.',
+        '',
+        '**guide:** start with [welcome](/posts/welcome/) for context, browse everything in [archive](/archive/), or jump directly into a category below.',
+        '',
+        '**navigation:** use [archive by topic](/archive/#topic) when you want themes, and [archive by date](/archive/#date) when you want chronology.'
+    ].join('\n');
+}
+
+async function loadHomepageIntroHtml(marked) {
+    let markdown = '';
+
+    try {
+        markdown = await fs.readFile(HOMEPAGE_INTRO_FILE, 'utf8');
+    } catch (error) {
+        if (error && error.code !== 'ENOENT') {
+            throw error;
+        }
+    }
+
+    const content = markdown.trim() ? markdown : getDefaultHomepageIntroMarkdown();
+    return marked.parse(content);
+}
+
+async function resolvePostFiles() {
+    const entries = await fs.readdir(POSTS_DIR, { withFileTypes: true });
+    const discoveredMarkdownFiles = entries
+        .filter((entry) => entry.isFile() && entry.name.endsWith('.md'))
+        .map((entry) => entry.name)
+        .sort((left, right) => left.localeCompare(right));
+
+    const discoveredSet = new Set(discoveredMarkdownFiles);
+    const resolvedFiles = [];
+    const seen = new Set();
+
+    try {
+        const postsIndexRaw = await fs.readFile(POSTS_INDEX_FILE, 'utf8');
+        const indexedFiles = JSON.parse(postsIndexRaw);
+
+        if (Array.isArray(indexedFiles)) {
+            indexedFiles.forEach((fileName) => {
+                if (typeof fileName !== 'string') {
+                    return;
+                }
+
+                const trimmed = fileName.trim();
+                if (!trimmed || seen.has(trimmed) || !discoveredSet.has(trimmed)) {
+                    return;
+                }
+
+                resolvedFiles.push(trimmed);
+                seen.add(trimmed);
+            });
+        }
+    } catch (error) {
+        if (error && error.code !== 'ENOENT') {
+            throw error;
+        }
+    }
+
+    discoveredMarkdownFiles.forEach((fileName) => {
+        if (!seen.has(fileName)) {
+            resolvedFiles.push(fileName);
+            seen.add(fileName);
+        }
+    });
+
+    return resolvedFiles;
 }
 
 function estimateReadingTimeMinutes(plainText) {
@@ -910,30 +991,74 @@ function buildArchiveHtml(posts) {
 `;
 }
 
-function buildHomepageHtml(posts) {
+function buildHomepageHeroHtml() {
+    const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
+
+    return `<section class="home-hero" aria-labelledby="home-author-name"><div class="home-identity"><p class="home-identity-eyebrow">developer blog</p><h2 class="home-identity-name" id="home-author-name">${escapeHtml(AUTHOR_NAME)}</h2><p class="home-identity-handle">writes here as <span>${escapeHtml(AUTHOR_HANDLE)}</span></p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="1600" height="1600"><figcaption>${escapeHtml(AUTHOR_NAME)} / ${escapeHtml(AUTHOR_HANDLE)}</figcaption></figure></section>`;
+}
+
+function buildHomepageStructuredData() {
+    return JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'Person',
+                name: AUTHOR_NAME,
+                alternateName: AUTHOR_HANDLE,
+                url: `${SITE_URL}/`,
+                image: AUTHOR_IMAGE_URL,
+                sameAs: [
+                    `https://github.com/${AUTHOR_HANDLE}`,
+                    `https://huggingface.co/${AUTHOR_HANDLE}`,
+                    `https://x.com/${AUTHOR_HANDLE}`
+                ],
+                jobTitle: 'ML researcher'
+            },
+            {
+                '@type': 'WebSite',
+                name: HOMEPAGE_TITLE,
+                url: `${SITE_URL}/`,
+                author: {
+                    '@type': 'Person',
+                    name: AUTHOR_NAME
+                }
+            }
+        ]
+    });
+}
+
+function buildHomepageHtml(posts, introHtml) {
     const groupedSections = buildHomepageGroupedSections(posts);
+    const homepageHero = buildHomepageHeroHtml();
+    const homepageStructuredData = buildHomepageStructuredData();
+    const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
 
     return `<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tokenbender - developer blog</title>
-    <meta name="description" content="Technical notes and essays from tokenbender — ml researcher.">
+    <title>${escapeHtml(HOMEPAGE_TITLE)}</title>
+    <meta name="description" content="${escapeHtml(HOMEPAGE_DESCRIPTION)}">
+    <meta name="author" content="${escapeHtml(AUTHOR_NAME)}">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="tokenbender">
-    <meta property="og:title" content="tokenbender - developer blog">
-    <meta property="og:description" content="Technical notes and essays from tokenbender — ml researcher.">
+    <meta property="og:title" content="${escapeHtml(HOMEPAGE_TITLE)}">
+    <meta property="og:description" content="${escapeHtml(HOMEPAGE_DESCRIPTION)}">
     <meta property="og:url" content="${SITE_URL}/">
+    <meta property="og:image" content="${escapeHtml(AUTHOR_IMAGE_URL)}">
+    <meta property="og:image:alt" content="${escapeHtml(portraitAlt)}">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="tokenbender - developer blog">
-    <meta name="twitter:description" content="Technical notes and essays from tokenbender — ml researcher.">
+    <meta name="twitter:title" content="${escapeHtml(HOMEPAGE_TITLE)}">
+    <meta name="twitter:description" content="${escapeHtml(HOMEPAGE_DESCRIPTION)}">
+    <meta name="twitter:image" content="${escapeHtml(AUTHOR_IMAGE_URL)}">
     <link rel="canonical" href="${SITE_URL}/">
     <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
+    <script type="application/ld+json">${homepageStructuredData}</script>
 </head>
 <body class="home-page">
     <header>
@@ -950,12 +1075,8 @@ function buildHomepageHtml(posts) {
     </header>
 
     <main class="container">
-        <section class="home-intro">
-            <h1>this is tokenbender's website.</h1>
-            <p>i write about reinforcement learning research, practical engineering workflows, and personal frameworks for doing better work over long horizons.</p>
-            <p><span>guide:</span> start with <a href="/posts/welcome/">welcome</a> for context, browse everything in <a href="/archive/">archive</a>, or jump directly into a category below.</p>
-            <p><span>navigation:</span> use <a href="/archive/#topic">archive by topic</a> when you want themes, and <a href="/archive/#date">archive by date</a> when you want chronology.</p>
-        </section>
+        ${homepageHero}
+        <section class="home-intro">${introHtml}</section>
 
         <section class="posts grouped-posts">${groupedSections}</section>
     </main>
@@ -989,8 +1110,8 @@ ${items}
 
 async function main() {
     const marked = await loadMarkedParser();
-    const postsIndexRaw = await fs.readFile(POSTS_INDEX_FILE, 'utf8');
-    const postFiles = JSON.parse(postsIndexRaw);
+    const postFiles = await resolvePostFiles();
+    const homepageIntroHtml = await loadHomepageIntroHtml(marked);
 
     await fs.mkdir(POSTS_DIR, { recursive: true });
     await fs.mkdir(ARCHIVE_DIR, { recursive: true });
@@ -1041,7 +1162,7 @@ async function main() {
     const archiveHtml = buildArchiveHtml(posts);
     await fs.writeFile(path.join(ARCHIVE_DIR, 'index.html'), archiveHtml, 'utf8');
     await fs.writeFile(path.join(POSTS_DIR, 'index.html'), archiveHtml, 'utf8');
-    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(posts), 'utf8');
+    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(posts, homepageIntroHtml), 'utf8');
     await fs.writeFile(SITEMAP_FILE, buildSitemap(posts), 'utf8');
 
     console.log(`generated ${posts.length} static posts, archive, homepage, and sitemap`);

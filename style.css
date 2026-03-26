@@ -240,8 +240,85 @@ header {
     opacity: 0.45;
 }
 
+.home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(240px, 320px);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: center;
+    padding: 2.8rem 0 1.1rem;
+}
+
+.home-identity {
+    min-width: 0;
+}
+
+.home-identity-eyebrow {
+    margin-bottom: 0.7rem;
+    font-family: var(--sans);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+}
+
+.home-identity-name {
+    margin: 0;
+    font-size: clamp(2.3rem, 1.95rem + 1.35vw, 3.35rem);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+}
+
+.home-identity-handle {
+    margin: 0.7rem 0 0;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+}
+
+.home-identity-handle span {
+    color: var(--accent-color);
+}
+
+.home-identity-summary {
+    margin: 1rem 0 0;
+    max-width: 58ch;
+    font-size: 1.06rem;
+    line-height: 1.68;
+    color: var(--text-color);
+}
+
+.home-portrait {
+    justify-self: end;
+    width: min(100%, 320px);
+}
+
+.home-portrait img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 18px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow);
+}
+
+.home-portrait figcaption {
+    margin-top: 0.55rem;
+    font-family: var(--sans);
+    font-size: 0.76rem;
+    line-height: 1.4;
+    color: var(--text-secondary);
+    letter-spacing: 0.02em;
+}
+
 .home-intro {
-    padding: 2.8rem 0 1.5rem;
+    padding: 0.2rem 0 1.5rem;
     max-width: 92ch;
 }
 
@@ -260,9 +337,10 @@ header {
     line-height: 1.68;
 }
 
-.home-intro p span {
+.home-intro strong {
     font-family: var(--sans);
     font-size: 0.84rem;
+    font-weight: 500;
     color: var(--text-secondary);
     text-transform: lowercase;
     letter-spacing: 0.04em;
@@ -1084,6 +1162,17 @@ footer {
         max-width: var(--measure);
     }
 
+    .home-hero {
+        grid-template-columns: 1fr;
+        gap: 1.15rem;
+        padding: 2.2rem 0 0.8rem;
+    }
+
+    .home-portrait {
+        justify-self: start;
+        width: min(100%, 280px);
+    }
+
     .grouped-posts {
         grid-template-columns: 1fr;
         gap: 1.25rem;
@@ -1145,6 +1234,23 @@ footer {
 }
 
 @media (max-width: 600px) {
+    .home-hero {
+        padding-top: 1.8rem;
+    }
+
+    .home-identity-name {
+        font-size: clamp(2rem, 1.75rem + 1.8vw, 2.45rem);
+    }
+
+    .home-identity-summary {
+        font-size: 1rem;
+        line-height: 1.62;
+    }
+
+    .home-portrait {
+        width: min(100%, 240px);
+    }
+
     .home-intro h1 {
         font-size: clamp(1.7rem, 1.45rem + 1.6vw, 2rem);
     }
