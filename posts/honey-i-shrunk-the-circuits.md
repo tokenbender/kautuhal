@@ -68,6 +68,8 @@ The acceptance rule is causal recovery. We keep the candidate mask, intervene on
 
 Throughout this section, recovery means exact task accuracy after intervention. For full addition, recovery is exact full-answer accuracy, reported separately under teacher-forced and autoregressive evaluation. Table 1 uses full-answer counterfactual patching: selected MLP channels receive the target example, while the complement receives matched counterfactual activations. The appendix records the intervention conventions.
 
+> **Counterfactual patching.** The kept channels receive activations from the target example, while the rest of the model receives activations from a matched alternative example. This tests whether the kept channels preserve the target behavior under a structured intervention. The replacement activations are not blank, so they can still carry task information.
+
 As the mask shrinks, recovery collapses. The best compact full-task mask in the base representation recovers only 29%. High recovery returns only when the mask becomes too broad to function as a circuit handle.
 
 Large masks recover addition because attribution tracks real arithmetic signal. Compact masks test the stronger claim: whether that signal can act as a sparse causal substrate. In the base model, it cannot.
