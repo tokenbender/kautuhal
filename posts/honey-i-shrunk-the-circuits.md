@@ -11,6 +11,10 @@ category: research
 
 By Abhishek Mishra and Krishna Pagare
 
+<figure class="post-cover-figure">
+  <img src="/posts/images/honey-shrunk-circuits-cover.png" alt="Diffuse capability compressed through a low-rank bottleneck into a smaller localized circuit.">
+</figure>
+
 ## Abstract
 
 A model can know how to do something without exposing the part of itself that does it. Dense language models often carry capabilities as distributed structure: usable at the surface, but not local enough to isolate, route, update, or remove. Fixed-model interpretability can identify components that matter for a behavior. The harder object is a capability that can be recovered and tested as a small causal substrate.
