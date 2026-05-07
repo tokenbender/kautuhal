@@ -70,6 +70,15 @@ Throughout this section, recovery means exact task accuracy after intervention. 
 
 > **Counterfactual patching.** The kept channels receive activations from the target example, while the rest of the model receives activations from a matched alternative example. This tests whether the kept channels preserve the target behavior under a structured intervention. The replacement activations are not blank, so they can still carry task information.
 
+Table 1. An MLP channel here means one intermediate MLP neuron in one layer. The main model has 28 layers with 8,960 MLP channels each, so the MLP channel universe is 250,880 channels. Conditioning moves the full-addition recovery frontier. The task and recovery test are fixed across rows: exact full-answer accuracy under counterfactual patching on 1,500 matched records. In the base representation, compact masks stall while near-complete recovery requires most MLP channels. After rank-32 KL conditioning, the same extraction loop recovers high full-answer accuracy from about five percent of MLP channels.
+
+| Setting | MLPs | MLP share | Recovery | Procedure / interpretation |
+| --- | ---: | ---: | --- | --- |
+| Base compact mask | 14,436 | 5.75% | 29.00% | Direct compact composed mask; comparable compact pre-conditioning point. |
+| Base broad recovery mask | 227,320 | 90.61% | 99.53% | High recovery returns only when almost the whole MLP universe is kept. |
+| Conditioned MVC, rank-32 KL | 11,672 | 4.65% | 90.60% TF / 90.60% AR | Later compression of the conditioned mask; smallest target-90 point found. |
+| Conditioned direct mask, rank-32 KL | 12,661 | 5.05% | 91.87% TF / 91.33% AR | Direct rerun of the standard extraction loop on the conditioned model. |
+
 As the mask shrinks, recovery collapses. The best compact full-task mask in the base representation recovers only 29%. High recovery returns only when the mask becomes too broad to function as a circuit handle.
 
 Large masks recover addition because attribution tracks real arithmetic signal. Compact masks test the stronger claim: whether that signal can act as a sparse causal substrate. In the base model, it cannot.
@@ -132,15 +141,6 @@ The merge is ordinary LoRA weight merging (Hu et al., 2021); the special choice 
 Representation conditioning differs from ordinary fine-tuning. Fine-tuning asks whether a model can learn or improve a behavior. Here the behavior is already present at high accuracy. The experiment asks whether a constrained nearby model can make that existing behavior recoverable by the same extraction loop.
 
 ### Minimal viable circuit
-
-Table 1. An MLP channel here means one intermediate MLP neuron in one layer. The main model has 28 layers with 8,960 MLP channels each, so the MLP channel universe is 250,880 channels. Conditioning moves the full-addition recovery frontier. The task and recovery test are fixed across rows: exact full-answer accuracy under counterfactual patching on 1,500 matched records. In the base representation, compact masks stall while near-complete recovery requires most MLP channels. After rank-32 KL conditioning, the same extraction loop recovers high full-answer accuracy from about five percent of MLP channels.
-
-| Setting | MLPs | MLP share | Recovery | Procedure / interpretation |
-| --- | ---: | ---: | --- | --- |
-| Base compact mask | 14,436 | 5.75% | 29.00% | Direct compact composed mask; comparable compact pre-conditioning point. |
-| Base broad recovery mask | 227,320 | 90.61% | 99.53% | High recovery returns only when almost the whole MLP universe is kept. |
-| Conditioned MVC, rank-32 KL | 11,672 | 4.65% | 90.60% TF / 90.60% AR | Later compression of the conditioned mask; smallest target-90 point found. |
-| Conditioned direct mask, rank-32 KL | 12,661 | 5.05% | 91.87% TF / 91.33% AR | Direct rerun of the standard extraction loop on the conditioned model. |
 
 Before conditioning, high recovery required keeping 90.61% of MLP channels active. The intervention itself can preserve addition when enough of the model remains, so the failure is not a broken recovery test. The base representation fails specifically at compact causal recovery.
 

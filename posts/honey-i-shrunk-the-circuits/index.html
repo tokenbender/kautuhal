@@ -95,42 +95,6 @@
 <blockquote>
 <p><strong>Counterfactual patching.</strong> The kept channels receive activations from the target example, while the rest of the model receives activations from a matched alternative example. This tests whether the kept channels preserve the target behavior under a structured intervention. The replacement activations are not blank, so they can still carry task information.</p>
 </blockquote>
-<p>As the mask shrinks, recovery collapses. The best compact full-task mask in the base representation recovers only 29%. High recovery returns only when the mask becomes too broad to function as a circuit handle.</p>
-<p>Large masks recover addition because attribution tracks real arithmetic signal. Compact masks test the stronger claim: whether that signal can act as a sparse causal substrate. In the base model, it cannot.</p>
-<p>Counterfactual patching made some candidate masks look smaller, but we treat those runs as diagnostic rather than decisive. Later controls showed that counterfactual and mean replacements can carry task-shaped information through the complement. The headline comparisons therefore keep intervention conventions explicit and reserve leakage-sensitive details for the appendix.</p>
-<h3 id="the-pieces-are-local">The pieces are local</h3>
-<p>When full-task masks fail, the next question is whether the model carries compact pieces of the computation. Addition has natural sub-decisions: per-digit outputs, carry propagation, result-length transitions, and overflow regimes. Each is smaller than the full answer, and each can be tested with the same attribution-and-intervention loop applied to its own causally defined sub-problem.</p>
-<p><em>The construction of these interfaces matters. We compare examples that are already correct and matched on everything except the local decision under study: result length, prompt-token length, and the other answer digits stay fixed. That makes the attribution question much cleaner than asking why one full answer succeeded and another failed.</em></p>
-<p>Several interfaces survive this local test. The clearest is overflow: under counterfactual intervention, a small fraction of MLP channels can recover that local decision. That result rules out the trivial explanation that attribution cannot find arithmetic structure at all. It can find causal pieces. The failure is at the task level, not at every local interface.</p>
-<p><em>The locality is also uneven. Carry and overflow interfaces are the clearest compact wins, while ordinary digit-value decisions remain much more spread out. So the evidence is not that arithmetic is locally stored everywhere. It is that some causal sub-decisions expose clean handles while the full behavior does not.</em></p>
-<h3 id="the-pieces-do-not-assemble">The pieces do not assemble</h3>
-<p>The local-interface pass leaves a plausible bet. If digit, carry, result-length, and overflow masks are real pieces of addition, then a union of those masks, or a route through them during generation, should recover the full behavior at compact scale.</p>
-<p>That test fails. The union does not recover full addition compactly, and routed composition only works after the mask grows too large to be a useful circuit handle.</p>
-<p>We then tested the main technical alternatives. Teacher-forced prefixes clean up earlier answer tokens. Sequential interface tracing applies each mask at the generation step where its sub-decision is made. Carry and result-length stratification separate regimes that might otherwise interfere. Conflict pruning removes channels that help one sub-problem but hurt another. Adaptive split search and causal group ranking test whether the failure is driven by pairing, thresholding, or sample count.</p>
-<p>Those repairs improve diagnostics, not the full-task frontier. The local masks become cleaner and some sub-decisions sharpen, but the composed behavior still fails at compact scale. The base representation exposes pieces of addition without exposing the binding computation that makes them a task-level circuit.</p>
-<h2 id="reshaping-the-representation">Reshaping the representation</h2>
-<p>Section 2 leaves a specific failure. The base model exposes local arithmetic structure, and the discovery loop can find it. What it does not expose is a compact full-task mask in the model&#39;s native coordinates.</p>
-<p>That failure shifts the hypothesis. The search procedure may be adequate for local pieces while the representation is poorly aligned with the full behavior. In that case, searching harder maps the diffusion; it does not create a sparse handle.</p>
-<h3 id="the-basis-as-the-hidden-assumption">The basis as the hidden assumption</h3>
-<p>Post-hoc circuit discovery usually keeps the model fixed. It asks whether the behavior is already exposed in the current basis of channels, heads, and activations. The procedure can look neutral because it only scores, ranks, masks, and tests components.</p>
-<p>The basis assumption matters because fluent addition is not the same as addition stored in a small set of channels. Transformer-circuits and superposition work make the same point from the opposite direction: a model can implement crisp behaviors while their internal features are distributed across many directions (Elhage et al., 2021; Elhage et al., 2022). If the model spreads the computation across many directions, attribution can describe that spread without turning it into a compact causal mask.</p>
-<h3 id="conditioning-without-teaching">Conditioning without teaching</h3>
-<p>High base accuracy gives us the premise for conditioning. The model already performs addition, so the intervention does not need to teach the task from scratch. It only needs to change how the existing behavior is represented.</p>
-<p>The wall in Section 2 suggests structure in the wrong basis: enough arithmetic structure for attribution to trace pieces, not enough alignment for a sparse channel mask to carry the full behavior.</p>
-<p>We attach a low-rank adapter (Hu et al., 2021; Kalajdzievski, 2023) and train it on the same addition behavior, but the adapter is not free to become an arbitrary new solver. A KL term keeps the conditioned model close to the base model&#39;s output distribution, echoing the soft-target anchoring used in knowledge distillation (Hinton et al., 2015). The task loss keeps the behavior active; the KL loss keeps the move anchored to the original model.</p>
-<p>We keep the comparison fixed. Conditioning changes the representation; the task, attribution family, mask-selection loop, and recovery test stay the same. The held-out recovery records are separate from the adapter update.</p>
-<p>Algorithmically, the method has six steps:</p>
-<ol>
-<li>Freeze the base model.</li>
-<li>Train a low-rank adapter on addition with task loss plus KL to the base distribution.</li>
-<li>Sweep adapter merge scales.</li>
-<li>Keep only scales that preserve the task-accuracy target.</li>
-<li>Merge the lowest-KL surviving scale into the base weights.</li>
-<li>Rerun the original attribution, mask-selection, and causal-recovery loop.</li>
-</ol>
-<p>The merge is ordinary LoRA weight merging (Hu et al., 2021); the special choice is the conservative scale. We use the lowest-drift scale that still preserves the behavior, so the adaptation acts as a small representational move rather than a free new solver.</p>
-<p>Representation conditioning differs from ordinary fine-tuning. Fine-tuning asks whether a model can learn or improve a behavior. Here the behavior is already present at high accuracy. The experiment asks whether a constrained nearby model can make that existing behavior recoverable by the same extraction loop.</p>
-<h3 id="minimal-viable-circuit">Minimal viable circuit</h3>
 <p>Table 1. An MLP channel here means one intermediate MLP neuron in one layer. The main model has 28 layers with 8,960 MLP channels each, so the MLP channel universe is 250,880 channels. Conditioning moves the full-addition recovery frontier. The task and recovery test are fixed across rows: exact full-answer accuracy under counterfactual patching on 1,500 matched records. In the base representation, compact masks stall while near-complete recovery requires most MLP channels. After rank-32 KL conditioning, the same extraction loop recovers high full-answer accuracy from about five percent of MLP channels.</p>
 <table>
 <thead>
@@ -171,6 +135,42 @@
 <td>Direct rerun of the standard extraction loop on the conditioned model.</td>
 </tr>
 </tbody></table>
+<p>As the mask shrinks, recovery collapses. The best compact full-task mask in the base representation recovers only 29%. High recovery returns only when the mask becomes too broad to function as a circuit handle.</p>
+<p>Large masks recover addition because attribution tracks real arithmetic signal. Compact masks test the stronger claim: whether that signal can act as a sparse causal substrate. In the base model, it cannot.</p>
+<p>Counterfactual patching made some candidate masks look smaller, but we treat those runs as diagnostic rather than decisive. Later controls showed that counterfactual and mean replacements can carry task-shaped information through the complement. The headline comparisons therefore keep intervention conventions explicit and reserve leakage-sensitive details for the appendix.</p>
+<h3 id="the-pieces-are-local">The pieces are local</h3>
+<p>When full-task masks fail, the next question is whether the model carries compact pieces of the computation. Addition has natural sub-decisions: per-digit outputs, carry propagation, result-length transitions, and overflow regimes. Each is smaller than the full answer, and each can be tested with the same attribution-and-intervention loop applied to its own causally defined sub-problem.</p>
+<p><em>The construction of these interfaces matters. We compare examples that are already correct and matched on everything except the local decision under study: result length, prompt-token length, and the other answer digits stay fixed. That makes the attribution question much cleaner than asking why one full answer succeeded and another failed.</em></p>
+<p>Several interfaces survive this local test. The clearest is overflow: under counterfactual intervention, a small fraction of MLP channels can recover that local decision. That result rules out the trivial explanation that attribution cannot find arithmetic structure at all. It can find causal pieces. The failure is at the task level, not at every local interface.</p>
+<p><em>The locality is also uneven. Carry and overflow interfaces are the clearest compact wins, while ordinary digit-value decisions remain much more spread out. So the evidence is not that arithmetic is locally stored everywhere. It is that some causal sub-decisions expose clean handles while the full behavior does not.</em></p>
+<h3 id="the-pieces-do-not-assemble">The pieces do not assemble</h3>
+<p>The local-interface pass leaves a plausible bet. If digit, carry, result-length, and overflow masks are real pieces of addition, then a union of those masks, or a route through them during generation, should recover the full behavior at compact scale.</p>
+<p>That test fails. The union does not recover full addition compactly, and routed composition only works after the mask grows too large to be a useful circuit handle.</p>
+<p>We then tested the main technical alternatives. Teacher-forced prefixes clean up earlier answer tokens. Sequential interface tracing applies each mask at the generation step where its sub-decision is made. Carry and result-length stratification separate regimes that might otherwise interfere. Conflict pruning removes channels that help one sub-problem but hurt another. Adaptive split search and causal group ranking test whether the failure is driven by pairing, thresholding, or sample count.</p>
+<p>Those repairs improve diagnostics, not the full-task frontier. The local masks become cleaner and some sub-decisions sharpen, but the composed behavior still fails at compact scale. The base representation exposes pieces of addition without exposing the binding computation that makes them a task-level circuit.</p>
+<h2 id="reshaping-the-representation">Reshaping the representation</h2>
+<p>Section 2 leaves a specific failure. The base model exposes local arithmetic structure, and the discovery loop can find it. What it does not expose is a compact full-task mask in the model&#39;s native coordinates.</p>
+<p>That failure shifts the hypothesis. The search procedure may be adequate for local pieces while the representation is poorly aligned with the full behavior. In that case, searching harder maps the diffusion; it does not create a sparse handle.</p>
+<h3 id="the-basis-as-the-hidden-assumption">The basis as the hidden assumption</h3>
+<p>Post-hoc circuit discovery usually keeps the model fixed. It asks whether the behavior is already exposed in the current basis of channels, heads, and activations. The procedure can look neutral because it only scores, ranks, masks, and tests components.</p>
+<p>The basis assumption matters because fluent addition is not the same as addition stored in a small set of channels. Transformer-circuits and superposition work make the same point from the opposite direction: a model can implement crisp behaviors while their internal features are distributed across many directions (Elhage et al., 2021; Elhage et al., 2022). If the model spreads the computation across many directions, attribution can describe that spread without turning it into a compact causal mask.</p>
+<h3 id="conditioning-without-teaching">Conditioning without teaching</h3>
+<p>High base accuracy gives us the premise for conditioning. The model already performs addition, so the intervention does not need to teach the task from scratch. It only needs to change how the existing behavior is represented.</p>
+<p>The wall in Section 2 suggests structure in the wrong basis: enough arithmetic structure for attribution to trace pieces, not enough alignment for a sparse channel mask to carry the full behavior.</p>
+<p>We attach a low-rank adapter (Hu et al., 2021; Kalajdzievski, 2023) and train it on the same addition behavior, but the adapter is not free to become an arbitrary new solver. A KL term keeps the conditioned model close to the base model&#39;s output distribution, echoing the soft-target anchoring used in knowledge distillation (Hinton et al., 2015). The task loss keeps the behavior active; the KL loss keeps the move anchored to the original model.</p>
+<p>We keep the comparison fixed. Conditioning changes the representation; the task, attribution family, mask-selection loop, and recovery test stay the same. The held-out recovery records are separate from the adapter update.</p>
+<p>Algorithmically, the method has six steps:</p>
+<ol>
+<li>Freeze the base model.</li>
+<li>Train a low-rank adapter on addition with task loss plus KL to the base distribution.</li>
+<li>Sweep adapter merge scales.</li>
+<li>Keep only scales that preserve the task-accuracy target.</li>
+<li>Merge the lowest-KL surviving scale into the base weights.</li>
+<li>Rerun the original attribution, mask-selection, and causal-recovery loop.</li>
+</ol>
+<p>The merge is ordinary LoRA weight merging (Hu et al., 2021); the special choice is the conservative scale. We use the lowest-drift scale that still preserves the behavior, so the adaptation acts as a small representational move rather than a free new solver.</p>
+<p>Representation conditioning differs from ordinary fine-tuning. Fine-tuning asks whether a model can learn or improve a behavior. Here the behavior is already present at high accuracy. The experiment asks whether a constrained nearby model can make that existing behavior recoverable by the same extraction loop.</p>
+<h3 id="minimal-viable-circuit">Minimal viable circuit</h3>
 <p>Before conditioning, high recovery required keeping 90.61% of MLP channels active. The intervention itself can preserve addition when enough of the model remains, so the failure is not a broken recovery test. The base representation fails specifically at compact causal recovery.</p>
 <p>The conditioned rows move the frontier. Direct extraction gives 91.87% teacher-forced and 91.33% autoregressive recovery from 12,661 MLP channels. Compressing that mask gives the 11,672-channel MVC at 90.60% recovery. The appendix keeps artifact provenance and exploratory variants separate from this main comparison.</p>
 <p>The 12,661-channel mask is representation-conditioned and it recovers 91.33% autoregressive full-answer behavior on the model, but fails on the base and no-KL variants. The base model already has the behavior, but conditioning does not merely reveal an old mask. It changes the representation so a compact mask becomes causally sufficient under the same recovery test.</p>
