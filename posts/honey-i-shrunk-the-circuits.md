@@ -148,6 +148,10 @@ The conditioned rows move the frontier. Direct extraction gives 91.87% teacher-f
 
 The 12,661-channel mask is representation-conditioned and it recovers 91.33% autoregressive full-answer behavior on the model, but fails on the base and no-KL variants. The base model already has the behavior, but conditioning does not merely reveal an old mask. It changes the representation so a compact mask becomes causally sufficient under the same recovery test.
 
+![Sparse circuit frontier](/posts/images/honey-shrunk-circuits-frontier.svg)
+
+Fig. 4. KL-regularized conditioning moves the sparse-recovery frontier. Orange points trace rank-32 KL masks under full-answer generation, with the smallest 90% mask at 11,672 MLP channels, or 4.65% of the MLP universe. Gray controls and baselines either fail at comparable compact scale or need roughly 170,000 to 180,000 channels to reach 90%, separating compact causal recovery from ordinary task training or broad recovery.
+
 ## Ablations
 
 This section records the ablations we ran to understand what helps, and which apparent signals might be weak or misleading. Each control run changes the training or conditioning path, then reruns the same sparse full-addition recovery test.
