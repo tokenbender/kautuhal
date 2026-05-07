@@ -1,181 +1,198 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1536 1024" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1728 972" role="img" aria-labelledby="title desc">
   <title id="title">Sparse circuit frontier for generation accuracy versus selected MLP channels</title>
   <desc id="desc">A log-scale frontier chart comparing rank-32 KL-LoRA sparse masks against controls and baselines. The rank-32 KL frontier reaches 90.60 percent generation accuracy at 11,672 MLP channels, while controls need about 167,000 to 180,000 channels to reach 90 percent.</desc>
   <defs>
-    <radialGradient id="bgGlow" cx="54%" cy="44%" r="75%">
-      <stop offset="0%" stop-color="#08233b"/>
-      <stop offset="48%" stop-color="#03172a"/>
-      <stop offset="100%" stop-color="#010916"/>
+    <radialGradient id="bg" cx="53%" cy="43%" r="78%">
+      <stop offset="0%" stop-color="#071f32"/>
+      <stop offset="52%" stop-color="#020d17"/>
+      <stop offset="100%" stop-color="#00050a"/>
     </radialGradient>
-    <radialGradient id="pointGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#fff1b7" stop-opacity="0.85"/>
-      <stop offset="28%" stop-color="#ffcb55" stop-opacity="0.45"/>
-      <stop offset="72%" stop-color="#e29c2c" stop-opacity="0.12"/>
-      <stop offset="100%" stop-color="#e29c2c" stop-opacity="0"/>
+    <radialGradient id="goldPoint" cx="45%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ffe8aa"/>
+      <stop offset="38%" stop-color="#f2b84a"/>
+      <stop offset="100%" stop-color="#b36d18"/>
     </radialGradient>
-    <linearGradient id="goldLine" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#ffc052"/>
-      <stop offset="100%" stop-color="#f0a423"/>
-    </linearGradient>
-    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000000" flood-opacity="0.42"/>
+    <radialGradient id="grayPoint" cx="45%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#d7d1c4"/>
+      <stop offset="50%" stop-color="#8f8b82"/>
+      <stop offset="100%" stop-color="#4b4a47"/>
+    </radialGradient>
+    <filter id="glow" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.55"/>
     </filter>
     <style>
-      .title { font: 54px Georgia, "Times New Roman", serif; fill: #ffc767; letter-spacing: 0.2px; }
-      .subtitle { font: italic 30px Georgia, "Times New Roman", serif; fill: #d6c1a3; }
-      .axis-label { font: 28px Georgia, "Times New Roman", serif; fill: #ffc767; }
-      .tick { font: 28px Georgia, "Times New Roman", serif; fill: #ead1ae; }
-      .grid { stroke: #8c6f43; stroke-width: 1; stroke-dasharray: 2 7; opacity: 0.45; }
-      .axis { stroke: #d79b3d; stroke-width: 1.3; opacity: 0.9; }
-      .gold-label { font: 24px Georgia, "Times New Roman", serif; fill: #ffc154; }
-      .gray-label { font: 21px Georgia, "Times New Roman", serif; fill: #d9cfc0; }
-      .small { font-size: 18px; }
-      .legend { font: 21px Georgia, "Times New Roman", serif; fill: #f3d3a2; }
-      .legend-muted { fill: #d8cfc1; }
-      .callout { font: 27px Georgia, "Times New Roman", serif; fill: #ffc154; }
-      .callout-small { font: 19px Georgia, "Times New Roman", serif; fill: #ffd782; }
+      .title { font: 54px Georgia, "Times New Roman", serif; fill: #f4b64c; }
+      .subtitle { font: italic 31px Georgia, "Times New Roman", serif; fill: #e3c092; }
+      .axis-label { font: 30px Georgia, "Times New Roman", serif; fill: #f2bd68; }
+      .tick { font: 31px Georgia, "Times New Roman", serif; fill: #edc990; }
+      .grid { stroke: #9b7138; stroke-width: 1; stroke-dasharray: 2 7; opacity: 0.42; }
+      .axis { stroke: #d9ad76; stroke-width: 1.4; }
+      .gold-label { font: 23px Georgia, "Times New Roman", serif; fill: #f3b13e; }
+      .gray-label { font: 22px Georgia, "Times New Roman", serif; fill: #cfc2af; }
+      .legend { font: 22px Georgia, "Times New Roman", serif; fill: #f0c078; }
+      .legend-muted { fill: #d1c4b2; }
+      .callout-title { font: 27px Georgia, "Times New Roman", serif; fill: #f3b13e; }
+      .callout-big { font: 54px Georgia, "Times New Roman", serif; fill: #f4b64c; }
+      .callout-mid { font: 24px Georgia, "Times New Roman", serif; fill: #f4c16f; }
+      .callout-small { font: 19px Georgia, "Times New Roman", serif; fill: #f2c46e; }
+      .takeaway { font: 30px Georgia, "Times New Roman", serif; fill: #f0bd6f; }
+      .takeaway-bold { font-weight: 700; fill: #f4b64c; }
     </style>
   </defs>
 
-  <rect width="1536" height="1024" fill="url(#bgGlow)"/>
-  <rect x="0" y="0" width="1536" height="1024" fill="#03101f" opacity="0.22"/>
+  <rect width="1728" height="972" fill="url(#bg)"/>
+  <rect width="1728" height="972" fill="#000000" opacity="0.18"/>
 
-  <text class="title" x="768" y="66" text-anchor="middle">Sparse Circuit Frontier: Generation Accuracy vs # of MLPs</text>
-  <text class="subtitle" x="768" y="115" text-anchor="middle">KL-regularized adaptation unlocks high performance with about 95% fewer MLPs.</text>
-  <line x1="420" y1="148" x2="725" y2="148" stroke="#d99b3d" stroke-width="1.2" opacity="0.78"/>
-  <line x1="811" y1="148" x2="1116" y2="148" stroke="#d99b3d" stroke-width="1.2" opacity="0.78"/>
-  <circle cx="768" cy="148" r="6" fill="#ffc154"/>
+  <text class="title" x="864" y="62" text-anchor="middle">Sparse Circuit Frontier: Generation Accuracy vs # of MLPs</text>
+  <text class="subtitle" x="864" y="105" text-anchor="middle">KL-regularized rank-32 LoRA unlocks high performance with ~95% fewer MLPs.</text>
 
   <g id="plot">
-    <line class="grid" x1="140" y1="190" x2="1452" y2="190"/>
-    <line class="grid" x1="140" y1="318" x2="1452" y2="318"/>
-    <line class="grid" x1="140" y1="446" x2="1452" y2="446"/>
-    <line class="grid" x1="140" y1="574" x2="1452" y2="574"/>
-    <line class="grid" x1="140" y1="702" x2="1452" y2="702"/>
+    <line class="grid" x1="178" y1="152" x2="1625" y2="152"/>
+    <line class="grid" x1="178" y1="282" x2="1625" y2="282"/>
+    <line class="grid" x1="178" y1="412" x2="1625" y2="412"/>
+    <line class="grid" x1="178" y1="542" x2="1625" y2="542"/>
+    <line class="grid" x1="178" y1="672" x2="1625" y2="672"/>
 
-    <line class="axis" x1="140" y1="190" x2="140" y2="830"/>
-    <line class="axis" x1="140" y1="830" x2="1452" y2="830"/>
+    <line class="axis" x1="178" y1="135" x2="178" y2="765"/>
+    <line class="axis" x1="166" y1="765" x2="1628" y2="765"/>
 
     <g class="tick" text-anchor="end">
-      <text x="120" y="200">1.0</text>
-      <text x="120" y="328">0.8</text>
-      <text x="120" y="456">0.6</text>
-      <text x="120" y="584">0.4</text>
-      <text x="120" y="712">0.2</text>
-      <text x="120" y="840">0.0</text>
+      <text x="153" y="160">1.0</text>
+      <text x="153" y="290">0.8</text>
+      <text x="153" y="420">0.6</text>
+      <text x="153" y="550">0.4</text>
+      <text x="153" y="680">0.2</text>
+      <text x="153" y="775">0.0</text>
     </g>
-
     <g class="tick" text-anchor="middle">
-      <line class="axis" x1="140" y1="830" x2="140" y2="840"/>
-      <line class="axis" x1="577" y1="830" x2="577" y2="840"/>
-      <line class="axis" x1="1015" y1="830" x2="1015" y2="840"/>
-      <line class="axis" x1="1452" y1="830" x2="1452" y2="840"/>
-      <text x="140" y="872">10<tspan dy="-13" font-size="17">3</tspan></text>
-      <text x="577" y="872">10<tspan dy="-13" font-size="17">4</tspan></text>
-      <text x="1015" y="872">10<tspan dy="-13" font-size="17">5</tspan></text>
-      <text x="1452" y="872">10<tspan dy="-13" font-size="17">6</tspan></text>
+      <text x="246" y="807">10<tspan dy="-14" font-size="18">3</tspan></text>
+      <text x="580" y="807">10<tspan dy="-14" font-size="18">4</tspan></text>
+      <text x="996" y="807">10<tspan dy="-14" font-size="18">5</tspan></text>
+      <text x="1390" y="807">10<tspan dy="-14" font-size="18">6</tspan></text>
     </g>
 
-    <text class="axis-label" x="792" y="914" text-anchor="middle"># of MLPs Selected (log scale)</text>
-    <text class="axis-label" x="48" y="510" text-anchor="middle" transform="rotate(-90 48 510)">Generation Accuracy (full-answer)</text>
+    <text class="axis-label" x="882" y="845" text-anchor="middle"># of MLPs Selected (log scale)</text>
+    <text class="axis-label" x="68" y="460" text-anchor="middle" transform="rotate(-90 68 460)">Generation Accuracy (full-answer)</text>
 
-    <path d="M 607 250 L 623 245 L 704 234 L 785 194" fill="none" stroke="url(#goldLine)" stroke-width="2.7"/>
-    <path d="M 402 816 L 420 644 L 432 438 L 438 459 L 1045 254 L 1066 276 L 1079 247" fill="none" stroke="#b4aa9d" stroke-width="2" stroke-dasharray="10 10" opacity="0.82"/>
+    <path d="M 333 342 L 421 292 L 558 251 L 695 225 L 944 199" fill="none" stroke="#f3ac2e" stroke-width="3.4"/>
+    <path d="M 438 736 L 429 612 L 426 475 L 425 474 M 439 612 L 425 474 M 431 475 L 552 612 L 853 407 L 1398 332 L 1378 382 L 1345 330 L 1408 286" fill="none" stroke="#a99578" stroke-width="2" stroke-dasharray="9 9" opacity="0.95"/>
 
-    <g filter="url(#softShadow)">
-      <circle cx="607" cy="250" r="42" fill="url(#pointGlow)"/>
-      <circle cx="607" cy="250" r="11" fill="#ffe08d" stroke="#ffc154" stroke-width="2"/>
-      <circle cx="623" cy="245" r="11" fill="#f2b13d" stroke="#ffd27c" stroke-width="1.5"/>
-      <circle cx="704" cy="234" r="11" fill="#f0aa35" stroke="#ffd27c" stroke-width="1.5"/>
-      <circle cx="785" cy="194" r="11" fill="#f0aa35" stroke="#ffd27c" stroke-width="1.5"/>
+    <g filter="url(#shadow)">
+      <circle cx="333" cy="342" r="12" fill="url(#goldPoint)" stroke="#f6c463" stroke-width="1.5"/>
+      <circle cx="421" cy="292" r="12" fill="url(#goldPoint)" stroke="#f6c463" stroke-width="1.5"/>
+      <circle cx="558" cy="251" r="12" fill="url(#goldPoint)" stroke="#f6c463" stroke-width="1.5"/>
+      <circle cx="695" cy="225" r="12" fill="url(#goldPoint)" stroke="#f6c463" stroke-width="1.5"/>
+      <circle cx="944" cy="199" r="12" fill="url(#goldPoint)" stroke="#f6c463" stroke-width="1.5"/>
 
-      <circle cx="402" cy="816" r="10" fill="#aaa79d" stroke="#d5cab9" stroke-width="1.2"/>
-      <circle cx="420" cy="644" r="10" fill="#aaa79d" stroke="#d5cab9" stroke-width="1.2"/>
-      <circle cx="432" cy="438" r="10" fill="#aaa79d" stroke="#d5cab9" stroke-width="1.2"/>
-      <circle cx="438" cy="459" r="10" fill="#aaa79d" stroke="#d5cab9" stroke-width="1.2"/>
-      <circle cx="1045" cy="254" r="10" fill="#aaa79d" stroke="#d5cab9" stroke-width="1.2"/>
-      <circle cx="1066" cy="276" r="10" fill="#aaa79d" stroke="#d5cab9" stroke-width="1.2"/>
-      <circle cx="1079" cy="247" r="10" fill="#aaa79d" stroke="#d5cab9" stroke-width="1.2"/>
+      <circle cx="438" cy="736" r="11" fill="url(#grayPoint)" stroke="#cfc5b7" stroke-width="1"/>
+      <circle cx="429" cy="612" r="11" fill="url(#grayPoint)" stroke="#cfc5b7" stroke-width="1"/>
+      <circle cx="426" cy="475" r="11" fill="url(#grayPoint)" stroke="#cfc5b7" stroke-width="1"/>
+      <circle cx="853" cy="407" r="11" fill="url(#grayPoint)" stroke="#cfc5b7" stroke-width="1"/>
+      <circle cx="1345" cy="330" r="11" fill="url(#grayPoint)" stroke="#cfc5b7" stroke-width="1"/>
+      <circle cx="1378" cy="382" r="11" fill="url(#grayPoint)" stroke="#cfc5b7" stroke-width="1"/>
+      <circle cx="1408" cy="286" r="11" fill="url(#grayPoint)" stroke="#cfc5b7" stroke-width="1"/>
     </g>
 
-    <g stroke="#ffc154" stroke-width="1.2" fill="none" opacity="0.95">
-      <path d="M 330 360 L 592 258"/>
-      <path d="M 468 304 L 602 248"/>
-      <path d="M 572 296 L 620 255"/>
-      <path d="M 695 216 L 704 223"/>
-      <path d="M 805 220 L 789 198"/>
-    </g>
-    <g stroke="#d4c7b8" stroke-width="1.2" fill="none" opacity="0.9">
-      <path d="M 468 780 L 408 821"/>
-      <path d="M 492 632 L 424 648"/>
-      <path d="M 480 440 L 439 446"/>
-      <path d="M 890 548 L 442 462"/>
-      <path d="M 956 335 L 1038 258"/>
-      <path d="M 1135 305 L 1068 276"/>
-      <path d="M 1182 245 L 1084 247"/>
+    <g stroke-width="1.3" fill="none">
+      <path d="M 295 260 L 326 330" stroke="#f5b33e"/>
+      <path d="M 468 205 L 429 282" stroke="#f5b33e"/>
+      <path d="M 676 180 L 699 214" stroke="#f5b33e"/>
+      <path d="M 988 172 L 954 193" stroke="#f5b33e"/>
+      <path d="M 467 430 L 433 468" stroke="#d7c7b5"/>
+      <path d="M 469 564 L 434 604" stroke="#d7c7b5"/>
+      <path d="M 476 668 L 443 727" stroke="#d7c7b5"/>
+      <path d="M 796 520 L 835 425" stroke="#d7c7b5"/>
+      <path d="M 1168 300 L 1329 286" stroke="#d7c7b5"/>
+      <path d="M 1370 425 L 1360 394" stroke="#d7c7b5"/>
+      <path d="M 1378 232 L 1395 279" stroke="#d7c7b5"/>
     </g>
 
     <g class="gold-label">
-      <text x="205" y="280">11,672 MLPs</text>
-      <text x="205" y="310">(4.65% of MLPs)</text>
-      <text x="205" y="340">90.60% acc</text>
-      <text x="520" y="212">12,661 MLPs</text>
-      <text x="520" y="240">91.33% acc</text>
-      <text x="684" y="182">19,714 MLPs</text>
-      <text x="684" y="210">93.20% acc</text>
-      <text x="790" y="168">58,619 MLPs</text>
-      <text x="790" y="196">99.53% acc</text>
+      <text x="222" y="230">11,672 MLPs</text>
+      <text x="222" y="257">(4.65% of MLPs)</text>
+      <text x="222" y="284">90.60% acc</text>
+
+      <text x="414" y="195">12,661 MLPs</text>
+      <text x="414" y="222">93.33% acc</text>
+
+      <text x="676" y="162">19,714 MLPs</text>
+      <text x="676" y="190">93.20% acc</text>
+
+      <text x="948" y="147">58,619 MLPs</text>
+      <text x="948" y="176">99.53% acc</text>
     </g>
 
     <g class="gray-label">
-      <text x="430" y="744">12,661 MLPs</text>
-      <text x="430" y="772">(random mask)</text>
-      <text x="430" y="800">2.20% acc</text>
-      <text x="472" y="575">14,436 MLPs</text>
-      <text x="472" y="603">(base model composed)</text>
-      <text x="472" y="631">29.00% acc</text>
-      <text x="485" y="390">12,026 MLPs</text>
-      <text x="485" y="418">(5% dropout)</text>
-      <text x="485" y="446">61.20% acc</text>
-      <text x="720" y="540">14,175 MLPs</text>
-      <text x="720" y="568">(no-KL top-k 500)</text>
-      <text x="720" y="596">49.53% acc</text>
-      <text x="890" y="320">167,065 MLPs</text>
-      <text x="890" y="348">(no-KL target mask)</text>
-      <text x="890" y="376">90.00% acc</text>
-      <text x="1105" y="356">170,259 MLPs</text>
-      <text x="1105" y="384">(rank-8 KL)</text>
-      <text x="1105" y="412">90.47% acc</text>
-      <text x="1126" y="222">179,311 MLPs</text>
-      <text x="1126" y="250">(full-SFT KL target mask)</text>
-      <text x="1126" y="278">90.80% acc</text>
+      <text x="482" y="405">12,026 MLPs</text>
+      <text x="482" y="431">(5% dropout)</text>
+      <text x="482" y="458">61.20% acc</text>
+
+      <text x="482" y="538">14,436 MLPs</text>
+      <text x="482" y="565">(base model composed)</text>
+      <text x="482" y="592">29.00% acc</text>
+
+      <text x="486" y="668">12,661 MLPs</text>
+      <text x="486" y="695">(random mask)</text>
+      <text x="486" y="722">2.20% acc</text>
+
+      <text x="736" y="500">14,175 MLPs</text>
+      <text x="736" y="527">(no-KL topk_500)</text>
+      <text x="736" y="554">49.53% acc</text>
+
+      <text x="1168" y="267">167,065 MLPs</text>
+      <text x="1168" y="295">(no-KL target mask)</text>
+      <text x="1168" y="323">90.00% acc</text>
+
+      <text x="1386" y="367">170,259 MLPs</text>
+      <text x="1386" y="395">(rank-8 KL)</text>
+      <text x="1386" y="423">90.47% acc</text>
+
+      <text x="1386" y="194">179,311 MLPs</text>
+      <text x="1386" y="222">(full-SFT KL target mask)</text>
+      <text x="1386" y="250">90.80% acc</text>
     </g>
 
-    <g filter="url(#softShadow)">
-      <rect x="176" y="492" width="260" height="205" rx="10" fill="#061522" stroke="#f0a423" stroke-width="1.2"/>
-      <text class="callout-small" x="226" y="525">Smallest 90% mask</text>
-      <text class="callout" x="206" y="570">11,672 MLPs</text>
-      <text class="callout-small" x="226" y="600">(4.65% of MLPs)</text>
-      <line x1="217" y1="617" x2="382" y2="617" stroke="#d99b3d" stroke-width="1" opacity="0.62"/>
-      <text class="callout" x="237" y="660">90.60%</text>
-      <text class="callout-small" x="208" y="686">fresh generation accuracy</text>
-      <text class="callout" x="196" y="526">*</text>
+    <g filter="url(#shadow)">
+      <rect x="930" y="442" width="342" height="220" rx="12" fill="#020b12" stroke="#e19421" stroke-width="1.8" stroke-dasharray="5 4"/>
+      <text class="callout-title" x="1101" y="480" text-anchor="middle">Smallest 90% Mask</text>
+      <g transform="translate(1000 526)" fill="none" stroke="#f4b64c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M -22 -24 H 22 V -7 C 22 11 11 23 0 23 C -11 23 -22 11 -22 -7 Z" fill="#f4b64c" fill-opacity="0.22"/>
+        <path d="M -22 -15 H -36 C -36 2 -27 9 -22 9"/>
+        <path d="M 22 -15 H 36 C 36 2 27 9 22 9"/>
+        <path d="M 0 24 V 44"/>
+        <path d="M -16 44 H 16"/>
+        <path d="M -28 54 H 28"/>
+      </g>
+      <text class="callout-big" x="1142" y="535" text-anchor="middle">11,672</text>
+      <text class="callout-mid" x="1142" y="563" text-anchor="middle">MLPs (4.65% of MLPs)</text>
+      <text class="callout-big" x="1098" y="612" text-anchor="middle">90.60%</text>
+      <text class="callout-small" x="1098" y="645" text-anchor="middle">fresh generation accuracy</text>
+      <circle cx="1000" cy="520" r="43" fill="none" stroke="#e19421" stroke-width="2" stroke-dasharray="4 4"/>
     </g>
 
-    <g filter="url(#softShadow)">
-      <rect x="1028" y="690" width="412" height="122" rx="10" fill="#061522" stroke="#f0a423" stroke-width="1.1"/>
-      <line x1="1052" y1="730" x2="1112" y2="730" stroke="#f0aa35" stroke-width="2.4"/>
-      <circle cx="1082" cy="730" r="11" fill="#f0aa35" stroke="#ffd27c" stroke-width="1.4"/>
-      <text class="legend" x="1120" y="737">KL-LoRA Frontier (higher is better)</text>
-      <line x1="1052" y1="778" x2="1112" y2="778" stroke="#b4aa9d" stroke-width="2" stroke-dasharray="10 10"/>
-      <circle cx="1082" cy="778" r="10" fill="#aaa79d" stroke="#d5cab9" stroke-width="1.2"/>
-      <text class="legend legend-muted" x="1120" y="785">Controls / baselines</text>
+    <g filter="url(#shadow)">
+      <rect x="1294" y="604" width="346" height="138" rx="10" fill="#020b12" stroke="#e19421" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <line x1="1322" y1="635" x2="1390" y2="635" stroke="#f3ac2e" stroke-width="3"/>
+      <circle cx="1358" cy="635" r="10" fill="url(#goldPoint)" stroke="#f6c463" stroke-width="1.2"/>
+      <text class="legend" x="1398" y="642">KL-LoRA Frontier (rank-32)</text>
+      <text class="legend" x="1398" y="672">(Higher is better)</text>
+      <line x1="1322" y1="705" x2="1390" y2="705" stroke="#a99578" stroke-width="2" stroke-dasharray="9 8"/>
+      <circle cx="1358" cy="705" r="10" fill="url(#grayPoint)" stroke="#cfc5b7" stroke-width="1"/>
+      <text class="legend legend-muted" x="1398" y="713">Controls / Baselines</text>
     </g>
   </g>
 
-  <g filter="url(#softShadow)">
-    <rect x="140" y="922" width="1256" height="58" rx="8" fill="#061522" stroke="#f0a423" stroke-width="1.2"/>
-    <text class="callout" x="205" y="960">Takeaway: KL regularization reveals a tiny set of channels that is causally sufficient.</text>
-    <text class="callout" x="167" y="960">*</text>
+  <g filter="url(#shadow)">
+    <rect x="162" y="856" width="1400" height="94" rx="12" fill="#020b12" stroke="#d89425" stroke-width="1.3"/>
+    <text class="takeaway" x="292" y="897"><tspan class="takeaway-bold">Takeaway:</tspan> KL-regularized rank-32 adaptation reshapes activations so a tiny set of MLP channels</text>
+    <text class="takeaway" x="292" y="932">becomes causally sufficient for exact 2-digit addition - with state-of-the-art efficiency.</text>
+    <text x="228" y="914" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="72" fill="#f4b64c">*</text>
   </g>
 </svg>
