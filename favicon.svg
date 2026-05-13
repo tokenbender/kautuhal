@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="tokenbender">
+  <rect width="64" height="64" rx="14" fill="#171411"/>
+  <circle cx="46" cy="18" r="6" fill="#d7b56d"/>
+  <rect x="14" y="14" width="7" height="38" rx="3.5" fill="#f3ead9"/>
+  <rect x="8" y="23" width="24" height="7" rx="3.5" fill="#f3ead9"/>
+  <rect x="29" y="14" width="7" height="38" rx="3.5" fill="#f3ead9"/>
+  <path d="M 32 29 H 45 C 53 29 58 34 58 41 C 58 48 53 53 45 53 H 32 Z" fill="#f3ead9"/>
+  <path d="M 39 35 H 44 C 48 35 51 37 51 41 C 51 45 48 47 44 47 H 39 Z" fill="#171411"/>
+</svg>

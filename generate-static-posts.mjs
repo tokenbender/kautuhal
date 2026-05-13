@@ -19,6 +19,7 @@ const AUTHOR_IMAGE_PATH = '/IMG_20250407_212513%20Copy.JPG';
 const AUTHOR_IMAGE_URL = `${SITE_URL}${AUTHOR_IMAGE_PATH}`;
 const AUTHOR_IMAGE_WIDTH = 1781;
 const AUTHOR_IMAGE_HEIGHT = 2091;
+const FAVICON_LINKS = '<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n    <link rel="alternate icon" href="/favicon.ico">';
 const HOMEPAGE_TITLE = `${AUTHOR_NAME} (${AUTHOR_HANDLE}) - developer blog`;
 const HOMEPAGE_DESCRIPTION = `Technical notes and essays from ${AUTHOR_NAME} (${AUTHOR_HANDLE}) on efficient training, reinforcement learning, and agentic research workflows.`;
 const HOMEPAGE_HERO_SUMMARY = 'ML researcher focused on efficient training, reinforcement learning research, agentic workflows, and personal systems for doing better work over long horizons.';
@@ -876,6 +877,7 @@ function buildPostHtml(post) {
     <meta name="twitter:title" content="${escapeHtml(title)}">
     <meta name="twitter:description" content="${escapeHtml(description)}">
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
+    ${FAVICON_LINKS}
     <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
@@ -954,6 +956,7 @@ function buildArchiveHtml(posts) {
     <meta name="description" content="Browse posts by topic or timeline on tokenbender.">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <link rel="canonical" href="${SITE_URL}/archive/">
+    ${FAVICON_LINKS}
     <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="/style.css">
 </head>
@@ -1056,6 +1059,7 @@ function buildHomepageHtml(posts, introHtml) {
     <meta name="twitter:description" content="${escapeHtml(HOMEPAGE_DESCRIPTION)}">
     <meta name="twitter:image" content="${escapeHtml(AUTHOR_IMAGE_URL)}">
     <link rel="canonical" href="${SITE_URL}/">
+    ${FAVICON_LINKS}
     <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
