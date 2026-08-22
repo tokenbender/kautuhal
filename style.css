@@ -1100,51 +1100,6 @@ footer {
     font-weight: 700;
 }
 
-.kalpataru-roots {
-    margin-top: 3.5rem;
-    padding: 1.4rem;
-    border: 1px solid var(--border-color);
-    background: var(--panel-color);
-}
-
-.kalpataru-roots .section-kicker {
-    margin-bottom: 0.7rem;
-    color: var(--garden-color);
-}
-
-.kalpataru-roots h2 {
-    margin: 0 0 0.6rem;
-    font-family: var(--serif);
-    font-size: clamp(1.55rem, 2vw, 2rem);
-    font-style: normal;
-}
-
-.kalpataru-roots > p:not(.section-kicker) {
-    margin: 0;
-    color: var(--text-secondary);
-    font-family: var(--sans);
-    font-size: 0.86rem;
-}
-
-.kalpataru-roots > div {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-
-.kalpataru-roots a {
-    padding: 0.4rem 0.55rem;
-    border: 1px solid var(--border-color);
-    font-family: var(--sans);
-    font-size: 0.76rem;
-    text-decoration: none;
-}
-
-.kalpataru-roots a:hover {
-    border-color: var(--garden-color);
-}
-
 .related-posts {
     margin-top: 2.8rem;
     padding-top: 1.2rem;

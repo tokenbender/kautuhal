@@ -6,7 +6,6 @@ tags: sparsity, efficiency, representation-learning, model-compression, circuit-
 status: placeholder
 category: research
 related: honey-i-shrunk-the-circuits
-kalpataru: 117, 123, 146, 190, 200
 ---
 
 *Sparse systems are not just smaller. They make absence part of the computation.*

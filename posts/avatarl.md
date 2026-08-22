@@ -5,7 +5,6 @@ excerpt: replacing cross-entropy pretraining with a principled rl objective usin
 tags: reinforcement-learning, language-models, pretraining
 status: research
 category: research
-kalpataru: 175, 193, 209
 ---
 
 > "if you know the way broadly you will see it in all things" — Miyamoto Musashi

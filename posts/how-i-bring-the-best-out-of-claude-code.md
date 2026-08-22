@@ -5,7 +5,6 @@ excerpt: a comprehensive guide to effective claude code usage, context managemen
 tags: claude-code, ai-tooling, developer-workflow
 status: evergreen
 category: technical
-kalpataru: 189, 192, 216, 219, 239
 ---
 
 ## 1. setup requirements

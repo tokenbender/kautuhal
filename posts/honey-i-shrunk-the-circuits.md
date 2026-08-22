@@ -5,7 +5,6 @@ excerpt: Low-rank circuit conditioning makes an existing dense-model capability 
 tags: mechanistic-interpretability, circuit-extractability, model-compression, lora, representation-conditioning, low-rank-conditioning
 status: research
 category: research
-kalpataru: 117, 123, 124, 146, 190, 200
 ---
 
 *Compressing model capabilities by making their circuits extractable.*

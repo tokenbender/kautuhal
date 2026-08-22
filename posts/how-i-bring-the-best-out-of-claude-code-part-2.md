@@ -5,7 +5,6 @@ excerpt: custom commands, multi-agent systems, and the protocols that made claud
 tags: claude-code, ai-tooling, multi-agent-systems
 status: evergreen
 category: technical
-kalpataru: 192, 216, 219, 231, 239
 ---
 
 hello everyone!

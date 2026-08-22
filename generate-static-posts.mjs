@@ -12,7 +12,6 @@ const POSTS_INDEX_FILE = path.join(POSTS_DIR, 'posts.json');
 const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 
 const SITE_URL = 'https://tokenbender.com';
-const KALPATARU_URL = 'https://tokenbender.com/kalpataru/';
 const AUTHOR_NAME = 'Abhishek Harshvardhan Mishra';
 const AUTHOR_HANDLE = 'tokenbender';
 const AUTHOR_IMAGE_PATH = '/IMG_20250407_212513%20Copy.JPG';
@@ -78,7 +77,7 @@ function parseFrontmatterValue(key, rawValue) {
         .replace(/^"(.*)"$/s, '$1')
         .replace(/^'(.*)'$/s, '$1');
 
-    if (['tags', 'related', 'kalpataru'].includes(key)) {
+    if (['tags', 'related'].includes(key)) {
         const listString = stripped.startsWith('[') && stripped.endsWith(']')
             ? stripped.slice(1, -1)
             : stripped;
@@ -231,18 +230,6 @@ function normalizeRelated(rawRelated) {
     return Array.from(new Set(values
         .map((item) => String(item).trim())
         .filter(Boolean)));
-}
-
-function normalizeKalpataruRoots(rawRoots) {
-    const values = Array.isArray(rawRoots)
-        ? rawRoots
-        : typeof rawRoots === 'string'
-            ? rawRoots.split(',')
-            : [];
-
-    return Array.from(new Set(values
-        .map((value) => String(value).trim())
-        .filter((value) => /^\d+$/.test(value))));
 }
 
 function normalizeCategory(rawCategory) {
@@ -707,18 +694,6 @@ function buildRelatedPostsSection(post) {
     return `<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul>${items}</ul></section>`;
 }
 
-function buildKalpataruRootsSection(post) {
-    if (!post.kalpataruRoots.length) {
-        return '';
-    }
-
-    const links = post.kalpataruRoots
-        .map((id) => `<a href="${KALPATARU_URL}?idea=${encodeURIComponent(id)}" target="_blank" rel="noopener">idea ${escapeHtml(id)} <span aria-hidden="true">↗</span></a>`)
-        .join('');
-
-    return `<aside class="kalpataru-roots" aria-labelledby="kalpataru-roots-title"><p class="section-kicker">ROOTS IN KALPATARU</p><h2 id="kalpataru-roots-title">This argument did not begin here.</h2><p>Follow the living library entries that fed this piece.</p><div>${links}</div></aside>`;
-}
-
 function getOrderedCategoryGroups(posts) {
     const groups = CATEGORY_ORDER.map((category) => {
         const categoryPosts = posts.filter((post) => post.category === category);
@@ -846,7 +821,6 @@ function buildPostHtml(post) {
     const isoDate = toIsoDate(post.metadata.date);
     const toc = buildTocMarkup(post.headings);
     const relatedSection = buildRelatedPostsSection(post);
-    const kalpataruRootsSection = buildKalpataruRootsSection(post);
     const hasSidenotes = post.html.includes('class="sidenote"');
     const bodyClass = hasSidenotes ? 'post-page has-sidenotes' : 'post-page no-sidenotes';
     const layoutClass = hasSidenotes ? 'post-layout has-sidenotes' : 'post-layout no-sidenotes';
@@ -914,7 +888,6 @@ function buildPostHtml(post) {
             ${buildPostMeta(post)}
             ${toc.mobile}
             ${post.html}
-${kalpataruRootsSection}
 ${relatedSection}
         </article>
         <aside class="post-margin-column" aria-hidden="true"></aside>
@@ -1167,7 +1140,6 @@ async function main() {
             tags: normalizeTags(metadata.tags),
             status: normalizeStatus(metadata.status),
             relatedIds: normalizeRelated(metadata.related),
-            kalpataruRoots: normalizeKalpataruRoots(metadata.kalpataru),
             readingTimeMinutes: estimateReadingTimeMinutes(plain),
             relatedPosts: []
         });
