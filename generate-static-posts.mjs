@@ -8,13 +8,12 @@ import https from 'node:https';
 const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, 'posts');
 const ARCHIVE_DIR = path.join(ROOT, 'archive');
-const KALPATARU_DIR = path.join(ROOT, 'kalpataru');
 const POSTS_INDEX_FILE = path.join(POSTS_DIR, 'posts.json');
 const HOMEPAGE_INTRO_FILE = path.join(ROOT, 'docs', 'homepage-intro.md');
 const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 
 const SITE_URL = 'https://tokenbender.com';
-const KALPATARU_URL = 'https://kalpataru.theartoftokenbending.chatgpt.site/';
+const KALPATARU_URL = 'https://tokenbender.com/kalpataru/';
 const AUTHOR_NAME = 'Abhishek Harshvardhan Mishra';
 const AUTHOR_HANDLE = 'tokenbender';
 const AUTHOR_IMAGE_PATH = '/IMG_20250407_212513%20Copy.JPG';
@@ -745,7 +744,7 @@ function buildKalpataruRootsSection(post) {
         .map((id) => `<a href="${KALPATARU_URL}?idea=${encodeURIComponent(id)}" target="_blank" rel="noopener">idea ${escapeHtml(id)} <span aria-hidden="true">↗</span></a>`)
         .join('');
 
-    return `<aside class="kalpataru-roots" aria-labelledby="kalpataru-roots-title"><p class="section-kicker">ROOTS IN KALPATARU</p><h2 id="kalpataru-roots-title">This argument did not begin here.</h2><p>Follow the private library entries that fed this piece.</p><div>${links}</div></aside>`;
+    return `<aside class="kalpataru-roots" aria-labelledby="kalpataru-roots-title"><p class="section-kicker">ROOTS IN KALPATARU</p><h2 id="kalpataru-roots-title">This argument did not begin here.</h2><p>Follow the living library entries that fed this piece.</p><div>${links}</div></aside>`;
 }
 
 function getOrderedCategoryGroups(posts) {
@@ -1052,7 +1051,7 @@ function buildKnowledgeLoopHtml() {
 
 function buildProjectPortalsHtml(posts) {
     const defendedWorks = posts.filter((post) => !['placeholder', 'draft'].includes(post.status)).length;
-    return `<section class="project-portals" aria-label="Two ways into the work"><article class="project-portal kautuhal-portal"><div class="portal-topline"><span>01 / KAUTUHAL</span><span>${defendedWorks} PUBLISHED WORKS</span></div><h2>What I can presently defend.</h2><p>Essays, experiments, technical work, and personal frameworks. Authored claims with enough structure to leave the garden.</p><a href="/posts/">Read the writing <span aria-hidden="true">→</span></a></article><article class="project-portal kalpataru-portal"><div class="portal-topline"><span>02 / KALPATARU</span><span>PRIVATE LIBRARY</span></div><h2>What I cannot stop cultivating.</h2><p>A living collection of ideas that violate priors, expose mechanisms, and immediately breed another experiment.</p><a href="/kalpataru/">See how the garden works <span aria-hidden="true">↗</span></a></article></section>`;
+    return `<section class="project-portals" aria-label="Two ways into the work"><article class="project-portal kautuhal-portal"><div class="portal-topline"><span>01 / KAUTUHAL</span><span>${defendedWorks} PUBLISHED WORKS</span></div><h2>What I can presently defend.</h2><p>Essays, experiments, technical work, and personal frameworks. Authored claims with enough structure to leave the garden.</p><a href="/posts/">Read the writing <span aria-hidden="true">→</span></a></article><article class="project-portal kalpataru-portal"><div class="portal-topline"><span>02 / KALPATARU</span><span>LIVING LIBRARY</span></div><h2>What I cannot stop cultivating.</h2><p>A living collection of ideas that violate priors, expose mechanisms, and immediately breed another experiment.</p><a href="/kalpataru/">Enter the garden <span aria-hidden="true">↗</span></a></article></section>`;
 }
 
 function buildHomepageStructuredData() {
@@ -1152,61 +1151,6 @@ function buildHomepageHtml(posts, introHtml) {
 `;
 }
 
-function buildKalpataruGatewayHtml() {
-    return `<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalpataru — tokenbender</title>
-    <meta name="description" content="Kalpataru is tokenbender's living library: ideas that grow more ideas.">
-    <meta name="robots" content="index,follow,max-image-preview:large">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="tokenbender">
-    <meta property="og:title" content="Kalpataru — Ideas that grow more ideas">
-    <meta property="og:description" content="A living library of mechanisms, sleepers, reading trails, and unfinished intellectual voltage.">
-    <meta property="og:url" content="${SITE_URL}/kalpataru/">
-    <link rel="canonical" href="${SITE_URL}/kalpataru/">
-    ${FAVICON_LINKS}
-    <script>${buildThemeBootstrapScript()}</script>
-    <link rel="stylesheet" href="/style.css">
-</head>
-<body class="kalpataru-gateway-page">
-    <header>
-        <nav>
-            <div class="nav-container gateway-nav-container">
-                <a href="/" class="logo">tokenbender</a>
-                <div class="nav-links">${buildPrimaryNavigation('kalpataru')}</div>
-            </div>
-        </nav>
-    </header>
-    <main class="gateway-shell">
-        <section class="gateway-hero">
-            <p class="section-kicker">KALPATARU / THE LIVING LIBRARY</p>
-            <h1>Ideas that grow more ideas.</h1>
-            <p class="gateway-deck">Kautuhal contains the arguments. Kalpataru contains the roots: mechanisms, provocations, sleepers, reading trails, and fragments that are still earning the right to become claims.</p>
-            <div class="gateway-actions"><a class="primary-action" href="${KALPATARU_URL}" target="_blank" rel="noopener">Enter the private library <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/">Return to Kautuhal <span aria-hidden="true">←</span></a></div>
-            <p class="privacy-contract"><b>Current boundary</b> The collection remains owner-gated. This public page explains the system without publishing the private contents.</p>
-        </section>
-        <section class="gateway-contract">
-            <p class="section-kicker">THE CONTRACT</p>
-            <blockquote>Keep the idea only when it violates a prior, exposes a mechanism, and immediately breeds another experiment.</blockquote>
-            <p>Virality is not evidence. Usefulness is not enough. The thought has to change what can be built or believed next.</p>
-        </section>
-        <section class="gateway-index" aria-label="What lives in Kalpataru">
-            <article><span>01</span><h2>Curated library</h2><p>Mechanistic inversions and conceptual traps that survived the evidence pass.</p></article>
-            <article><span>02</span><h2>Sleepers</h2><p>High generativity, insufficient evidence. Each one names the receipt still missing.</p></article>
-            <article><span>03</span><h2>Life Machine</h2><p>A branching source tree of principles, heuristics, warnings, experiments, and open questions.</p></article>
-            <article><span>04</span><h2>Regret lab</h2><p>A record of what the cut may have missed, so taste remains auditable rather than mystical.</p></article>
-        </section>
-        ${buildKnowledgeLoopHtml()}
-    </main>
-    <footer><p>Kalpataru cultivates. Kautuhal publishes. Tether remembers.</p></footer>
-    <script>${buildThemeToggleScript()}</script>
-</body>
-</html>`;
-}
-
 function buildSitemap(posts) {
     const urls = [
         `${SITE_URL}/`,
@@ -1233,7 +1177,6 @@ async function main() {
 
     await fs.mkdir(POSTS_DIR, { recursive: true });
     await fs.mkdir(ARCHIVE_DIR, { recursive: true });
-    await fs.mkdir(KALPATARU_DIR, { recursive: true });
 
     const posts = [];
 
@@ -1285,7 +1228,6 @@ async function main() {
     await fs.writeFile(path.join(ARCHIVE_DIR, 'index.html'), archiveHtml, 'utf8');
     await fs.writeFile(path.join(POSTS_DIR, 'index.html'), writingIndexHtml, 'utf8');
     await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(publishedPosts, homepageIntroHtml), 'utf8');
-    await fs.writeFile(path.join(KALPATARU_DIR, 'index.html'), buildKalpataruGatewayHtml(), 'utf8');
     await fs.writeFile(SITEMAP_FILE, buildSitemap(publishedPosts), 'utf8');
 
     console.log(`generated ${posts.length} static posts, archive, homepage, and sitemap`);

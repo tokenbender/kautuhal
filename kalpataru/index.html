@@ -1,126 +1,31 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalpataru — tokenbender</title>
-    <meta name="description" content="Kalpataru is tokenbender's living library: ideas that grow more ideas.">
-    <meta name="robots" content="index,follow,max-image-preview:large">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="tokenbender">
-    <meta property="og:title" content="Kalpataru — Ideas that grow more ideas">
-    <meta property="og:description" content="A living library of mechanisms, sleepers, reading trails, and unfinished intellectual voltage.">
-    <meta property="og:url" content="https://tokenbender.com/kalpataru/">
-    <link rel="canonical" href="https://tokenbender.com/kalpataru/">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="alternate icon" href="/favicon.ico">
-    <script>(function () {
-    const storageKey = 'tokenbender-theme';
-    const root = document.documentElement;
-    let storedTheme = null;
-    try {
-        storedTheme = window.localStorage.getItem(storageKey);
-    } catch (error) {}
-
-    if (storedTheme === 'light' || storedTheme === 'dark') {
-        root.setAttribute('data-theme', storedTheme);
-        return;
-    }
-
-    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-    root.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
-})();</script>
-    <link rel="stylesheet" href="/style.css">
-</head>
-<body class="kalpataru-gateway-page">
-    <header>
-        <nav>
-            <div class="nav-container gateway-nav-container">
-                <a href="/" class="logo">tokenbender</a>
-                <div class="nav-links"><a href="/posts/">writing</a><a href="/kalpataru/" class="is-active" aria-current="page">kalpataru</a><a href="/archive/">archive</a><a href="https://github.com/tokenbender" class="nav-github">github</a><button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button></div>
-            </div>
-        </nav>
-    </header>
-    <main class="gateway-shell">
-        <section class="gateway-hero">
-            <p class="section-kicker">KALPATARU / THE LIVING LIBRARY</p>
-            <h1>Ideas that grow more ideas.</h1>
-            <p class="gateway-deck">Kautuhal contains the arguments. Kalpataru contains the roots: mechanisms, provocations, sleepers, reading trails, and fragments that are still earning the right to become claims.</p>
-            <div class="gateway-actions"><a class="primary-action" href="https://kalpataru.theartoftokenbending.chatgpt.site/" target="_blank" rel="noopener">Enter the private library <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/">Return to Kautuhal <span aria-hidden="true">←</span></a></div>
-            <p class="privacy-contract"><b>Current boundary</b> The collection remains owner-gated. This public page explains the system without publishing the private contents.</p>
-        </section>
-        <section class="gateway-contract">
-            <p class="section-kicker">THE CONTRACT</p>
-            <blockquote>Keep the idea only when it violates a prior, exposes a mechanism, and immediately breeds another experiment.</blockquote>
-            <p>Virality is not evidence. Usefulness is not enough. The thought has to change what can be built or believed next.</p>
-        </section>
-        <section class="gateway-index" aria-label="What lives in Kalpataru">
-            <article><span>01</span><h2>Curated library</h2><p>Mechanistic inversions and conceptual traps that survived the evidence pass.</p></article>
-            <article><span>02</span><h2>Sleepers</h2><p>High generativity, insufficient evidence. Each one names the receipt still missing.</p></article>
-            <article><span>03</span><h2>Life Machine</h2><p>A branching source tree of principles, heuristics, warnings, experiments, and open questions.</p></article>
-            <article><span>04</span><h2>Regret lab</h2><p>A record of what the cut may have missed, so taste remains auditable rather than mystical.</p></article>
-        </section>
-        <section class="knowledge-loop" aria-labelledby="knowledge-loop-title"><div class="section-kicker">THE WORKING LOOP</div><h2 id="knowledge-loop-title">Curiosity needs a metabolism.</h2><ol><li><span>01</span><div><b>Tether</b><p>Capture the raw signal before taste has time to tidy it.</p></div></li><li><span>02</span><div><b>Kalpataru</b><p>Cultivate mechanisms, sleepers, trails, and unresolved voltage.</p></div></li><li><span>03</span><div><b>Kautuhal</b><p>Turn selected roots into arguments that can be inspected and attacked.</p></div></li><li><span>04</span><div><b>Work</b><p>Run the experiment. Let reality produce the next capture.</p></div></li></ol></section>
-    </main>
-    <footer><p>Kalpataru cultivates. Kautuhal publishes. Tether remembers.</p></footer>
-    <script>(function () {
-    const storageKey = 'tokenbender-theme';
-    const root = document.documentElement;
-    const toggle = document.querySelector('[data-theme-toggle]');
-
-    const getTheme = () => root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-
-    const renderToggle = (activeTheme) => {
-        if (!toggle) {
-            return;
-        }
-
-        const targetTheme = activeTheme === 'light' ? 'dark' : 'light';
-        toggle.textContent = targetTheme;
-        toggle.setAttribute('aria-label', `switch to ${targetTheme} theme`);
-        toggle.setAttribute('aria-pressed', activeTheme === 'light' ? 'true' : 'false');
-    };
-
-    const setTheme = (theme, persist) => {
-        root.setAttribute('data-theme', theme);
-        renderToggle(theme);
-        if (persist) {
-            try {
-                window.localStorage.setItem(storageKey, theme);
-            } catch (error) {}
-        }
-    };
-
-    setTheme(getTheme(), false);
-
-    if (toggle) {
-        toggle.addEventListener('click', () => {
-            const nextTheme = getTheme() === 'light' ? 'dark' : 'light';
-            setTheme(nextTheme, true);
-        });
-    }
-
-    if (window.matchMedia) {
-        const media = window.matchMedia('(prefers-color-scheme: light)');
-        const onChange = (event) => {
-            let storedTheme = null;
-            try {
-                storedTheme = window.localStorage.getItem(storageKey);
-            } catch (error) {}
-
-            if (storedTheme === 'light' || storedTheme === 'dark') {
-                return;
-            }
-
-            setTheme(event.matches ? 'light' : 'dark', false);
-        };
-
-        if (typeof media.addEventListener === 'function') {
-            media.addEventListener('change', onChange);
-        } else if (typeof media.addListener === "function") {
-            media.addListener(onChange);
-        }
-    }
-})();</script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kalpataru — Ideas that grow more ideas.</title>
+    <meta name="description" content="A living library by tokenbender: curated ideas, high-voltage sleepers, the Life Machine, and the authored work they grow into." />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <link rel="canonical" href="https://tokenbender.com/kalpataru/" />
+    <link rel="icon" href="/kalpataru/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="/kalpataru/favicon.ico" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="tokenbender" />
+    <meta property="og:title" content="Kalpataru — Ideas that grow more ideas." />
+    <meta property="og:description" content="A living library by tokenbender." />
+    <meta property="og:url" content="https://tokenbender.com/kalpataru/" />
+    <meta property="og:image" content="https://tokenbender.com/kalpataru/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Kalpataru — Ideas that grow more ideas." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Kalpataru — Ideas that grow more ideas." />
+    <meta name="twitter:description" content="A living library by tokenbender." />
+    <meta name="twitter:image" content="https://tokenbender.com/kalpataru/og.png" />
+    <script type="module" crossorigin src="/kalpataru/assets/index-dbAIf40F.js"></script>
+    <link rel="stylesheet" crossorigin href="/kalpataru/assets/index-BbUxYuGi.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
