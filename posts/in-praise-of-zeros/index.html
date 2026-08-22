@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In Praise of Zeros, Part I: Sparsity and Intelligence - tokenbender</title>
+    <meta name="description" content="An intuition for why useful intelligence depends on what a representation can silence, isolate, and route.">
+    <meta name="robots" content="noindex,nofollow">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="tokenbender">
+    <meta property="og:title" content="In Praise of Zeros, Part I: Sparsity and Intelligence">
+    <meta property="og:description" content="An intuition for why useful intelligence depends on what a representation can silence, isolate, and route.">
+    <meta property="og:url" content="https://tokenbender.com/posts/in-praise-of-zeros/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="In Praise of Zeros, Part I: Sparsity and Intelligence">
+    <meta name="twitter:description" content="An intuition for why useful intelligence depends on what a representation can silence, isolate, and route.">
+    <link rel="canonical" href="https://tokenbender.com/posts/in-praise-of-zeros/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="alternate icon" href="/favicon.ico">
+    <script>(function () {
+    const storageKey = 'tokenbender-theme';
+    const root = document.documentElement;
+    let storedTheme = null;
+    try {
+        storedTheme = window.localStorage.getItem(storageKey);
+    } catch (error) {}
+
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+        root.setAttribute('data-theme', storedTheme);
+        return;
+    }
+
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    root.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
+})();</script>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"In Praise of Zeros, Part I: Sparsity and Intelligence","description":"An intuition for why useful intelligence depends on what a representation can silence, isolate, and route.","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/in-praise-of-zeros/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/in-praise-of-zeros/"},"datePublished":"2026-06-08T00:00:00.000Z","dateModified":"2026-06-08T00:00:00.000Z","keywords":"sparsity, efficiency, representation-learning, model-compression, circuit-extractability, capability-extraction, prism"}</script>
+</head>
+<body class="post-page no-sidenotes">
+    <header>
+        <nav>
+            <div class="nav-container">
+                <a href="/index.html" class="logo">tokenbender</a>
+                <div class="nav-links">
+                    <a href="/posts/" class="is-active" aria-current="page">writing</a><a href="/kalpataru/">kalpataru</a><a href="/archive/">archive</a><a href="https://github.com/tokenbender" class="nav-github">github</a><button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="post-layout no-sidenotes">
+        <aside class="post-toc"><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#intelligence-as-a-learned-observer" data-toc-link="intelligence-as-a-learned-observer">Intelligence as a learned observer</a></li><li class="toc-item toc-level-2"><a href="#the-many-forms-of-zeros" data-toc-link="the-many-forms-of-zeros">The many forms of zeros</a></li><li class="toc-item toc-level-2"><a href="#meaningful-zeros" data-toc-link="meaningful-zeros">Meaningful zeros</a></li></ol></nav></aside>
+        <article class="post-content" id="post-content">
+            <h1>In Praise of Zeros, Part I: Sparsity and Intelligence</h1>
+            <div class="post-meta"><span class="meta-item">June 8, 2026</span><span class="meta-sep">·</span><span class="post-category">research</span><span class="meta-sep">·</span><span class="meta-item">8 min read</span><span class="meta-sep">·</span><span class="post-status">placeholder</span><span class="meta-sep">·</span><span class="post-tags"><span class="post-tag">sparsity</span><span class="post-tag">efficiency</span><span class="post-tag">representation-learning</span><span class="post-tag">model-compression</span><span class="post-tag">circuit-extractability</span><span class="post-tag">capability-extraction</span><span class="post-tag">prism</span></span></div>
+            <details class="post-toc-mobile"><summary>contents</summary><nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol><li class="toc-item toc-level-2"><a href="#intelligence-as-a-learned-observer" data-toc-link="intelligence-as-a-learned-observer">Intelligence as a learned observer</a></li><li class="toc-item toc-level-2"><a href="#the-many-forms-of-zeros" data-toc-link="the-many-forms-of-zeros">The many forms of zeros</a></li><li class="toc-item toc-level-2"><a href="#meaningful-zeros" data-toc-link="meaningful-zeros">Meaningful zeros</a></li></ol></nav></details>
+            <p><em>Sparse systems are not just smaller. They make absence part of the computation.</em></p>
+<p>By Abhishek Mishra</p>
+<blockquote>
+<p>Working scaffold for a short introductory piece. Target length: about 1,400-1,600 words, or under seven minutes.</p>
+</blockquote>
+<h2 id="intelligence-as-a-learned-observer">Intelligence as a learned observer</h2>
+<p>Sparsity is not an objective property of a system. It is an observed property, a fact not about the system but about the relation between the system and whoever is reading it. Ask where, precisely, the sparsity lives. It does not live in the bits. It lives in the basis, and a basis is something an observer has to have learned.</p>
+<p>Sparsity is not needing less to represent some information. It is being able to take certain pieces of context, certain pieces of information, for granted. So you are telling me sparsity is not even real? It is real, just not absolute, because depending on who makes the observation, the same system is either sparse or dense, and neither reading is mistaken. It can even be both at once, sparse to one reader and dense to another in the very same moment.</p>
+<p>Representation learning makes this precise. The premise is geometric, a claim about where data actually lives. Real data is a low-dimensional distribution embedded in a high-dimensional space, and the work of learning is to pursue and exploit that intrinsic low-dimensional structure, finding the compact coordinates in which the data actually moves. A signal that looks dense against the raw axes of the ambient space can collapse to a handful of active coordinates. The collapse happens once you rewrite it against the axes adapted to its own manifold. Compactness is a measurement, and every measurement needs an instrument that the representation supplies. So the zeros belong not to the information itself but to the alignment between the information and the frame you have learned to view it through.</p>
+<p>The old Pokemon break put a single black silhouette on screen and asked, who&#39;s this Pokemon? Nothing showed but the outline and the question, with no texture, no color, no detail beyond the boundary curve. Yet if you had watched the show, that outline alone sufficed, and even a child following along answered without effort. The screen delivers almost nothing, a few bits of contour, so the recognition cannot be coming from the screen at all. It comes from a low-dimensional manifold you already learned, the manifold of the show, against which a bare outline is a near-complete coordinate. The representation acts as a world model, a memory of the external world that lets a thin observation be taken for granted rather than reconstructed. The loop closes through you, who are the decoder, while the episodes are the memory, so the loop runs through the person and not the picture. To someone who never watched, the same silhouette carries no recoverable answer at all. It is sparse to one observer and merely cryptic to another. The signal did not change between them. Only the learned frame each of them brought to it differed.</p>
+<p>You bring me a matrix, or some other system, and you say, look how few ones are present, surely this is sparse, and surely that is a fact about the matrix, not about me. I would answer that you could write the matrix in that form only because you already held a certain access to the information it encodes. You chose the axes yourself, which is already a decision about how to look. Suppose the same information appeared along some other basis, through some other equation or mode of observation. Nothing guarantees the absences would stay visible to you at all. The zeros you point to do not stand free; they are coordinates that happen to vanish in the basis you picked. You could pick that basis only because you already knew how many dimensions there are. You also knew this information does not extend along the other directions you might have looked from. Strip away that knowledge, remove the ability to represent the same object across alternative axes, and the sparsity dissolves with it. The mostly-zero matrix is the silhouette again in algebraic dress, legible because a frame was already in hand.</p>
+<p>Compression is the universal computational principle behind learning such distributions. Reducing the coding length of the data, squeezing it toward its intrinsic dimension, is what produces the compact representation in the first place. Sparsity is the visible residue of a compression that has already succeeded. The coding length is short only because the decoder is long. The zeros are the budget you no longer have to spend, because the structure has been pushed into the axes and into the memory that will supply the rest. The same view unifies methods that otherwise look unrelated, from entropy minimization to lossy compression under rate distortion. It reads each one as a way to shorten the data&#39;s coding length. It runs continuously through the classical models. Principal Component Analysis, Independent Component Analysis, and Dictionary Learning all fall under it. Each is, at bottom, a procedure for choosing the frame in which the data goes sparse. Independent Component Analysis and Dictionary Learning do little else; they manufacture exactly the basis in which the absences become evident.</p>
+<p>So sparsity sits downstream of an observer who has learned the frame in which absence becomes visible, and learning that frame is itself intelligence, the capability to develop new memory or correct an existing one. When an observer must do this automatically and continuously, the bare act of encoding does not suffice. A decoding path is needed too, so the representation can be checked against the world it claims to compress. That closed loop, a minimax game between encoder and decoder, is how an observer self-corrects toward a frame that holds, with the rate collapsing as the frame is found. There is no observer-free vantage from which a system simply is sparse. There is only the frame, learned or unlearned, and the zeros it lets you take for granted. The Pokemon was always there in the silhouette; you just had to have watched the show.</p>
+<h2 id="the-many-forms-of-zeros">The many forms of zeros</h2>
+<p>Once you see sparsity this way, the word &quot;zero&quot; becomes broader than pruning weights.</p>
+<p>There are many places where a system can decide not to spend capacity.</p>
+<p>Weight sparsity asks which parameters can be zeroed. Activation sparsity asks which intermediate features need to fire on a given input. Attention sparsity asks which tokens are worth looking at. Token sparsity asks whether the model needs to process every patch, token, frame, or byte. Routing sparsity asks which expert should wake up. Cache sparsity asks what memory should be kept, compressed, evicted, or retrieved. Update sparsity asks whether we need to move all weights, or only a small adapter, low-rank direction, or subset of parameters.</p>
+<p>And then there is capability sparsity: can a named behavior run through a small substrate while the rest of the model stays fixed or goes dark?</p>
+<p>That is the version most connected to our work. It is not only asking whether the model is smaller. It is asking whether a capability has become separable. Can addition, translation, function calling, refusal, formatting, planning, or some other behavior be isolated enough that we can test it, route it, edit it, or reuse it?</p>
+<p>The CS336-style move here is to always ask: what resource is saved? FLOPs, memory, bandwidth, latency, communication, context length, training data, search effort, or interpretability cost? A sparsity claim is incomplete until it names the unit being zeroed, the rule that chooses the zeros, the time at which the zeros are chosen, and the resource that actually gets saved.</p>
+<p>This also prevents a common confusion. Sparse on paper is not always efficient in practice. Unstructured weight sparsity can look elegant and run poorly. Routing sparsity can save dense compute while adding communication and load-balancing problems. Token sparsity can save attention work while dropping the evidence needed to answer correctly.</p>
+<p>So the middle of the piece should read like opening the model and labeling all the places where silence can enter:</p>
+<ul>
+<li>weights: which parameters do not need to exist?</li>
+<li>activations: which features do not need to fire?</li>
+<li>attention: which positions do not need to be read?</li>
+<li>tokens: which inputs do not need to be processed?</li>
+<li>experts: which subnetworks do not need to wake up?</li>
+<li>cache: which memories do not need to be carried forward?</li>
+<li>updates: which parameters do not need to move?</li>
+<li>capabilities: which behavior can survive inside a small substrate?</li>
+</ul>
+<p>The point is not to memorize a taxonomy. The point is to see that sparsity is a recurring shape of intelligence: the system has learned enough structure to spend less everywhere.</p>
+<h2 id="meaningful-zeros">Meaningful zeros</h2>
+<p>The last section should tighten the standard.</p>
+<p>A zero is not meaningful just because it is zero. It is meaningful when the behavior survives without it.</p>
+<p>This is the bridge into <a href="/posts/honey-i-shrunk-the-circuits/">Honey, I shrunk the circuits!</a> and PRISM. The model can have a capability without arranging that capability in a recoverable way. Attribution can find signal. Local pieces can look real. But the stronger question is whether the behavior still runs when the rest is switched off.</p>
+<p>That is why the language of mask, scaffold, substrate, recovery, and contract matters. The mask is what we keep. The scaffold is the transformer machinery left in place. The substrate is the kept region that carries the behavior. Recovery measures how much behavior survives. The contract defines what it means for the rest to go dark.</p>
+<p>Under that contract, sparsity stops being aesthetic. It becomes a causal claim.</p>
+<p>The piece should end by returning to the silhouette. The blacked-out Pokemon is meaningful because the observer can restore the missing creature. A sparse circuit is meaningful for the same reason: the zeros count only if the capability remains recoverable through what is left.</p>
+<p>Grounding sources for the draft:</p>
+<ul>
+<li><a href="https://ma-lab-berkeley.github.io/deep-representation-learning-book/">Principles and Practice of Deep Representation Learning</a> and its <a href="https://ma-lab-berkeley.github.io/deep-representation-learning-book/Chx1.html">introductory chapter</a> for the view of representation learning as compact, structured memory over low-dimensional structure in high-dimensional data.</li>
+<li><a href="https://cs336.stanford.edu/">CS336: Language Modeling from Scratch</a> for the from-scratch, resource-accounting style.</li>
+<li>Horace Barlow&#39;s <a href="https://www.cnbc.cmu.edu/~tai/nc19journalclubs/Barlow-SensoryCommunication-1961.pdf">&quot;Possible Principles Underlying the Transformations of Sensory Messages&quot;</a> for efficient coding and redundancy reduction.</li>
+<li>Olshausen and Field&#39;s <a href="https://doi.org/10.1038/381607a0">&quot;Emergence of simple-cell receptive field properties by learning a sparse code for natural images&quot;</a> for sparse coding as learned visual representation.</li>
+<li>Rao and Ballard&#39;s <a href="https://doi.org/10.1038/4580">&quot;Predictive coding in the visual cortex&quot;</a>, plus <a href="https://www.nature.com/articles/nn0199_9">&quot;Predicting the visual world: silence is golden&quot;</a>, for the idea that perception can transmit surprise rather than restating everything.</li>
+</ul>
+
+<aside class="kalpataru-roots" aria-labelledby="kalpataru-roots-title"><p class="section-kicker">ROOTS IN KALPATARU</p><h2 id="kalpataru-roots-title">This argument did not begin here.</h2><p>Follow the private library entries that fed this piece.</p><div><a href="https://kalpataru.theartoftokenbending.chatgpt.site/?idea=117" target="_blank" rel="noopener">idea 117 <span aria-hidden="true">↗</span></a><a href="https://kalpataru.theartoftokenbending.chatgpt.site/?idea=123" target="_blank" rel="noopener">idea 123 <span aria-hidden="true">↗</span></a><a href="https://kalpataru.theartoftokenbending.chatgpt.site/?idea=146" target="_blank" rel="noopener">idea 146 <span aria-hidden="true">↗</span></a><a href="https://kalpataru.theartoftokenbending.chatgpt.site/?idea=190" target="_blank" rel="noopener">idea 190 <span aria-hidden="true">↗</span></a><a href="https://kalpataru.theartoftokenbending.chatgpt.site/?idea=200" target="_blank" rel="noopener">idea 200 <span aria-hidden="true">↗</span></a></div></aside>
+<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul><li><a href="/posts/honey-i-shrunk-the-circuits/">Honey, I shrunk the circuits!</a><p>Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.</p></li><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite - a rubric driven prioritized replay to maximise continual learning</a><p>a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design</p></li><li><a href="/posts/avatarl/">avatarl: training language models from scratch with pure reinforcement learning</a><p>replacing cross-entropy pretraining with a principled rl objective using expert-consensus rewards over active tokens</p></li></ul></section>
+        </article>
+        <aside class="post-margin-column" aria-hidden="true"></aside>
+    </main>
+
+    <footer>
+        <p>for updates and random thoughts, follow <a href="https://x.com/tokenbender" target="_blank" rel="noopener">@tokenbender</a>.</p>
+    </footer>
+
+    <script>(function () {
+    const storageKey = 'tokenbender-theme';
+    const root = document.documentElement;
+    const toggle = document.querySelector('[data-theme-toggle]');
+
+    const getTheme = () => root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+
+    const renderToggle = (activeTheme) => {
+        if (!toggle) {
+            return;
+        }
+
+        const targetTheme = activeTheme === 'light' ? 'dark' : 'light';
+        toggle.textContent = targetTheme;
+        toggle.setAttribute('aria-label', `switch to ${targetTheme} theme`);
+        toggle.setAttribute('aria-pressed', activeTheme === 'light' ? 'true' : 'false');
+    };
+
+    const setTheme = (theme, persist) => {
+        root.setAttribute('data-theme', theme);
+        renderToggle(theme);
+        if (persist) {
+            try {
+                window.localStorage.setItem(storageKey, theme);
+            } catch (error) {}
+        }
+    };
+
+    setTheme(getTheme(), false);
+
+    if (toggle) {
+        toggle.addEventListener('click', () => {
+            const nextTheme = getTheme() === 'light' ? 'dark' : 'light';
+            setTheme(nextTheme, true);
+        });
+    }
+
+    if (window.matchMedia) {
+        const media = window.matchMedia('(prefers-color-scheme: light)');
+        const onChange = (event) => {
+            let storedTheme = null;
+            try {
+                storedTheme = window.localStorage.getItem(storageKey);
+            } catch (error) {}
+
+            if (storedTheme === 'light' || storedTheme === 'dark') {
+                return;
+            }
+
+            setTheme(event.matches ? 'light' : 'dark', false);
+        };
+
+        if (typeof media.addEventListener === 'function') {
+            media.addEventListener('change', onChange);
+        } else if (typeof media.addListener === "function") {
+            media.addListener(onChange);
+        }
+    }
+})();</script>
+    <script>(function () {
+    const links = Array.from(document.querySelectorAll('[data-toc-link]'));
+    if (!links.length) {
+        return;
+    }
+
+    const mapping = links.map((link) => {
+        const headingId = link.getAttribute('data-toc-link');
+        return {
+            link,
+            heading: document.getElementById(headingId)
+        };
+    }).filter((entry) => entry.heading);
+
+    if (!mapping.length) {
+        return;
+    }
+
+    const setActive = (id) => {
+        mapping.forEach((entry) => {
+            entry.link.classList.toggle('is-active', entry.heading.id === id);
+        });
+    };
+
+    const update = () => {
+        let activeId = mapping[0].heading.id;
+        mapping.forEach((entry) => {
+            if (entry.heading.getBoundingClientRect().top <= 140) {
+                activeId = entry.heading.id;
+            }
+        });
+        setActive(activeId);
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+})();</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
+    <script>
+        if (window.renderMathInElement) {
+            window.renderMathInElement(document.getElementById('post-content'), {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '$', right: '$', display: false },
+                    { left: '\\(', right: '\\)', display: false },
+                    { left: '\\[', right: '\\]', display: true }
+                ],
+                throwOnError: false,
+                trust: false
+            });
+        }
+
+        if (window.Prism) {
+            window.Prism.highlightAll();
+        }
+    </script>
+</body>
+</html>

@@ -5,17 +5,18 @@ excerpt: custom commands, multi-agent systems, and the protocols that made claud
 tags: claude-code, ai-tooling, multi-agent-systems
 status: evergreen
 category: technical
+kalpataru: 192, 216, 219, 231, 239
 ---
 
 hello everyone!
 
-in [part 1](https://tokenbender.github.io/kautuhal/post.html?id=how-i-bring-the-best-out-of-claude-code), i covered the beginner's guide to claude code. setup requirements. context management. basic workflows. the fundamentals you need to get started.
+in [part 1](/posts/how-i-bring-the-best-out-of-claude-code/), i covered the beginner's guide to claude code. setup requirements. context management. basic workflows. the fundamentals you need to get started.
 
 that was the shallow end of the pool.
 
 this is the deep end. intermediate techniques for people who've already hit the walls of vanilla claude code and always want just a little bit more.
 
-![welcome to the future](posts/images/deep-end-meme.jpg)
+![welcome to the future](/posts/images/deep-end-meme.jpg)
 
 ## 1. integrating claude code into tooling
 

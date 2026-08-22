@@ -5,6 +5,7 @@ excerpt: replacing cross-entropy pretraining with a principled rl objective usin
 tags: reinforcement-learning, language-models, pretraining
 status: research
 category: research
+kalpataru: 175, 193, 209
 ---
 
 > "if you know the way broadly you will see it in all things" — Miyamoto Musashi
@@ -399,13 +400,13 @@ avatarl also allows us to train the models for equivalent of 50-60B tokens on 2B
 this is how the training and validation curves look like for a 250M parameter model, validated every 500 steps.
 
 ### Training loss against combined distribution (2k+1)
-![train_curves](posts/images/train_loss.png)
+![train_curves](/posts/images/train_loss.png)
 
 ### Average Reward Progress
-![avg_reward](posts/images/avg_reward.png)
+![avg_reward](/posts/images/avg_reward.png)
 
 ### Cross-Entropy Loss
-![ce_loss](posts/images/ce_loss.png)
+![ce_loss](/posts/images/ce_loss.png)
 
 ## Samples
 

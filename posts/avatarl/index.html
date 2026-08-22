@@ -44,9 +44,7 @@
             <div class="nav-container">
                 <a href="/index.html" class="logo">tokenbender</a>
                 <div class="nav-links">
-                    <a href="/archive/">archive</a>
-                    <a href="https://github.com/tokenbender" target="_blank" rel="noopener">github</a>
-                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
+                    <a href="/posts/" class="is-active" aria-current="page">writing</a><a href="/kalpataru/">kalpataru</a><a href="/archive/">archive</a><a href="https://github.com/tokenbender" class="nav-github">github</a><button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
                 </div>
             </div>
         </nav>
@@ -384,11 +382,11 @@ hence what you see are the earliest results after getting it to work.</p>
 <p>avatarl also allows us to train the models for equivalent of 50-60B tokens on 2B tokens of data because of the dense reward signal.</p>
 <p>this is how the training and validation curves look like for a 250M parameter model, validated every 500 steps.</p>
 <h3 id="training-loss-against-combined-distribution-2k1">Training loss against combined distribution (2k+1)</h3>
-<p><img src="posts/images/train_loss.png" alt="train_curves"></p>
+<p><img src="/posts/images/train_loss.png" alt="train_curves"></p>
 <h3 id="average-reward-progress">Average Reward Progress</h3>
-<p><img src="posts/images/avg_reward.png" alt="avg_reward"></p>
+<p><img src="/posts/images/avg_reward.png" alt="avg_reward"></p>
 <h3 id="cross-entropy-loss">Cross-Entropy Loss</h3>
-<p><img src="posts/images/ce_loss.png" alt="ce_loss"></p>
+<p><img src="/posts/images/ce_loss.png" alt="ce_loss"></p>
 <h2 id="samples">Samples</h2>
 <h3 id="generated-text-examples">Generated Text Examples</h3>
 <p><strong>Prompt:</strong> <em>&quot;The true meaning of life is often&quot;</em></p>
@@ -477,7 +475,8 @@ i would appreciate any support in the form of sponsorship, compute or research c
 <p>[8] Agarwal, R., Schwarzer, M., Castro, P. S., Courville, A., &amp; Bellemare, M. G. (2022). Reincarnating Reinforcement Learning: Reusing Prior Computation to Accelerate Progress. NeurIPS 2022. arXiv:2206.01626.</p>
 <p>[9] Furlanello, T., Lipton, Z., Tschannen, M., Itti, L., &amp; Anandkumar, A. (2018). Born Again Neural Networks. Proceedings of ICML 2018, PMLR 80:1607-1616. arXiv:1805.04770.</p>
 
-            <section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite - a rubric driven prioritized replay to maximise continual learning</a><p>a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design</p></li><li><a href="/posts/honey-i-shrunk-the-circuits/">Honey, I shrunk the circuits!</a><p>Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.</p></li><li><a href="/posts/how-i-bring-the-best-out-of-claude-code-part-2/">how i bring the best out of claude code - part 2</a><p>custom commands, multi-agent systems, and the protocols that made claude code actually useful</p></li></ul></section>
+<aside class="kalpataru-roots" aria-labelledby="kalpataru-roots-title"><p class="section-kicker">ROOTS IN KALPATARU</p><h2 id="kalpataru-roots-title">This argument did not begin here.</h2><p>Follow the private library entries that fed this piece.</p><div><a href="https://kalpataru.theartoftokenbending.chatgpt.site/?idea=175" target="_blank" rel="noopener">idea 175 <span aria-hidden="true">↗</span></a><a href="https://kalpataru.theartoftokenbending.chatgpt.site/?idea=193" target="_blank" rel="noopener">idea 193 <span aria-hidden="true">↗</span></a><a href="https://kalpataru.theartoftokenbending.chatgpt.site/?idea=209" target="_blank" rel="noopener">idea 209 <span aria-hidden="true">↗</span></a></div></aside>
+<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite - a rubric driven prioritized replay to maximise continual learning</a><p>a reinforcement learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design</p></li><li><a href="/posts/honey-i-shrunk-the-circuits/">Honey, I shrunk the circuits!</a><p>Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.</p></li><li><a href="/posts/how-i-bring-the-best-out-of-claude-code-part-2/">how i bring the best out of claude code - part 2</a><p>custom commands, multi-agent systems, and the protocols that made claude code actually useful</p></li></ul></section>
         </article>
         <aside class="post-margin-column" aria-hidden="true"></aside>
     </main>

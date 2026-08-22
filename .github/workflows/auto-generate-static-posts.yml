@@ -8,6 +8,7 @@ on:
         paths:
             - 'posts/**/*.md'
             - 'posts/posts.json'
+            - 'docs/**/*.md'
             - 'generate-static-posts.mjs'
             - '.github/workflows/auto-generate-static-posts.yml'
     workflow_dispatch:

@@ -5,6 +5,7 @@ excerpt: a reinforcement learning replay mechanism that uses rubric-based priori
 tags: continual-learning, reinforcement-learning, evaluation
 status: research
 category: research
+kalpataru: 205, 206
 ---
 
 > "an infinite game is played for the purpose of continuing the play. not for winning or achieving a specific end." — James P. Carse

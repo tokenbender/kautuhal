@@ -8,11 +8,13 @@ import https from 'node:https';
 const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, 'posts');
 const ARCHIVE_DIR = path.join(ROOT, 'archive');
+const KALPATARU_DIR = path.join(ROOT, 'kalpataru');
 const POSTS_INDEX_FILE = path.join(POSTS_DIR, 'posts.json');
 const HOMEPAGE_INTRO_FILE = path.join(ROOT, 'docs', 'homepage-intro.md');
 const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 
 const SITE_URL = 'https://tokenbender.com';
+const KALPATARU_URL = 'https://kalpataru.theartoftokenbending.chatgpt.site/';
 const AUTHOR_NAME = 'Abhishek Harshvardhan Mishra';
 const AUTHOR_HANDLE = 'tokenbender';
 const AUTHOR_IMAGE_PATH = '/IMG_20250407_212513%20Copy.JPG';
@@ -20,9 +22,9 @@ const AUTHOR_IMAGE_URL = `${SITE_URL}${AUTHOR_IMAGE_PATH}`;
 const AUTHOR_IMAGE_WIDTH = 1781;
 const AUTHOR_IMAGE_HEIGHT = 2091;
 const FAVICON_LINKS = '<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n    <link rel="alternate icon" href="/favicon.ico">';
-const HOMEPAGE_TITLE = `${AUTHOR_NAME} (${AUTHOR_HANDLE}) - developer blog`;
-const HOMEPAGE_DESCRIPTION = `Technical notes and essays from ${AUTHOR_NAME} (${AUTHOR_HANDLE}) on efficient training, reinforcement learning, and agentic research workflows.`;
-const HOMEPAGE_HERO_SUMMARY = 'ML researcher focused on efficient training, reinforcement learning research, agentic workflows, and personal systems for doing better work over long horizons.';
+const HOMEPAGE_TITLE = `Kautuhal — ${AUTHOR_HANDLE}`;
+const HOMEPAGE_DESCRIPTION = `Authored research, experiments, and working theories from ${AUTHOR_NAME} on learning systems for models, agents, and people.`;
+const HOMEPAGE_HERO_SUMMARY = 'Research on efficient training, reinforcement learning, agentic workflows, and the personal machinery required to keep doing difficult work.';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
 const AVERAGE_READING_WPM = 220;
 const CATEGORY_ORDER = ['research', 'technical', 'personal'];
@@ -78,7 +80,7 @@ function parseFrontmatterValue(key, rawValue) {
         .replace(/^"(.*)"$/s, '$1')
         .replace(/^'(.*)'$/s, '$1');
 
-    if (['tags', 'related'].includes(key)) {
+    if (['tags', 'related', 'kalpataru'].includes(key)) {
         const listString = stripped.startsWith('[') && stripped.endsWith(']')
             ? stripped.slice(1, -1)
             : stripped;
@@ -217,6 +219,10 @@ function normalizeStatus(rawStatus) {
     return normalized || null;
 }
 
+function isPublishedPost(post) {
+    return !['placeholder', 'draft'].includes(post.status);
+}
+
 function normalizeRelated(rawRelated) {
     const values = Array.isArray(rawRelated)
         ? rawRelated
@@ -227,6 +233,18 @@ function normalizeRelated(rawRelated) {
     return Array.from(new Set(values
         .map((item) => String(item).trim())
         .filter(Boolean)));
+}
+
+function normalizeKalpataruRoots(rawRoots) {
+    const values = Array.isArray(rawRoots)
+        ? rawRoots
+        : typeof rawRoots === 'string'
+            ? rawRoots.split(',')
+            : [];
+
+    return Array.from(new Set(values
+        .map((value) => String(value).trim())
+        .filter((value) => /^\d+$/.test(value))));
 }
 
 function normalizeCategory(rawCategory) {
@@ -619,6 +637,15 @@ function buildPostMeta(post) {
     return `<div class="post-meta">${parts.join('')}</div>`;
 }
 
+function buildPrimaryNavigation(active = '') {
+    const navLink = (href, label, key, extraClass = '') => {
+        const activeAttributes = active === key ? ' class="is-active" aria-current="page"' : extraClass ? ` class="${extraClass}"` : '';
+        return `<a href="${href}"${activeAttributes}>${label}</a>`;
+    };
+
+    return `${navLink('/posts/', 'writing', 'writing')}${navLink('/kalpataru/', 'kalpataru', 'kalpataru')}${navLink('/archive/', 'archive', 'archive')}${navLink('https://github.com/tokenbender', 'github', 'github', 'nav-github')}<button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>`;
+}
+
 function buildTocMarkup(headings) {
     if (headings.length < 3) {
         return {
@@ -707,6 +734,18 @@ function buildRelatedPostsSection(post) {
     }).join('');
 
     return `<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul>${items}</ul></section>`;
+}
+
+function buildKalpataruRootsSection(post) {
+    if (!post.kalpataruRoots.length) {
+        return '';
+    }
+
+    const links = post.kalpataruRoots
+        .map((id) => `<a href="${KALPATARU_URL}?idea=${encodeURIComponent(id)}" target="_blank" rel="noopener">idea ${escapeHtml(id)} <span aria-hidden="true">↗</span></a>`)
+        .join('');
+
+    return `<aside class="kalpataru-roots" aria-labelledby="kalpataru-roots-title"><p class="section-kicker">ROOTS IN KALPATARU</p><h2 id="kalpataru-roots-title">This argument did not begin here.</h2><p>Follow the private library entries that fed this piece.</p><div>${links}</div></aside>`;
 }
 
 function getOrderedCategoryGroups(posts) {
@@ -836,6 +875,7 @@ function buildPostHtml(post) {
     const isoDate = toIsoDate(post.metadata.date);
     const toc = buildTocMarkup(post.headings);
     const relatedSection = buildRelatedPostsSection(post);
+    const kalpataruRootsSection = buildKalpataruRootsSection(post);
     const hasSidenotes = post.html.includes('class="sidenote"');
     const bodyClass = hasSidenotes ? 'post-page has-sidenotes' : 'post-page no-sidenotes';
     const layoutClass = hasSidenotes ? 'post-layout has-sidenotes' : 'post-layout no-sidenotes';
@@ -867,7 +907,7 @@ function buildPostHtml(post) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${escapeHtml(title)} - tokenbender</title>
     <meta name="description" content="${escapeHtml(description)}">
-    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta name="robots" content="${isPublishedPost(post) ? 'index,follow,max-image-preview:large' : 'noindex,nofollow'}">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="tokenbender">
     <meta property="og:title" content="${escapeHtml(title)}">
@@ -890,9 +930,7 @@ function buildPostHtml(post) {
             <div class="nav-container">
                 <a href="/index.html" class="logo">tokenbender</a>
                 <div class="nav-links">
-                    <a href="/archive/">archive</a>
-                    <a href="https://github.com/tokenbender" target="_blank" rel="noopener">github</a>
-                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
+                    ${buildPrimaryNavigation('writing')}
                 </div>
             </div>
         </nav>
@@ -905,7 +943,8 @@ function buildPostHtml(post) {
             ${buildPostMeta(post)}
             ${toc.mobile}
             ${post.html}
-            ${relatedSection}
+${kalpataruRootsSection}
+${relatedSection}
         </article>
         <aside class="post-margin-column" aria-hidden="true"></aside>
     </main>
@@ -943,19 +982,23 @@ function buildPostHtml(post) {
 `;
 }
 
-function buildArchiveHtml(posts) {
+function buildArchiveHtml(posts, mode = 'archive') {
     const topicSections = buildArchiveTopicSections(posts);
     const dateSections = buildArchiveDateSections(posts);
+    const isWritingIndex = mode === 'writing';
+    const pageTitle = isWritingIndex ? 'writing' : 'archive';
+    const pageDescription = isWritingIndex ? 'All published work from Kautuhal.' : 'Browse posts by topic or timeline on tokenbender.';
+    const canonicalPath = isWritingIndex ? '/posts/' : '/archive/';
 
     return `<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>archive - tokenbender</title>
-    <meta name="description" content="Browse posts by topic or timeline on tokenbender.">
+    <title>${pageTitle} - tokenbender</title>
+    <meta name="description" content="${pageDescription}">
     <meta name="robots" content="index,follow,max-image-preview:large">
-    <link rel="canonical" href="${SITE_URL}/archive/">
+    <link rel="canonical" href="${SITE_URL}${canonicalPath}">
     ${FAVICON_LINKS}
     <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="/style.css">
@@ -966,9 +1009,7 @@ function buildArchiveHtml(posts) {
             <div class="nav-container">
                 <a href="/index.html" class="logo">tokenbender</a>
                 <div class="nav-links">
-                    <a href="/archive/">archive</a>
-                    <a href="https://github.com/tokenbender" target="_blank" rel="noopener">github</a>
-                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
+                    ${buildPrimaryNavigation(isWritingIndex ? 'writing' : 'archive')}
                 </div>
             </div>
         </nav>
@@ -976,8 +1017,8 @@ function buildArchiveHtml(posts) {
 
     <main class="container archive-page">
         <section class="archive-hero">
-            <h1>archive</h1>
-            <p>browse by topic or date.</p>
+            <h1>${pageTitle}</h1>
+            <p>${isWritingIndex ? 'all published work, organized two ways.' : 'browse by topic or date.'}</p>
         </section>
 
         <div class="archive-view-switcher" aria-label="archive view">
@@ -996,10 +1037,22 @@ function buildArchiveHtml(posts) {
 `;
 }
 
-function buildHomepageHeroHtml() {
+function buildHomepageHeroHtml(posts) {
     const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
+    const latestPost = posts.find((post) => !['placeholder', 'draft'].includes(post.status)) ?? posts[0];
+    const latestPostLink = latestPost ? `/posts/${encodeURIComponent(latestPost.id)}/` : '/archive/';
+    const latestPostLabel = latestPost ? 'Read the latest essay' : 'Browse the archive';
 
-    return `<section class="home-hero" aria-labelledby="home-author-name"><div class="home-identity"><p class="home-identity-eyebrow">developer blog</p><h2 class="home-identity-name" id="home-author-name">${escapeHtml(AUTHOR_NAME)}</h2><p class="home-identity-handle">writes here as <span>${escapeHtml(AUTHOR_HANDLE)}</span></p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}" loading="eager" decoding="async" fetchpriority="high"></figure></section>`;
+    return `<section class="home-hero" aria-labelledby="home-thesis"><div class="home-identity"><p class="home-identity-eyebrow">KAUTUHAL / AUTHORED WORK</p><h1 class="home-thesis" id="home-thesis">I build systems that learn—<em>and systems for learning.</em></h1><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="primary-action" href="${latestPostLink}">${latestPostLabel} <span aria-hidden="true">→</span></a><a class="secondary-action" href="/kalpataru/">Enter Kalpataru <span aria-hidden="true">↗</span></a></div></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}" loading="eager" decoding="async" fetchpriority="high"><figcaption><strong>${escapeHtml(AUTHOR_NAME)}</strong><span>ML researcher · writes as ${escapeHtml(AUTHOR_HANDLE)}</span></figcaption></figure></section>`;
+}
+
+function buildKnowledgeLoopHtml() {
+    return `<section class="knowledge-loop" aria-labelledby="knowledge-loop-title"><div class="section-kicker">THE WORKING LOOP</div><h2 id="knowledge-loop-title">Curiosity needs a metabolism.</h2><ol><li><span>01</span><div><b>Tether</b><p>Capture the raw signal before taste has time to tidy it.</p></div></li><li><span>02</span><div><b>Kalpataru</b><p>Cultivate mechanisms, sleepers, trails, and unresolved voltage.</p></div></li><li><span>03</span><div><b>Kautuhal</b><p>Turn selected roots into arguments that can be inspected and attacked.</p></div></li><li><span>04</span><div><b>Work</b><p>Run the experiment. Let reality produce the next capture.</p></div></li></ol></section>`;
+}
+
+function buildProjectPortalsHtml(posts) {
+    const defendedWorks = posts.filter((post) => !['placeholder', 'draft'].includes(post.status)).length;
+    return `<section class="project-portals" aria-label="Two ways into the work"><article class="project-portal kautuhal-portal"><div class="portal-topline"><span>01 / KAUTUHAL</span><span>${defendedWorks} PUBLISHED WORKS</span></div><h2>What I can presently defend.</h2><p>Essays, experiments, technical work, and personal frameworks. Authored claims with enough structure to leave the garden.</p><a href="/posts/">Read the writing <span aria-hidden="true">→</span></a></article><article class="project-portal kalpataru-portal"><div class="portal-topline"><span>02 / KALPATARU</span><span>PRIVATE LIBRARY</span></div><h2>What I cannot stop cultivating.</h2><p>A living collection of ideas that violate priors, expose mechanisms, and immediately breed another experiment.</p><a href="/kalpataru/">See how the garden works <span aria-hidden="true">↗</span></a></article></section>`;
 }
 
 function buildHomepageStructuredData() {
@@ -1034,7 +1087,9 @@ function buildHomepageStructuredData() {
 
 function buildHomepageHtml(posts, introHtml) {
     const groupedSections = buildHomepageGroupedSections(posts);
-    const homepageHero = buildHomepageHeroHtml();
+    const homepageHero = buildHomepageHeroHtml(posts);
+    const knowledgeLoop = buildKnowledgeLoopHtml();
+    const projectPortals = buildProjectPortalsHtml(posts);
     const homepageStructuredData = buildHomepageStructuredData();
     const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
 
@@ -1072,9 +1127,7 @@ function buildHomepageHtml(posts, introHtml) {
             <div class="nav-container">
                 <a href="./" class="logo">tokenbender</a>
                 <div class="nav-links">
-                    <a href="/archive/">archive</a>
-                    <a href="https://github.com/tokenbender" target="_blank">github</a>
-                    <button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>
+                    ${buildPrimaryNavigation('writing')}
                 </div>
             </div>
         </nav>
@@ -1082,13 +1135,15 @@ function buildHomepageHtml(posts, introHtml) {
 
     <main class="container">
         ${homepageHero}
+        ${knowledgeLoop}
+        ${projectPortals}
         <section class="home-intro">${introHtml}</section>
 
         <section class="posts grouped-posts">${groupedSections}</section>
     </main>
 
     <footer>
-        <p>&copy; 2025 tokenbender. just vanilla html/css/js.</p>
+        <p>&copy; 2026 tokenbender. Kautuhal is the authored edge of the garden.</p>
     </footer>
 
     <script>${buildThemeToggleScript()}</script>
@@ -1097,11 +1152,68 @@ function buildHomepageHtml(posts, introHtml) {
 `;
 }
 
+function buildKalpataruGatewayHtml() {
+    return `<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalpataru — tokenbender</title>
+    <meta name="description" content="Kalpataru is tokenbender's living library: ideas that grow more ideas.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="tokenbender">
+    <meta property="og:title" content="Kalpataru — Ideas that grow more ideas">
+    <meta property="og:description" content="A living library of mechanisms, sleepers, reading trails, and unfinished intellectual voltage.">
+    <meta property="og:url" content="${SITE_URL}/kalpataru/">
+    <link rel="canonical" href="${SITE_URL}/kalpataru/">
+    ${FAVICON_LINKS}
+    <script>${buildThemeBootstrapScript()}</script>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="kalpataru-gateway-page">
+    <header>
+        <nav>
+            <div class="nav-container gateway-nav-container">
+                <a href="/" class="logo">tokenbender</a>
+                <div class="nav-links">${buildPrimaryNavigation('kalpataru')}</div>
+            </div>
+        </nav>
+    </header>
+    <main class="gateway-shell">
+        <section class="gateway-hero">
+            <p class="section-kicker">KALPATARU / THE LIVING LIBRARY</p>
+            <h1>Ideas that grow more ideas.</h1>
+            <p class="gateway-deck">Kautuhal contains the arguments. Kalpataru contains the roots: mechanisms, provocations, sleepers, reading trails, and fragments that are still earning the right to become claims.</p>
+            <div class="gateway-actions"><a class="primary-action" href="${KALPATARU_URL}" target="_blank" rel="noopener">Enter the private library <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/">Return to Kautuhal <span aria-hidden="true">←</span></a></div>
+            <p class="privacy-contract"><b>Current boundary</b> The collection remains owner-gated. This public page explains the system without publishing the private contents.</p>
+        </section>
+        <section class="gateway-contract">
+            <p class="section-kicker">THE CONTRACT</p>
+            <blockquote>Keep the idea only when it violates a prior, exposes a mechanism, and immediately breeds another experiment.</blockquote>
+            <p>Virality is not evidence. Usefulness is not enough. The thought has to change what can be built or believed next.</p>
+        </section>
+        <section class="gateway-index" aria-label="What lives in Kalpataru">
+            <article><span>01</span><h2>Curated library</h2><p>Mechanistic inversions and conceptual traps that survived the evidence pass.</p></article>
+            <article><span>02</span><h2>Sleepers</h2><p>High generativity, insufficient evidence. Each one names the receipt still missing.</p></article>
+            <article><span>03</span><h2>Life Machine</h2><p>A branching source tree of principles, heuristics, warnings, experiments, and open questions.</p></article>
+            <article><span>04</span><h2>Regret lab</h2><p>A record of what the cut may have missed, so taste remains auditable rather than mystical.</p></article>
+        </section>
+        ${buildKnowledgeLoopHtml()}
+    </main>
+    <footer><p>Kalpataru cultivates. Kautuhal publishes. Tether remembers.</p></footer>
+    <script>${buildThemeToggleScript()}</script>
+</body>
+</html>`;
+}
+
 function buildSitemap(posts) {
     const urls = [
         `${SITE_URL}/`,
         `${SITE_URL}/index.html`,
+        `${SITE_URL}/posts/`,
         `${SITE_URL}/archive/`,
+        `${SITE_URL}/kalpataru/`,
         ...posts.map((post) => `${SITE_URL}/posts/${encodeURIComponent(post.id)}/`)
     ];
 
@@ -1121,6 +1233,7 @@ async function main() {
 
     await fs.mkdir(POSTS_DIR, { recursive: true });
     await fs.mkdir(ARCHIVE_DIR, { recursive: true });
+    await fs.mkdir(KALPATARU_DIR, { recursive: true });
 
     const posts = [];
 
@@ -1148,15 +1261,17 @@ async function main() {
             tags: normalizeTags(metadata.tags),
             status: normalizeStatus(metadata.status),
             relatedIds: normalizeRelated(metadata.related),
+            kalpataruRoots: normalizeKalpataruRoots(metadata.kalpataru),
             readingTimeMinutes: estimateReadingTimeMinutes(plain),
             relatedPosts: []
         });
     }
 
     posts.sort((left, right) => new Date(right.metadata.date) - new Date(left.metadata.date));
+    const publishedPosts = posts.filter(isPublishedPost);
 
     posts.forEach((post) => {
-        post.relatedPosts = selectRelatedPosts(posts, post, 3);
+        post.relatedPosts = selectRelatedPosts(publishedPosts, post, 3);
     });
 
     for (const post of posts) {
@@ -1165,11 +1280,13 @@ async function main() {
         await fs.writeFile(path.join(outDir, 'index.html'), buildPostHtml(post), 'utf8');
     }
 
-    const archiveHtml = buildArchiveHtml(posts);
+    const archiveHtml = buildArchiveHtml(publishedPosts, 'archive');
+    const writingIndexHtml = buildArchiveHtml(publishedPosts, 'writing');
     await fs.writeFile(path.join(ARCHIVE_DIR, 'index.html'), archiveHtml, 'utf8');
-    await fs.writeFile(path.join(POSTS_DIR, 'index.html'), archiveHtml, 'utf8');
-    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(posts, homepageIntroHtml), 'utf8');
-    await fs.writeFile(SITEMAP_FILE, buildSitemap(posts), 'utf8');
+    await fs.writeFile(path.join(POSTS_DIR, 'index.html'), writingIndexHtml, 'utf8');
+    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(publishedPosts, homepageIntroHtml), 'utf8');
+    await fs.writeFile(path.join(KALPATARU_DIR, 'index.html'), buildKalpataruGatewayHtml(), 'utf8');
+    await fs.writeFile(SITEMAP_FILE, buildSitemap(publishedPosts), 'utf8');
 
     console.log(`generated ${posts.length} static posts, archive, homepage, and sitemap`);
 }
