@@ -9,7 +9,6 @@ const ROOT = process.cwd();
 const POSTS_DIR = path.join(ROOT, 'posts');
 const ARCHIVE_DIR = path.join(ROOT, 'archive');
 const POSTS_INDEX_FILE = path.join(POSTS_DIR, 'posts.json');
-const HOMEPAGE_INTRO_FILE = path.join(ROOT, 'docs', 'homepage-intro.md');
 const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 
 const SITE_URL = 'https://tokenbender.com';
@@ -261,33 +260,6 @@ function normalizeCategory(rawCategory) {
 
 function getCategoryLabel(category) {
     return CATEGORY_LABELS[category] || CATEGORY_LABELS.uncategorized;
-}
-
-function getDefaultHomepageIntroMarkdown() {
-    return [
-        "# this is tokenbender's website.",
-        '',
-        'i write about efficient training and reinforcement learning research, new agentic research workflows, and personal frameworks for doing better work over long horizons.',
-        '',
-        '**guide:** start with [welcome](/posts/welcome/) for context, browse everything in [archive](/archive/), or jump directly into a category below.',
-        '',
-        '**navigation:** use [archive by topic](/archive/#topic) when you want themes, and [archive by date](/archive/#date) when you want chronology.'
-    ].join('\n');
-}
-
-async function loadHomepageIntroHtml(marked) {
-    let markdown = '';
-
-    try {
-        markdown = await fs.readFile(HOMEPAGE_INTRO_FILE, 'utf8');
-    } catch (error) {
-        if (error && error.code !== 'ENOENT') {
-            throw error;
-        }
-    }
-
-    const content = markdown.trim() ? markdown : getDefaultHomepageIntroMarkdown();
-    return marked.parse(content);
 }
 
 async function resolvePostFiles() {
@@ -1042,16 +1014,11 @@ function buildHomepageHeroHtml(posts) {
     const latestPostLink = latestPost ? `/posts/${encodeURIComponent(latestPost.id)}/` : '/archive/';
     const latestPostLabel = latestPost ? 'Read the latest essay' : 'Browse the archive';
 
-    return `<section class="home-hero" aria-labelledby="home-thesis"><div class="home-identity"><p class="home-identity-eyebrow">KAUTUHAL / AUTHORED WORK</p><h1 class="home-thesis" id="home-thesis">I build systems that learn—<em>and systems for learning.</em></h1><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="primary-action" href="${latestPostLink}">${latestPostLabel} <span aria-hidden="true">→</span></a><a class="secondary-action" href="/kalpataru/">Enter Kalpataru <span aria-hidden="true">↗</span></a></div></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}" loading="eager" decoding="async" fetchpriority="high"><figcaption><strong>${escapeHtml(AUTHOR_NAME)}</strong><span>ML researcher · writes as ${escapeHtml(AUTHOR_HANDLE)}</span></figcaption></figure></section>`;
+    return `<section class="home-hero" aria-labelledby="home-thesis"><div class="home-identity"><p class="home-identity-eyebrow">KAUTUHAL / AUTHORED WORK</p><h1 class="home-thesis" id="home-thesis">I build systems that learn—<em>and systems for learning.</em></h1><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="primary-action" href="${latestPostLink}">${latestPostLabel} <span aria-hidden="true">→</span></a></div></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}" loading="eager" decoding="async" fetchpriority="high"><figcaption><strong>${escapeHtml(AUTHOR_NAME)}</strong><span>ML researcher · writes as ${escapeHtml(AUTHOR_HANDLE)}</span></figcaption></figure></section>`;
 }
 
-function buildKnowledgeLoopHtml() {
-    return `<section class="knowledge-loop" aria-labelledby="knowledge-loop-title"><div class="section-kicker">THE WORKING LOOP</div><h2 id="knowledge-loop-title">Curiosity needs a metabolism.</h2><ol><li><span>01</span><div><b>Tether</b><p>Capture the raw signal before taste has time to tidy it.</p></div></li><li><span>02</span><div><b>Kalpataru</b><p>Cultivate mechanisms, sleepers, trails, and unresolved voltage.</p></div></li><li><span>03</span><div><b>Kautuhal</b><p>Turn selected roots into arguments that can be inspected and attacked.</p></div></li><li><span>04</span><div><b>Work</b><p>Run the experiment. Let reality produce the next capture.</p></div></li></ol></section>`;
-}
-
-function buildProjectPortalsHtml(posts) {
-    const defendedWorks = posts.filter((post) => !['placeholder', 'draft'].includes(post.status)).length;
-    return `<section class="project-portals" aria-label="Two ways into the work"><article class="project-portal kautuhal-portal"><div class="portal-topline"><span>01 / KAUTUHAL</span><span>${defendedWorks} PUBLISHED WORKS</span></div><h2>What I can presently defend.</h2><p>Essays, experiments, technical work, and personal frameworks. Authored claims with enough structure to leave the garden.</p><a href="/posts/">Read the writing <span aria-hidden="true">→</span></a></article><article class="project-portal kalpataru-portal"><div class="portal-topline"><span>02 / KALPATARU</span><span>LIVING LIBRARY</span></div><h2>What I cannot stop cultivating.</h2><p>A living collection of ideas that violate priors, expose mechanisms, and immediately breed another experiment.</p><a href="/kalpataru/">Enter the garden <span aria-hidden="true">↗</span></a></article></section>`;
+function buildKalpataruLinkHtml() {
+    return `<aside class="kalpataru-link" aria-labelledby="kalpataru-link-title"><div><p class="section-kicker">KALPATARU</p><h2 id="kalpataru-link-title">Agent-managed knowledge tree.</h2></div><p>Kalpataru maintains everything tokenbender wants to keep: things he curates, ideas of his own, and the life principles he cultivates.</p><a href="/kalpataru/">Open Kalpataru <span aria-hidden="true">↗</span></a></aside>`;
 }
 
 function buildHomepageStructuredData() {
@@ -1084,11 +1051,10 @@ function buildHomepageStructuredData() {
     });
 }
 
-function buildHomepageHtml(posts, introHtml) {
+function buildHomepageHtml(posts) {
     const groupedSections = buildHomepageGroupedSections(posts);
     const homepageHero = buildHomepageHeroHtml(posts);
-    const knowledgeLoop = buildKnowledgeLoopHtml();
-    const projectPortals = buildProjectPortalsHtml(posts);
+    const kalpataruLink = buildKalpataruLinkHtml();
     const homepageStructuredData = buildHomepageStructuredData();
     const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
 
@@ -1134,9 +1100,7 @@ function buildHomepageHtml(posts, introHtml) {
 
     <main class="container">
         ${homepageHero}
-        ${knowledgeLoop}
-        ${projectPortals}
-        <section class="home-intro">${introHtml}</section>
+        ${kalpataruLink}
 
         <section class="posts grouped-posts">${groupedSections}</section>
     </main>
@@ -1173,7 +1137,6 @@ ${items}
 async function main() {
     const marked = await loadMarkedParser();
     const postFiles = await resolvePostFiles();
-    const homepageIntroHtml = await loadHomepageIntroHtml(marked);
 
     await fs.mkdir(POSTS_DIR, { recursive: true });
     await fs.mkdir(ARCHIVE_DIR, { recursive: true });
@@ -1227,7 +1190,7 @@ async function main() {
     const writingIndexHtml = buildArchiveHtml(publishedPosts, 'writing');
     await fs.writeFile(path.join(ARCHIVE_DIR, 'index.html'), archiveHtml, 'utf8');
     await fs.writeFile(path.join(POSTS_DIR, 'index.html'), writingIndexHtml, 'utf8');
-    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(publishedPosts, homepageIntroHtml), 'utf8');
+    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(publishedPosts), 'utf8');
     await fs.writeFile(SITEMAP_FILE, buildSitemap(publishedPosts), 'utf8');
 
     console.log(`generated ${posts.length} static posts, archive, homepage, and sitemap`);

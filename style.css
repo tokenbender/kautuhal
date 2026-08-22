@@ -373,158 +373,41 @@ header {
     color: var(--text-secondary);
 }
 
-.home-intro {
-    padding: 4.5rem 0 2.5rem;
-    max-width: 74ch;
-}
-
-.home-intro h2 {
-    font-size: clamp(2.2rem, 1.8rem + 1.5vw, 3.4rem);
-    font-weight: 400;
-    margin-bottom: 1rem;
-    line-height: 1.08;
-    letter-spacing: -0.025em;
-}
-
-.home-intro p {
-    margin-bottom: 0.65rem;
-    color: var(--text-color);
-    font-size: 1.06rem;
-    line-height: 1.68;
-}
-
-.home-intro strong {
-    font-family: var(--sans);
-    font-size: 0.84rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-    text-transform: lowercase;
-    letter-spacing: 0.04em;
-    margin-right: 0.35rem;
-}
-
-.home-intro a {
-    text-decoration: underline;
-    text-decoration-color: rgba(218, 165, 32, 0.5);
-    text-underline-offset: 0.16em;
-}
-
-.home-intro a:hover {
-    text-decoration-color: var(--accent-color);
-}
-
-.knowledge-loop {
-    padding: 2.3rem 0 3rem;
+.kalpataru-link {
+    display: grid;
+    grid-template-columns: minmax(230px, 0.8fr) minmax(0, 1.4fr) auto;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
 }
 
-.knowledge-loop h2 {
-    margin: 0 0 1.8rem;
-    font-size: clamp(2rem, 1.55rem + 1.4vw, 3.2rem);
-    font-weight: 400;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-}
-
-.knowledge-loop ol {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.knowledge-loop li {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.8rem;
-    min-height: 145px;
-    padding: 1rem 1.25rem 1rem 0;
-    border-right: 1px solid var(--border-color);
-}
-
-.knowledge-loop li + li {
-    padding-left: 1.25rem;
-}
-
-.knowledge-loop li:last-child {
-    border-right: 0;
-}
-
-.knowledge-loop li > span {
-    font-family: var(--sans);
-    font-size: 0.68rem;
-    color: var(--accent-color);
-}
-
-.knowledge-loop b {
-    font-size: 1.08rem;
-    font-weight: 400;
-}
-
-.knowledge-loop p {
-    margin: 0.35rem 0 0;
-    color: var(--text-secondary);
-    font-family: var(--sans);
-    font-size: 0.84rem;
-    line-height: 1.5;
-}
-
-.project-portals {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1px;
-    margin-top: 4.5rem;
-    border: 1px solid var(--border-color);
-    background: var(--border-color);
-}
-
-.project-portal {
-    min-height: 380px;
-    padding: clamp(1.5rem, 3vw, 2.8rem);
-    background: var(--bg-color);
-}
-
-.kalpataru-portal {
-    background: var(--panel-color);
-}
-
-.portal-topline {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    color: var(--text-secondary);
-    font-family: var(--sans);
-    font-size: 0.68rem;
-    letter-spacing: 0.09em;
-}
-
-.project-portal h2 {
-    max-width: 11ch;
-    margin: 4rem 0 1rem;
-    font-size: clamp(2.1rem, 3.5vw, 4rem);
-    font-weight: 400;
-    line-height: 0.98;
-    letter-spacing: -0.035em;
-}
-
-.kalpataru-portal h2 {
+.kalpataru-link .section-kicker {
+    margin-bottom: 0.55rem;
     color: var(--garden-color);
 }
 
-.project-portal p {
-    max-width: 47ch;
-    color: var(--text-secondary);
-    font-size: 1rem;
-    line-height: 1.62;
+.kalpataru-link h2 {
+    margin: 0;
+    font-size: clamp(1.55rem, 2.5vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.025em;
 }
 
-.project-portal > a {
-    display: inline-flex;
-    gap: 1rem;
-    margin-top: 2.25rem;
+.kalpataru-link > p {
+    max-width: 58ch;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.55;
+}
+
+.kalpataru-link > a {
+    white-space: nowrap;
+    color: var(--text-color);
     font-family: var(--sans);
     font-size: 0.8rem;
     text-decoration: none;
@@ -1391,21 +1274,6 @@ footer {
         gap: clamp(1.2rem, 3vw, 2.5rem);
     }
 
-    .knowledge-loop ol {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .knowledge-loop li:nth-child(2) {
-        border-right: 0;
-    }
-
-    .knowledge-loop li:nth-child(n + 3) {
-        border-top: 1px solid var(--border-color);
-    }
-
-    .knowledge-loop li:nth-child(3) {
-        padding-left: 0;
-    }
 }
 
 @media (max-width: 960px) {
@@ -1426,12 +1294,10 @@ footer {
         width: min(100%, 280px);
     }
 
-    .project-portals {
+    .kalpataru-link {
         grid-template-columns: 1fr;
-    }
-
-    .project-portal {
-        min-height: auto;
+        gap: 1rem;
+        align-items: start;
     }
 
     .grouped-posts {
@@ -1512,15 +1378,6 @@ footer {
         width: min(100%, 250px);
     }
 
-    .home-intro h2 {
-        font-size: clamp(2rem, 1.6rem + 3vw, 2.6rem);
-    }
-
-    .home-intro p {
-        font-size: 1rem;
-        line-height: 1.62;
-    }
-    
     .nav-links {
         gap: 0.72rem;
     }
@@ -1535,31 +1392,6 @@ footer {
 
     .nav-github {
         display: none;
-    }
-
-    .knowledge-loop ol {
-        grid-template-columns: 1fr;
-    }
-
-    .knowledge-loop li,
-    .knowledge-loop li + li,
-    .knowledge-loop li:nth-child(3) {
-        min-height: auto;
-        padding: 1rem 0;
-        border-right: 0;
-        border-top: 1px solid var(--border-color);
-    }
-
-    .knowledge-loop li:first-child {
-        border-top: 0;
-    }
-
-    .project-portals {
-        grid-template-columns: 1fr;
-    }
-
-    .project-portal h2 {
-        margin-top: 2.7rem;
     }
 
     .post-content h1 {
