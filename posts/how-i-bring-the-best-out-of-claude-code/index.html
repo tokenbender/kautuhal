@@ -51,68 +51,68 @@
     </header>
 
     <main class="post-layout no-sidenotes">
-        <aside class="post-toc"><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#1-setup-requirements" data-toc-link="1-setup-requirements">1. setup requirements</a></li><li class="toc-item toc-level-2"><a href="#2-most-important-thing-context-management" data-toc-link="2-most-important-thing-context-management">2. most important thing: context management</a></li><li class="toc-item toc-level-2"><a href="#3-parallel-claude-code-usage" data-toc-link="3-parallel-claude-code-usage">3. parallel claude code usage</a></li><li class="toc-item toc-level-2"><a href="#4-execution-strategy" data-toc-link="4-execution-strategy">4. execution strategy</a></li><li class="toc-item toc-level-2"><a href="#5-iteration-and-updating-context" data-toc-link="5-iteration-and-updating-context">5. iteration and updating context</a></li><li class="toc-item toc-level-2"><a href="#6-working-compactly" data-toc-link="6-working-compactly">6. working compactly</a></li><li class="toc-item toc-level-2"><a href="#7-integrating-claude-code-into-tooling" data-toc-link="7-integrating-claude-code-into-tooling">7. integrating claude code into tooling</a></li><li class="toc-item toc-level-2"><a href="#8-final-thoughts" data-toc-link="8-final-thoughts">8. final thoughts</a></li></ol></nav></aside>
+        <aside class="post-toc"><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#1-setup-requirements" data-toc-link="1-setup-requirements">1. Setup Requirements</a></li><li class="toc-item toc-level-2"><a href="#2-most-important-thing-context-management" data-toc-link="2-most-important-thing-context-management">2. Most Important Thing: Context Management</a></li><li class="toc-item toc-level-2"><a href="#3-parallel-claude-code-usage" data-toc-link="3-parallel-claude-code-usage">3. Parallel Claude Code Usage</a></li><li class="toc-item toc-level-2"><a href="#4-execution-strategy" data-toc-link="4-execution-strategy">4. Execution Strategy</a></li><li class="toc-item toc-level-2"><a href="#5-iteration-and-updating-context" data-toc-link="5-iteration-and-updating-context">5. Iteration and Updating Context</a></li><li class="toc-item toc-level-2"><a href="#6-working-compactly" data-toc-link="6-working-compactly">6. Working Compactly</a></li><li class="toc-item toc-level-2"><a href="#7-integrating-claude-code-into-tooling" data-toc-link="7-integrating-claude-code-into-tooling">7. Integrating Claude Code into Tooling</a></li><li class="toc-item toc-level-2"><a href="#8-final-thoughts" data-toc-link="8-final-thoughts">8. Final Thoughts</a></li></ol></nav></aside>
         <article class="post-content" id="post-content">
             <h1>How I Bring the Best Out of Claude Code — Part 1</h1>
             <div class="post-meta"><span class="meta-item">June 15, 2025</span><span class="meta-sep">·</span><span class="post-category">Technical</span><span class="meta-sep">·</span><span class="meta-item">3 min read</span><span class="meta-sep">·</span><span class="post-status">Evergreen</span><span class="meta-sep">·</span><span class="post-tags"><span class="post-tag">Claude Code</span><span class="post-tag">AI Tooling</span><span class="post-tag">Developer Workflow</span></span></div>
-            <details class="post-toc-mobile"><summary>Contents</summary><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#1-setup-requirements" data-toc-link="1-setup-requirements">1. setup requirements</a></li><li class="toc-item toc-level-2"><a href="#2-most-important-thing-context-management" data-toc-link="2-most-important-thing-context-management">2. most important thing: context management</a></li><li class="toc-item toc-level-2"><a href="#3-parallel-claude-code-usage" data-toc-link="3-parallel-claude-code-usage">3. parallel claude code usage</a></li><li class="toc-item toc-level-2"><a href="#4-execution-strategy" data-toc-link="4-execution-strategy">4. execution strategy</a></li><li class="toc-item toc-level-2"><a href="#5-iteration-and-updating-context" data-toc-link="5-iteration-and-updating-context">5. iteration and updating context</a></li><li class="toc-item toc-level-2"><a href="#6-working-compactly" data-toc-link="6-working-compactly">6. working compactly</a></li><li class="toc-item toc-level-2"><a href="#7-integrating-claude-code-into-tooling" data-toc-link="7-integrating-claude-code-into-tooling">7. integrating claude code into tooling</a></li><li class="toc-item toc-level-2"><a href="#8-final-thoughts" data-toc-link="8-final-thoughts">8. final thoughts</a></li></ol></nav></details>
-            <h2 id="1-setup-requirements">1. setup requirements</h2>
-<p>you need a set of requirements, preferably issues in a repo. take the requirement url and download and save it into an <code>issues/</code> folder or have github integration with claude code. then create a file like <code>&lt;issue_no&gt;.md</code> or whatever you prefer.</p>
+            <details class="post-toc-mobile"><summary>Contents</summary><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#1-setup-requirements" data-toc-link="1-setup-requirements">1. Setup Requirements</a></li><li class="toc-item toc-level-2"><a href="#2-most-important-thing-context-management" data-toc-link="2-most-important-thing-context-management">2. Most Important Thing: Context Management</a></li><li class="toc-item toc-level-2"><a href="#3-parallel-claude-code-usage" data-toc-link="3-parallel-claude-code-usage">3. Parallel Claude Code Usage</a></li><li class="toc-item toc-level-2"><a href="#4-execution-strategy" data-toc-link="4-execution-strategy">4. Execution Strategy</a></li><li class="toc-item toc-level-2"><a href="#5-iteration-and-updating-context" data-toc-link="5-iteration-and-updating-context">5. Iteration and Updating Context</a></li><li class="toc-item toc-level-2"><a href="#6-working-compactly" data-toc-link="6-working-compactly">6. Working Compactly</a></li><li class="toc-item toc-level-2"><a href="#7-integrating-claude-code-into-tooling" data-toc-link="7-integrating-claude-code-into-tooling">7. Integrating Claude Code into Tooling</a></li><li class="toc-item toc-level-2"><a href="#8-final-thoughts" data-toc-link="8-final-thoughts">8. Final Thoughts</a></li></ol></nav></details>
+            <h2 id="1-setup-requirements">1. Setup Requirements</h2>
+<p>You need a set of requirements, preferably issues in a repo. Take the requirement URL and download and save it into an <code>issues/</code> folder or have GitHub integration with Claude Code. Then create a file like <code>&lt;issue_no&gt;.md</code> or whatever you prefer.</p>
 <blockquote>
-<p><strong>note:</strong> your requirements list is very crucial, and you should treat it like a wish list for work to be done.</p>
+<p><strong>Note:</strong> Your requirements list is very crucial, and you should treat it like a wish list for work to be done.</p>
 </blockquote>
-<p>the more vague you are in describing what you want, the higher the chance you won&#39;t get what you wanted. ideally, your instructions should be as unambiguous as a program.</p>
-<p>you also want to be aware of what is already known by the model.</p>
-<h2 id="2-most-important-thing-context-management">2. most important thing: context management</h2>
-<p>a common pattern:</p>
+<p>The more vague you are in describing what you want, the higher the chance you won&#39;t get what you wanted. Ideally, your instructions should be as unambiguous as a program.</p>
+<p>You also want to be aware of what is already known by the model.</p>
+<h2 id="2-most-important-thing-context-management">2. Most Important Thing: Context Management</h2>
+<p>A common pattern:</p>
 <pre><code>[claude code] --&gt; [todo list]
                (fresh context)
 </code></pre>
-<p>better approach:</p>
+<p>Better approach:</p>
 <pre><code>well-formalized --&gt; issues/&lt;issue_no&gt;.md (plan)
                 --&gt; docs/plan_&lt;issue_no&gt;.md (issue requirement)
 </code></pre>
-<p>this <code>plan_&lt;issue_no&gt;.md</code> serves as claude&#39;s context. the <code>todo.md</code> is essentially exactly the same as your to-do list.</p>
+<p>This <code>plan_&lt;issue_no&gt;.md</code> serves as Claude&#39;s context. The <code>todo.md</code> is essentially exactly the same as your to-do list.</p>
 <blockquote>
-<p>the todo list is nice, but as you consume things in longer context in claude code, it becomes hard to keep up. so we store it inside the <code>todo.md</code>.</p>
+<p>The todo list is nice, but as you consume things in longer context in Claude Code, it becomes hard to keep up. So we store it inside the <code>todo.md</code>.</p>
 </blockquote>
-<h2 id="3-parallel-claude-code-usage">3. parallel claude code usage</h2>
-<p>if you&#39;re using multiple claude code windows in parallel, assign each one an issue and its corresponding docs, todos, and requirements. this way, everything is tracked automatically.</p>
-<p>currently, i don&#39;t use claude code in parallel much because it tends to create new files for everything, prompt to edit existing files directly, and update code based on outdated or flawed understanding.</p>
-<p>that&#39;s why i often ask it to detail its plan so i can do smell checks and question intentions like <em>&quot;oh, you were aiming to do xyz. then why modify abc?&quot;</em></p>
-<p>additionally, claude might start running commands unknowingly and fill context with needless output tokens.</p>
+<h2 id="3-parallel-claude-code-usage">3. Parallel Claude Code Usage</h2>
+<p>If you&#39;re using multiple Claude Code windows in parallel, assign each one an issue and its corresponding docs, todos, and requirements. This way, everything is tracked automatically.</p>
+<p>Currently, I don&#39;t use Claude Code in parallel much because it tends to create new files for everything, prompt to edit existing files directly, and update code based on outdated or flawed understanding.</p>
+<p>That&#39;s why I often ask it to detail its plan so I can do smell checks and question intentions like <em>&quot;oh, you were aiming to do xyz. Then why modify abc?&quot;</em></p>
+<p>Additionally, Claude might start running commands unknowingly and fill context with needless output tokens.</p>
 <blockquote>
-<p>i avoid this by running it manually myself, providing a snippet of the error so it can best debug it.</p>
+<p>I avoid this by running it manually myself, providing a snippet of the error so it can best debug it.</p>
 </blockquote>
-<h2 id="4-execution-strategy">4. execution strategy</h2>
-<p>once you&#39;re going through each item, do it step by step while enforcing quality standards. you decide how frequently to execute and ensure there are no blindspots.</p>
+<h2 id="4-execution-strategy">4. Execution Strategy</h2>
+<p>Once you&#39;re going through each item, do it step by step while enforcing quality standards. You decide how frequently to execute and ensure there are no blindspots.</p>
 <blockquote>
-<p>personally, i avoid diving into thousands of loc i haven&#39;t written or understood.</p>
+<p>Personally, I avoid diving into thousands of LoC I haven&#39;t written or understood.</p>
 </blockquote>
-<h2 id="5-iteration-and-updating-context">5. iteration and updating context</h2>
-<p>as i implement and ensure smooth execution, i iterate with errors and debug, then go back and update crucial observations in the planning docs.</p>
+<h2 id="5-iteration-and-updating-context">5. Iteration and Updating Context</h2>
+<p>As I implement and ensure smooth execution, I iterate with errors and debug, then go back and update crucial observations in the planning docs.</p>
 <blockquote>
-<p>this allows the model to build better understanding of the issue and what is already known.</p>
+<p>This allows the model to build a better understanding of the issue and what is already known.</p>
 </blockquote>
-<h2 id="6-working-compactly">6. working compactly</h2>
-<p>in an ideal world, you work on one issue end-to-end in one session.</p>
-<p>but usually, context fills out faster and faster. you&#39;ll find yourself using &quot;compact&quot; more often.</p>
-<p>if you ever run out of context during execution, claude auto-compacts or asks you to go back to a previous node.</p>
+<h2 id="6-working-compactly">6. Working Compactly</h2>
+<p>In an ideal world, you work on one issue end-to-end in one session.</p>
+<p>But usually, context fills out faster and faster. You&#39;ll find yourself using &quot;compact&quot; more often.</p>
+<p>If you ever run out of context during execution, Claude auto-compacts or asks you to go back to a previous node.</p>
 <blockquote>
-<p>this is useful when i see a model ignoring feedback and going in loops. in such cases, i jump to a clean node where i was satisfied, compact, generate a summary, and start fresh.</p>
+<p>This is useful when I see a model ignoring feedback and going in loops. In such cases, I jump to a clean node where I was satisfied, compact, generate a summary, and start fresh.</p>
 </blockquote>
-<h2 id="7-integrating-claude-code-into-tooling">7. integrating claude code into tooling</h2>
-<p>now that claude code sdk exists, you can add it to your tools.</p>
-<p>i&#39;ve been using it in shell scripts and proto files. my protocols reflect opinionated views of deep research methodologies and how i debug or visit the ecosystem.</p>
-<p>for instance, my ecosystem has <code>issues/</code> and <code>todo.md</code> folders. i use a shell script to invoke tasks in specific ways and let claude interact with other claude instances.</p>
+<h2 id="7-integrating-claude-code-into-tooling">7. Integrating Claude Code into Tooling</h2>
+<p>Now that the Claude Code SDK exists, you can add it to your tools.</p>
+<p>I&#39;ve been using it in shell scripts and proto files. My protocols reflect opinionated views of deep research methodologies and how I debug or visit the ecosystem.</p>
+<p>For instance, my ecosystem has <code>issues/</code> and <code>todo.md</code> folders. I use a shell script to invoke tasks in specific ways and let Claude interact with other Claude instances.</p>
 <blockquote>
-<p>essentially, i&#39;m building a local multi-agent system of my own.</p>
+<p>Essentially, I&#39;m building a local multi-agent system of my own.</p>
 </blockquote>
-<h2 id="8-final-thoughts">8. final thoughts</h2>
-<p>what are these systems? what protocols are being enforced? how is multi-agent design different? what gives it an edge over standard usage?</p>
-<p>these are things i&#39;d like to cover in part 2.</p>
+<h2 id="8-final-thoughts">8. Final Thoughts</h2>
+<p>What are these systems? What protocols are being enforced? How is multi-agent design different? What gives it an edge over standard usage?</p>
+<p>These are things I&#39;d like to cover in part 2.</p>
 <hr>
-<p>until then, be well everyone!</p>
+<p>Until then, be well everyone!</p>
 
 <section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">See Also</h2><ul><li><a href="/posts/how-i-bring-the-best-out-of-claude-code-part-2/">How I Bring the Best Out of Claude Code — Part 2</a><p>Custom commands, multi-agent systems, and the protocols that made Claude Code actually useful.</p></li><li><a href="/posts/honey-i-shrunk-the-circuits/">Honey, I Shrunk the Circuits!</a><p>Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.</p></li><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite — A Rubric-Driven Prioritized Replay to Maximise Continual Learning</a><p>A reinforcement-learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design...</p></li></ul></section>
         </article>

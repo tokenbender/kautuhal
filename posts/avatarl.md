@@ -7,80 +7,80 @@ status: research
 category: research
 ---
 
-> "if you know the way broadly you will see it in all things" — Miyamoto Musashi
+> "If you know the way broadly, you will see it in all things." — Miyamoto Musashi
 
-## abstract
+## Abstract
 
-standard language model pre-training relies on a cross-entropy objective, which rigidly teaches the model that only a single token is the correct continuation for a given context. this is a fundamentally incomplete representation of language, where multiple continuations are often plausible.
+Standard language model pre-training relies on a cross-entropy objective, which rigidly teaches the model that only a single token is the correct continuation for a given context. This is a fundamentally incomplete representation of language, where multiple continuations are often plausible.
 
-avatarl addresses this by replacing the traditional cross-entropy objective with a sophisticated **reinforcement learning (rl) framework**. during the pre-training phase, a player model learns from a **continuous reward signal** derived from a pre-trained critic and ground-truth reality. this allows the player to learn a rich, distributional understanding of language, rewarding it for predicting tokens that are not just the single 'correct' answer but are also plausible alternatives, as judged by the critic. this approach represents a more principled pre-training objective, designed to create models with a deeper and more nuanced understanding of language from the very beginning [1].
+avatarl addresses this by replacing the traditional cross-entropy objective with a sophisticated **reinforcement learning (RL) framework**. During the pre-training phase, a player model learns from a **continuous reward signal** derived from a pre-trained critic and ground-truth reality. This allows the player to learn a rich, distributional understanding of language, rewarding it for predicting tokens that are not just the single 'correct' answer but are also plausible alternatives, as judged by the critic. This approach represents a more principled pre-training objective, designed to create models with a deeper and more nuanced understanding of language from the very beginning [1].
 
 
 ---
 
-## understanding avatarl
+## Understanding avatarl
 
-imagine you're teaching a child (the player model) how to play a piano. 
+Imagine you're teaching a child (the player model) how to play a piano.
 
-**traditional pretraining**: the piano student sits with a strict teacher who slaps their hand every time they hit the wrong key. "No! Only C# here! Never D!" The student memorizes thousands of songs note-by-note and is terrified of mistakes. this creates a technically perfect but robotic player who can only reproduce what they've memorized.
+**Traditional pretraining**: the piano student sits with a strict teacher who slaps their hand every time they hit the wrong key. "No! Only C# here! Never D!" The student memorizes thousands of songs note-by-note and is terrified of mistakes. This creates a technically perfect but robotic player who can only reproduce what they've memorized.
 
-**avatarl's rl approach**: the student plays in a jazz club with an experienced critic watching. instead of punishment, they get applause. loud cheers for perfect notes, moderate clapping for harmonious alternatives, polite claps for creative attempts. the critic (a seasoned jazz pianist) whispers suggestions: "try a B♭ there, it creates tension" the student learns not just what's "correct" but what's musically meaningful.
+**avatarl's RL approach**: the student plays in a jazz club with an experienced critic watching. Instead of punishment, they get applause. Loud cheers for perfect notes, moderate clapping for harmonious alternatives, polite claps for creative attempts. The critic (a seasoned jazz pianist) whispers suggestions: "try a B♭ there, it creates tension" the student learns not just what's "correct" but what's musically meaningful.
 
-in rl terms:
-- **state**: the musical context (previous notes played)
-- **action**: choosing the next note
-- **reward signal**: continuous applause (0 to 1)
-- **policy**: the student's evolving musical intuition
-- **critic**: provides expertise without dictating every note
+In RL terms:
+- **State**: the musical context (previous notes played)
+- **Action**: choosing the next note
+- **Reward signal**: continuous applause (0 to 1)
+- **Policy**: the student's evolving musical intuition
+- **Critic**: provides expertise without dictating every note
 
-the best part starts when the student starts improvising - they play their own ideas (student top-k), consider the critic's suggestions (critic top-k), while keeping the original melody in mind (ground truth). over time, they develop their own style while respecting musical theory. this is reinforcement learning i.e. learning through rewards rather than rigid correction, discovering patterns through exploration rather than memorization. 
+The best part starts when the student starts improvising - they play their own ideas (student top-k), consider the critic's suggestions (critic top-k), while keeping the original melody in mind (ground truth). Over time, they develop their own style while respecting musical theory. This is reinforcement learning i.e. learning through rewards rather than rigid correction, discovering patterns through exploration rather than memorization.
 
-### standard pretraining => one-hot encoded lottery
-there is RL everywhere for those with the eyes to see.
-this is your traditional pretraining but you can also think of it as REINFORCE with binary rewards.
+### Standard Pretraining => One-hot Encoded Lottery
+There is RL everywhere for those with the eyes to see.
+This is your traditional pretraining but you can also think of it as REINFORCE with binary rewards.
 ```ascii
    standard cross-entropy loss
-   
+
    context: "the cat..."
-   
+
    [sat] [jumped] [ran] [slept]
      ↓      ↓       ↓      ↓
     WIN    LOSE    LOSE   LOSE
-   
+
    payout rules:
    - hit the exact word from training data = win $1
    - hit anything else = lose
-   
+
 ```
 
-### avatarl => progressive reward lottery
-we can reimagine the same problem as a progressive reward lottery.
+### avatarl => Progressive Reward Lottery
+We can reimagine the same problem as a progressive reward lottery.
 
 ```ascii
    avatarl's continuous rewards
-   
+
    context: "the cat..."
-   
+
    [sat] [jumped] [ran] [slept]
      ↓      ↓       ↓      ↓
     HIGH    MED     LOW    TINY
-   
+
    payout rules (from expert consensus):
    - ground truth (sat) = $82
-   - critic's favorites = $10-45  
+   - critic's favorites = $10-45
    - plausible alternatives = $1-9
    - noise = nothing
-   
+
 ```
 ---
 
-## the problems with RL in pre-training language modeling
+## The Problems with RL in Pre-training Language Modeling
 
-now how do we design this around some of the challenges we face in RL?
+Now how do we design this around some of the challenges we face in RL?
 
-### intuition
+### Intuition
 
-let us look at how we teach the model traditionally. standard pretraining with cross-entropy loss for predicting the next token. this can be visualised as a special case of REINFORCE algorithm where only the gold token gets reward 1.0 and all others get 0 [3]. so we can at least create a binary reward where gold token gets 1 and all others get 0. the challenge of framing pretraining as an rl problem isn't hard however there are a few concerning points.
+Let us look at how we teach the model traditionally. Standard pretraining with cross-entropy loss for predicting the next token. This can be visualised as a special case of REINFORCE algorithm where only the gold token gets reward 1.0 and all others get 0 [3]. So we can at least create a binary reward where gold token gets 1 and all others get 0. The challenge of framing pretraining as an RL problem isn't hard however there are a few concerning points.
 
 ```ascii
    broadly RL looks like this:
@@ -90,17 +90,17 @@ let us look at how we teach the model traditionally. standard pretraining with c
    step 3: update policy (gradient descent)
 ```
 
-the first problem is that **the action space is too large for a language model** on token level because the entire vocab size is ~50k. and one of the biggest reasons we do pretraining before RL is to make sure the most probable actions are the ones that are most likely to be correct. so if we expect chances of correct token to be present in top 64 choices, we can rollout 64 times and get the reward for each action. however, without pretraining, the probability of next token being correct is random chance - 1/50k i.e. 0.002% so if you do rollouts you'd get 0.002% * 64 = 0.128% chance of getting the correct token. huge number of rollouts per step and such low reward signal makes it computationally extremely expensive to train a model using pure RL.
+The first problem is that **the action space is too large for a language model** on token level because the entire vocab size is ~50k. And one of the biggest reasons we do pretraining before RL is to make sure the most probable actions are the ones that are most likely to be correct. So if we expect chances of correct token to be present in top 64 choices, we can rollout 64 times and get the reward for each action. However, without pretraining, the probability of next token being correct is random chance - 1/50k i.e. 0.002% so if you do rollouts you'd get 0.002% * 64 = 0.128% chance of getting the correct token. Huge number of rollouts per step and such low reward signal makes it computationally extremely expensive to train a model using pure RL.
 
-the second problem is that the **win condition is not absolutely clear**. traditional RL in games is something with deterministic win or loss. each action being rewarded or punished enforces the model to learn the correct action over a limited space. however, in language modeling, the win condition is not clear, given the context the right way to predict the next token could vary a lot. and this creates a challenge that if you wanted to have a clear win condition or if you wanted to have a smooth probabilistic range of partial reward, then that becomes extremely hard with large language models. the model is not trying to win a game, it is trying to minimise the loss over predicting the next token. and the bigger the context is, the more variation can be expected in what could be the correct next token. 
+The second problem is that the **win condition is not absolutely clear**. Traditional RL in games is something with deterministic win or loss. Each action being rewarded or punished enforces the model to learn the correct action over a limited space. However, in language modeling, the win condition is not clear, given the context the right way to predict the next token could vary a lot. And this creates a challenge that if you wanted to have a clear win condition or if you wanted to have a smooth probabilistic range of partial reward, then that becomes extremely hard with large language models. The model is not trying to win a game, it is trying to minimise the loss over predicting the next token. And the bigger the context is, the more variation can be expected in what could be the correct next token.
 
-at its core, avatarl reframes language model pre-training as a reinforcement learning problem. the student model is an rl agent that learns to make decisions (predicting the next token) in an environment (the text sequence so far). this approach aligns with the reincarnated rl paradigm [8], where we reuse prior computational work (the pre-trained critic) rather than starting from scratch. 
+At its core, avatarl reframes language model pre-training as a reinforcement learning problem. The student model is an RL agent that learns to make decisions (predicting the next token) in an environment (the text sequence so far). This approach aligns with the reincarnated RL paradigm [8], where we reuse prior computational work (the pre-trained critic) rather than starting from scratch.
 
-as a solution to first problem, we can use a smaller action space. but reducing the action space arbitrarily does nothing. we apply something which is called **active token filtering** to eliminate the inconsequential tokens. we use the critic model to share its knowledge of the world (critic top k) and the student does the same (student top k). we combine this with the ground truth to create a subset of actions that are most likely to be correct (max `2*k + 1` action space). the student learns from the highly likely actions. for sampling-related context in language models, see top-k and nucleus (top-p) sampling analyses [5].
+As a solution to first problem, we can use a smaller action space. But reducing the action space arbitrarily does nothing. We apply something which is called **active token filtering** to eliminate the inconsequential tokens. We use the critic model to share its knowledge of the world (critic top k) and the student does the same (student top k). We combine this with the ground truth to create a subset of actions that are most likely to be correct (max `2*k + 1` action space). The student learns from the highly likely actions. For sampling-related context in language models, see top-k and nucleus (top-p) sampling analyses [5].
 
-for the second problem, we need something to act as a mechanism to provide a smooth reward range which can provide appropriately reward the actions. simply relying on just gold token keeps the reward signal sparse and relying on just critic distribution either becomes distillation if the critic is a bigger teacher model. it also puts a cap on the value from the reward signal, the student model does not derive value after reaching similar level as the critic. we need an option to leverage the reward signal from the critic and the student. and ideally create a method which teaches the model richer distribution than just one-hot encoding and also does not remain capped on the value from the critic reward.
+For the second problem, we need something to act as a mechanism to provide a smooth reward range which can provide appropriately reward the actions. Simply relying on just gold token keeps the reward signal sparse and relying on just critic distribution either becomes distillation if the critic is a bigger teacher model. It also puts a cap on the value from the reward signal, the student model does not derive value after reaching similar level as the critic. We need an option to leverage the reward signal from the critic and the student. And ideally create a method which teaches the model richer distribution than just one-hot encoding and also does not remain capped on the value from the critic reward.
 
-the entire process can be visualized as a simple loop:
+The entire process can be visualized as a simple loop:
 ```ascii
 +-------------------+      +-------------------+
 |   state s_t       | ---> | student policy    |
@@ -152,26 +152,26 @@ the entire process can be visualized as a simple loop:
                           (loop)
 ```
 
-notation used above: `s_t` = context at time t (tokens so far); `a*_t` = ground-truth next token; `A_t` = student top-k ∪ critic top-k ∪ `{a*_t}` (deduped, ≤ `2k+1`); `π_θ(a|s_t)` = student policy over tokens; `r_i` = reward for action `a_i ∈ A_t`.
+Notation used above: `s_t` = context at time t (tokens so far); `a*_t` = ground-truth next token; `A_t` = student top-k ∪ critic top-k ∪ `{a*_t}` (deduped, ≤ `2k+1`); `π_θ(a|s_t)` = student policy over tokens; `r_i` = reward for action `a_i ∈ A_t`.
 
-in **avatarl reward mechanism**. instead of a sparse `+1` for the correct token and `0` for all others, we construct an "ideal" reward model at each step that provides a dense, continuous reward signal for any potential action. this reward model is an **expert consensus**.
+In **avatarl reward mechanism**. Instead of a sparse `+1` for the correct token and `0` for all others, we construct an "ideal" reward model at each step that provides a dense, continuous reward signal for any potential action. This reward model is an **expert consensus**.
 
-## how to combine the reality and the critic?
+## How to Combine the Reality and the Critic?
 
-### the expert consensus problem → active-token smoothing
-there’s a subtle problem with expert consensus if we’re not careful. if the reality expert
+### The Expert Consensus Problem → Active-Token Smoothing
+There’s a subtle problem with expert consensus if we’re not careful. If the reality expert
 is one-hot, rewards become ultra-sparse and the student gets almost no exploration signal.
-if we lean only on the critic, we cap the student at the critic’s quality and inherit its
-biases. if we smooth over the full vocabulary, we sprinkle reward on implausible junk and
+If we lean only on the critic, we cap the student at the critic’s quality and inherit its
+biases. If we smooth over the full vocabulary, we sprinkle reward on implausible junk and
 dilute the gradient.
 
-the rationale is simple: give plausible alternatives a fair chance without rewarding noise.
-most of the probability should remain on what actually happened (the ground truth), but a
-small ε should be shared only among tokens that are likely in this context. this keeps
+The rationale is simple: give plausible alternatives a fair chance without rewarding noise.
+Most of the probability should remain on what actually happened (the ground truth), but a
+small ε should be shared only among tokens that are likely in this context. This keeps
 exploration focused, plays nicely with the critic’s judgement, and stabilizes the
 REINFORCE update.
 
-the process inside expert consensus looks like this:
+The process inside expert consensus looks like this:
 ```ascii
 active-token smoothing within expert consensus (reality + critic)
 
@@ -203,9 +203,9 @@ expert consensus (blend reality + critic)
 final rewards r_i over A_t → used by REINFORCE
 ```
 
-#### 1. the ground truth expert
+#### 1. The Ground Truth Expert
 
-we need to create a reward signal for the ground truth token. we can do this by using a one-hot encoding over the full vocabulary. however, this is not a good signal for the model to learn from. we need to create a reward signal that is more informative. we can do this by using a label smoothing technique.
+We need to create a reward signal for the ground truth token. We can do this by using a one-hot encoding over the full vocabulary. However, this is not a good signal for the model to learn from. We need to create a reward signal that is more informative. We can do this by using a label smoothing technique.
 
 ```ascii
 
@@ -227,12 +227,12 @@ we need to create a reward signal for the ground truth token. we can do this by 
     that actually matter in this context — nothing for the rest."
 ```
 
-#### 2. using the critic expert as the calibrated judge
+#### 2. Using the Critic Expert as the Calibrated Judge
 
-to create plausible alternatives, we can use the critic model. the critic model is a pre-trained model that has been trained to predict the next token. we can use the critic model to create a reward signal for the purpose.
+To create plausible alternatives, we can use the critic model. The critic model is a pre-trained model that has been trained to predict the next token. We can use the critic model to create a reward signal for the purpose.
 
 ```ascii
-   
+
    ┌─────────────────────┐
    │ based on model priors:   │
    │ "sat" = 60%            │
@@ -240,16 +240,16 @@ to create plausible alternatives, we can use the critic model. the critic model 
    │ "jumped" = 8%          │
    │ "flew" = 2%            │
    └─────────────────────┘
-   
+
    "many things could work here; we score them consistently."
 ```
 
-### the expert consensus
+### The Expert Consensus
 
-we can combine their reward signals using a **weighted geometric mean**:
+We can combine their reward signals using a **weighted geometric mean**:
 
 ```ascii
-   
+
    reality (70% weight)         critic (30% weight)
           \                          /
            \    geometric mean      /
@@ -269,7 +269,7 @@ we can combine their reward signals using a **weighted geometric mean**:
 
 ```ascii
    the formula visualized
-   
+
    reality expert says:          critic expert says:
    ┌──────────────┐             ┌──────────────┐
    │ "sat" = 0.9  │             │ "sat" = 0.6  │
@@ -303,69 +303,69 @@ we can combine their reward signals using a **weighted geometric mean**:
               and proportionally capped per position (≤ 1.5)
 ```
 
-**intuition**: for a token to receive higher rewards, both experts must agree. the smoothed reality expert ensures the ground truth is strongly preferred without completely vetoing alternatives, while the critic expert provides a smooth gradient of preferences for all plausible tokens. the resulting probabilities serve directly as positive rewards.
+**Intuition**: for a token to receive higher rewards, both experts must agree. The smoothed reality expert ensures the ground truth is strongly preferred without completely vetoing alternatives, while the critic expert provides a smooth gradient of preferences for all plausible tokens. The resulting probabilities serve directly as positive rewards.
 
-### the mathematical model of the reward signal
+### The Mathematical Model of the Reward Signal
 
-a key insight of avatarl is that we do not create a reward for a *single* action the student takes. instead, we first construct a **dense reward landscape** for *active filtered tokens*, and then we evaluate the student's policy against this landscape.
+A key insight of avatarl is that we do not create a reward for a *single* action the student takes. Instead, we first construct a **dense reward landscape** for *active filtered tokens*, and then we evaluate the student's policy against this landscape.
 
-**1. defining the experts mathematically**
+**1. Defining the experts mathematically**
 
-let `a` be a potential action (a token) and `a*` be the ground-truth token from the dataset.
+Let `a` be a potential action (a token) and `a*` be the ground-truth token from the dataset.
 
--   **the groundtruth expert, `p_reality(a | s)`**: this expert strongly prefers the ground-truth token `a*` but uses **active token label smoothing** to maintain a continuous distribution.
+-   **The groundtruth expert, `p_reality(a | s)`**: this expert strongly prefers the ground-truth token `a*` but uses **active token label smoothing** to maintain a continuous distribution.
     -   `p_reality(a | s) = 1 - ε` if `a = a*` (where `ε = 0.1`)
     -   `p_reality(a | s) = ε / (num_active - 1)` if `a ∈ active_tokens` and `a ≠ a*`
     -   `p_reality(a | s) = 0` if `a ∉ active_tokens` (i.e. not in the active filtered tokens)
-    
+
     where `active_tokens` = student's top-k ∪ critic's top-k ∪ {ground truth} (typically ≤32 tokens after deduplication)
-    
+
     this gives 90% probability to the ground truth and distributes 10% **only across active tokens** rather than the entire vocabulary. this concentrates the exploration signal on relevant alternatives instead of wasting it on 50,000+ irrelevant tokens.
 
--   **the critic expert, `p_critic(a | s)`**: the critic model's probability distribution over the vocabulary.
+-   **The critic expert, `p_critic(a | s)`**: the critic model's probability distribution over the vocabulary.
     -   `p_critic(a | s) = softmax(critic_logits)`
 
-**2. the expert consensus formulation**
+**2. The expert consensus formulation**
 
-the ideal distribution, `p_ideal`, is the **weighted geometric mean** of the two expert distributions:
+The ideal distribution, `p_ideal`, is the **weighted geometric mean** of the two expert distributions:
 
 `p_ref(a | s) ∝ [p_reality(a | s)]^w_r * [p_critic(a | s)]^w_m`
 
-here `w_r` (reality_weight) and `w_m` (mentor_weight) are the expert weights; defaults are 0.7 and 0.3 respectively. after normalization on the action set A, this gives us a proper probability distribution. the resulting `p_ref` serves as our **positive reward signal**—a vector over A containing the calibrated "ideal" probabilities (and thus rewards).
+Here `w_r` (reality_weight) and `w_m` (mentor_weight) are the expert weights; defaults are 0.7 and 0.3 respectively. After normalization on the action set A, this gives us a proper probability distribution. The resulting `p_ref` serves as our **positive reward signal**—a vector over A containing the calibrated "ideal" probabilities (and thus rewards).
 
-**3. evaluating the student's policy**
+**3. Evaluating the student's policy**
 
-the student's policy, `π_student(a | s)`, is judged against this reward landscape. the policy gradient loss aims to move the student's distribution closer to the ideal one. the reinforce rule is `loss = -e_{a ~ π_student} [ r(a) ]`, where our reward `r(a) = p_ideal(a | s)`—we also add an entropy bonus `−β·H[π_θ(·|s)]` to encourage exploration, with `β = entropy_coefficient` (default 0.01) [2, 4]. in practice, stable policy-gradient updates often use PPO-style clipping and variance reduction such as GAE [6, 7].
+The student's policy, `π_student(a | s)`, is judged against this reward landscape. The policy gradient loss aims to move the student's distribution closer to the ideal one. The reinforce rule is `loss = -e_{a ~ π_student} [ r(a) ]`, where our reward `r(a) = p_ideal(a | s)`—we also add an entropy bonus `−β·H[π_θ(·|s)]` to encourage exploration, with `β = entropy_coefficient` (default 0.01) [2, 4]. In practice, stable policy-gradient updates often use PPO-style clipping and variance reduction such as GAE [6, 7].
 
-#### learning to calibrate the critic internally
+#### Learning to Calibrate the Critic Internally
 
-by including the student's top-k predictions in the action space, we create a self-reinforcement mechanism. not only the model learns to predict the ground truth, but also learns to calibrate the critic's predictions via its own top-k predictions.
+By including the student's top-k predictions in the action space, we create a self-reinforcement mechanism. Not only the model learns to predict the ground truth, but also learns to calibrate the critic's predictions via its own top-k predictions.
 
-**concurrent top-k evaluation**
+**Concurrent top-k evaluation**
 
-instead of sampling actions and performing k sequential rollouts, avatarl concurrently evaluates the student's top-k, the critic's top-k, and the gold token — an efficient 2k+1 rollout-equivalent with guided exploration. specifically:
-- we evaluate all actions in the expanded action space (~2k+1 tokens) simultaneously
-- each action gets its reward from the pre-computed expert consensus reward model
-- the student's entire probability distribution over these actions is updated via policy gradient
+Instead of sampling actions and performing k sequential rollouts, avatarl concurrently evaluates the student's top-k, the critic's top-k, and the gold token — an efficient 2k+1 rollout-equivalent with guided exploration. Specifically:
+- We evaluate all actions in the expanded action space (~2k+1 tokens) simultaneously
+- Each action gets its reward from the pre-computed expert consensus reward model
+- The student's entire probability distribution over these actions is updated via policy gradient
 
 ```ascii
    typical rl (k sequential rollouts):        avatarl (2k+1 rollout-equivalent, concurrent):
-   
+
    sample action → run rollout (×k)       gather student top-k + critic top-k + gold
    sample action → run rollout            ↓
    sample action → run rollout            compute rewards for all selected actions
    ...repeat n times...                   ↓
    ↓                                      update policy on all actions
    average rewards                        simultaneously
-   ↓                                      
+   ↓
    update policy                          one concurrent pass, guided exploration
-   
+
    [slow & high variance]                [fast & low variance]
 ```
 
-for efficient pretraining we avoid monte carlo sampling, and instead do **exhaustive evaluation** over the reduced action space.
+For efficient pretraining we avoid Monte Carlo sampling, and instead do **exhaustive evaluation** over the reduced action space.
 
-**the mathematical truth**:
+**The mathematical truth**:
 ```python
 # what avatarl doesn't do (sequential per-token rollouts):
 for rollout in range(num_rollouts):  # no sequential rollouts per token
@@ -378,27 +378,27 @@ rewards = consensus_model(action_space)  # pre-computed for all actions
 loss = -sum(log_prob(action) * reward for action in action_space)  # update all at once
 ```
 
-**per-prediction statistics**:
-- **rollout-equivalent**: 2k+1 (student k + critic k + gold), evaluated concurrently
-- **actions evaluated**: ~2k+1 (entire expanded action space)
-- **samples drawn**: deterministic top-k selection (or top-p if enabled)
-- **reward computations**: ~2k+1 (one per action in space)
-- **gradient updates**: 1 (single policy gradient step)
+**Per-prediction statistics**:
+- **Rollout-equivalent**: 2k+1 (student k + critic k + gold), evaluated concurrently
+- **Actions evaluated**: ~2k+1 (entire expanded action space)
+- **Samples drawn**: deterministic top-k selection (or top-p if enabled)
+- **Reward computations**: ~2k+1 (one per action in space)
+- **Gradient updates**: 1 (single policy gradient step)
 
-## results
+## Results
 
 avatarl has been completely open sourced and researched in the open from day 1.
-hence what you see are the earliest results after getting it to work.
+Hence what you see are the earliest results after getting it to work.
 
-we successfully validated the approach on a model in size range of 30M-250M parameters using avatarl. in each case, we used a critic model of size 30M parameters. around 2B tokens were used for training where the dataset used for this was [openwebtext](https://huggingface.co/datasets/Skylion007/openwebtext). 
+We successfully validated the approach on a model in size range of 30M-250M parameters using avatarl. In each case, we used a critic model of size 30M parameters. Around 2B tokens were used for training where the dataset used for this was [OpenWebText](https://huggingface.co/datasets/Skylion007/openwebtext).
 
-for the same param size, the avatarl trained model can reach similar cross entropy loss as a standard pretrained model.
+For the same param size, the avatarl trained model can reach similar cross-entropy loss as a standard pretrained model.
 
 avatarl also allows us to train the models for equivalent of 50-60B tokens on 2B tokens of data because of the dense reward signal.
 
-this is how the training and validation curves look like for a 250M parameter model, validated every 500 steps.
+This is how the training and validation curves look like for a 250M parameter model, validated every 500 steps.
 
-### Training loss against combined distribution (2k+1)
+### Training Loss Against Combined Distribution (2k+1)
 ![train_curves](/posts/images/train_loss.png)
 
 ### Average Reward Progress
@@ -459,56 +459,56 @@ this is how the training and validation curves look like for a 250M parameter mo
 >
 > We are now reminded that our understanding is limited in comparison to the scope of relationships within us. The way that we may assess ourselves under the ideal of our being the sum of our self-interest, we may do it to others and to oneself in order to make our bodies and identities relevant, but it will be
 
-## conclusion
+## Conclusion
 
-cross entropy based next token prediction pretraining as a bitter lesson pilled approach works. i have no issues against it. think of this as an enquiry into three points:
-1. people believing without strong base model rl doesn't work - so why can't the method used for avatarl (action space filtering and smoothing) work for them?
-2. how different is the sample efficiency of learning for a model pretrained with rl?
-3. is this something that can create models with more nuanced understanding of language and benefit from better calibration of top k?
+Cross-entropy-based next-token prediction pretraining as a bitter-lesson-pilled approach works. I have no issues against it. Think of this as an enquiry into three points:
+1. People believing without strong base model RL doesn't work - so why can't the method used for avatarl (action space filtering and smoothing) work for them?
+2. How different is the sample efficiency of learning for a model pretrained with RL?
+3. Is this something that can create models with more nuanced understanding of language and benefit from better calibration of top k?
 
-i originally started this as a cacklemaxxing project (idea which if it works would make me laugh). i am just doing it for satisfying questions in my head.
+I originally started this as a cacklemaxxing project (idea which if it works would make me laugh). I am just doing it for satisfying questions in my head.
 
-## future work
-this is a very early stage of the research.
-i understand that to many trained eyes this feels incomplete.
-i am also primarily a hacker and you may sniff it across my work.
+## Future Work
+This is a very early stage of the research.
+I understand that to many trained eyes this feels incomplete.
+I am also primarily a hacker and you may sniff it across my work.
 
-the agi lab is understaffed (1 person - me) and we are planning to do the following:
+The AGI lab is understaffed (one person—me), and we are planning to do the following:
 - avatarl training objective as gradually sequence level training objective not just tokens
-- train for tool use and minimal world knowledge with pure RL - how small of a banger tool calling model can we get?
+- Train for tool use and minimal world knowledge with pure RL - how small of a banger tool calling model can we get?
 
-if you wish to pick these ideas for yourself or if you wish to collaborate, let me know.
-i would appreciate any support in the form of sponsorship, compute or research collaboration.
+If you wish to pick these ideas for yourself or if you wish to collaborate, let me know.
+I would appreciate any support in the form of sponsorship, compute or research collaboration.
 
-i would be sharing discussion on the approaches that i took but didn't succeed as well.
+I would be sharing discussion on the approaches that I took but didn't succeed as well.
 
-## acknowledgements
+## Acknowledgements
 [Chinmay Kak](https://x.com/ChinmayKak), who discussed this with me on call and instantly started hacking the idea using GRPO. The skeleton code for the earliest version was written by him.
 
 [Telt](https://x.com/twofifteenam) for the support and compute.
 
 [Ravi Theja](https://x.com/ravithejads) for taking initiative on his own to put me in touch with @except_raised.
 
-huge thanks to everyone who reposted, shared and got it the initial attention, i appreciate all of you.
+Huge thanks to everyone who reposted, shared and got it the initial attention, I appreciate all of you.
 
-modal cloud is awesome. it makes running experiments simple. no worrying about instance management or forgotten resources - it just works. it kinda suits my adhd hacker brain very well.
+Modal is awesome. It makes running experiments simple. No worrying about instance management or forgotten resources—it just works. It suits my ADHD hacker brain very well.
 
-the infrastructure is solid too. cold starts that take just 5-6s time let me hack things out locally and simply trigger the job with a command.
-
-
-## sponsorship
-this work was sponsored for compute credits by [@except_raised](https://x.com/except_raised), [@twofifteenam](https://x.com/twofifteenam) and [@modal_labs](https://x.com/modal_labs)
+The infrastructure is solid too. Cold starts that take just 5-6s time let me hack things out locally and simply trigger the job with a command.
 
 
-## code
+## Sponsorship
+This work was sponsored for compute credits by [@except_raised](https://x.com/except_raised), [@twofifteenam](https://x.com/twofifteenam) and [@modal_labs](https://x.com/modal_labs)
 
-everything is open sourced and available on [github](https://github.com/tokenbender/avataRL).
 
-## references
+## Code
 
-[1] Dong, Q., Dong, L., Tang, Y., Ye, T., Sun, Y., Sui, Z., & Wei, F. (2025). Reinforcement Pre-Training. arXiv:2506.08007.
+Everything is open sourced and available on [GitHub](https://github.com/tokenbender/avataRL).
 
-[2] Hong, J., Dragan, A., & Levine, S. (2024). Q-SFT: Q-Learning for Language Models via Supervised Fine-Tuning. arXiv:2411.05193.
+## References
+
+[1] Dong, Q., Dong, L., Tang, Y., Ye, T., Sun, Y., Sui, Z., & Wei, F. (2025). Reinforcement Pre-Training. ArXiv:2506.08007.
+
+[2] Hong, J., Dragan, A., & Levine, S. (2024). Q-SFT: Q-Learning for Language Models via Supervised Fine-Tuning. ArXiv:2411.05193.
 
 [3] Norouzi, M., Bengio, S., Chen, Z., Jaitly, N., Schuster, M., Wu, Y., & Schuurmans, D. (2016). Reward Augmented Maximum Likelihood for Neural Structured Prediction. NeurIPS 2016.
 
@@ -520,6 +520,6 @@ everything is open sourced and available on [github](https://github.com/tokenben
 
 [7] Peters, J., & Schaal, S. (2007). Reinforcement Learning by Reward-Weighted Regression for Operational Space Control. ICML 2007.
 
-[8] Agarwal, R., Schwarzer, M., Castro, P. S., Courville, A., & Bellemare, M. G. (2022). Reincarnating Reinforcement Learning: Reusing Prior Computation to Accelerate Progress. NeurIPS 2022. arXiv:2206.01626.
+[8] Agarwal, R., Schwarzer, M., Castro, P. S., Courville, A., & Bellemare, M. G. (2022). Reincarnating Reinforcement Learning: Reusing Prior Computation to Accelerate Progress. NeurIPS 2022. ArXiv:2206.01626.
 
-[9] Furlanello, T., Lipton, Z., Tschannen, M., Itti, L., & Anandkumar, A. (2018). Born Again Neural Networks. Proceedings of ICML 2018, PMLR 80:1607-1616. arXiv:1805.04770.
+[9] Furlanello, T., Lipton, Z., Tschannen, M., Itti, L., & Anandkumar, A. (2018). Born Again Neural Networks. Proceedings of ICML 2018, PMLR 80:1607-1616. ArXiv:1805.04770.

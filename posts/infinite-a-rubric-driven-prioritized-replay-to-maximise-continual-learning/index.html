@@ -51,55 +51,55 @@
     </header>
 
     <main class="post-layout no-sidenotes">
-        <aside class="post-toc"><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#abstract" data-toc-link="abstract">abstract</a></li><li class="toc-item toc-level-2"><a href="#understanding-infinite-replay" data-toc-link="understanding-infinite-replay">understanding infinite replay</a></li><li class="toc-item toc-level-2"><a href="#the-intuition" data-toc-link="the-intuition">the intuition</a></li><li class="toc-item toc-level-2"><a href="#visual-flow" data-toc-link="visual-flow">visual flow</a></li><li class="toc-item toc-level-2"><a href="#contamination-detection-and-data-integrity" data-toc-link="contamination-detection-and-data-integrity">contamination detection and data integrity</a></li><li class="toc-item toc-level-2"><a href="#implementation-architecture" data-toc-link="implementation-architecture">implementation architecture</a></li><li class="toc-item toc-level-2"><a href="#upgrade-mode-enhancing-post-trained-models" data-toc-link="upgrade-mode-enhancing-post-trained-models">upgrade mode: enhancing post-trained models</a></li><li class="toc-item toc-level-2"><a href="#evaluation-metrics-and-success-criteria" data-toc-link="evaluation-metrics-and-success-criteria">evaluation metrics and success criteria</a></li><li class="toc-item toc-level-2"><a href="#planning-the-details" data-toc-link="planning-the-details">planning the details</a></li><li class="toc-item toc-level-2"><a href="#division-by-contribution-areas" data-toc-link="division-by-contribution-areas">division by contribution areas</a></li></ol></nav></aside>
+        <aside class="post-toc"><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#abstract" data-toc-link="abstract">Abstract</a></li><li class="toc-item toc-level-2"><a href="#understanding-infinite-replay" data-toc-link="understanding-infinite-replay">Understanding infinite Replay</a></li><li class="toc-item toc-level-2"><a href="#the-intuition" data-toc-link="the-intuition">The Intuition</a></li><li class="toc-item toc-level-2"><a href="#visual-flow" data-toc-link="visual-flow">Visual Flow</a></li><li class="toc-item toc-level-2"><a href="#contamination-detection-and-data-integrity" data-toc-link="contamination-detection-and-data-integrity">Contamination Detection and Data Integrity</a></li><li class="toc-item toc-level-2"><a href="#implementation-architecture" data-toc-link="implementation-architecture">Implementation Architecture</a></li><li class="toc-item toc-level-2"><a href="#upgrade-mode-enhancing-post-trained-models" data-toc-link="upgrade-mode-enhancing-post-trained-models">Upgrade Mode: Enhancing Post-trained Models</a></li><li class="toc-item toc-level-2"><a href="#evaluation-metrics-and-success-criteria" data-toc-link="evaluation-metrics-and-success-criteria">Evaluation Metrics and Success Criteria</a></li><li class="toc-item toc-level-2"><a href="#planning-the-details" data-toc-link="planning-the-details">Planning the Details</a></li><li class="toc-item toc-level-2"><a href="#division-by-contribution-areas" data-toc-link="division-by-contribution-areas">Division by Contribution Areas</a></li></ol></nav></aside>
         <article class="post-content" id="post-content">
             <h1>infinite — A Rubric-Driven Prioritized Replay to Maximise Continual Learning</h1>
             <div class="post-meta"><span class="meta-item">August 20, 2025</span><span class="meta-sep">·</span><span class="post-category">Research</span><span class="meta-sep">·</span><span class="meta-item">6 min read</span><span class="meta-sep">·</span><span class="post-status">Research</span><span class="meta-sep">·</span><span class="post-tags"><span class="post-tag">Continual Learning</span><span class="post-tag">Reinforcement Learning</span><span class="post-tag">Evaluation</span></span></div>
-            <details class="post-toc-mobile"><summary>Contents</summary><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#abstract" data-toc-link="abstract">abstract</a></li><li class="toc-item toc-level-2"><a href="#understanding-infinite-replay" data-toc-link="understanding-infinite-replay">understanding infinite replay</a></li><li class="toc-item toc-level-2"><a href="#the-intuition" data-toc-link="the-intuition">the intuition</a></li><li class="toc-item toc-level-2"><a href="#visual-flow" data-toc-link="visual-flow">visual flow</a></li><li class="toc-item toc-level-2"><a href="#contamination-detection-and-data-integrity" data-toc-link="contamination-detection-and-data-integrity">contamination detection and data integrity</a></li><li class="toc-item toc-level-2"><a href="#implementation-architecture" data-toc-link="implementation-architecture">implementation architecture</a></li><li class="toc-item toc-level-2"><a href="#upgrade-mode-enhancing-post-trained-models" data-toc-link="upgrade-mode-enhancing-post-trained-models">upgrade mode: enhancing post-trained models</a></li><li class="toc-item toc-level-2"><a href="#evaluation-metrics-and-success-criteria" data-toc-link="evaluation-metrics-and-success-criteria">evaluation metrics and success criteria</a></li><li class="toc-item toc-level-2"><a href="#planning-the-details" data-toc-link="planning-the-details">planning the details</a></li><li class="toc-item toc-level-2"><a href="#division-by-contribution-areas" data-toc-link="division-by-contribution-areas">division by contribution areas</a></li></ol></nav></details>
+            <details class="post-toc-mobile"><summary>Contents</summary><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#abstract" data-toc-link="abstract">Abstract</a></li><li class="toc-item toc-level-2"><a href="#understanding-infinite-replay" data-toc-link="understanding-infinite-replay">Understanding infinite Replay</a></li><li class="toc-item toc-level-2"><a href="#the-intuition" data-toc-link="the-intuition">The Intuition</a></li><li class="toc-item toc-level-2"><a href="#visual-flow" data-toc-link="visual-flow">Visual Flow</a></li><li class="toc-item toc-level-2"><a href="#contamination-detection-and-data-integrity" data-toc-link="contamination-detection-and-data-integrity">Contamination Detection and Data Integrity</a></li><li class="toc-item toc-level-2"><a href="#implementation-architecture" data-toc-link="implementation-architecture">Implementation Architecture</a></li><li class="toc-item toc-level-2"><a href="#upgrade-mode-enhancing-post-trained-models" data-toc-link="upgrade-mode-enhancing-post-trained-models">Upgrade Mode: Enhancing Post-trained Models</a></li><li class="toc-item toc-level-2"><a href="#evaluation-metrics-and-success-criteria" data-toc-link="evaluation-metrics-and-success-criteria">Evaluation Metrics and Success Criteria</a></li><li class="toc-item toc-level-2"><a href="#planning-the-details" data-toc-link="planning-the-details">Planning the Details</a></li><li class="toc-item toc-level-2"><a href="#division-by-contribution-areas" data-toc-link="division-by-contribution-areas">Division by Contribution Areas</a></li></ol></nav></details>
             <blockquote>
-<p>&quot;an infinite game is played for the purpose of continuing the play. not for winning or achieving a specific end.&quot; — James P. Carse</p>
+<p>&quot;An infinite game is played for the purpose of continuing the play. Not for winning or achieving a specific end.&quot; — James P. Carse</p>
 </blockquote>
-<h2 id="abstract">abstract</h2>
-<p>continual learning systems face a fundamental challenge: how to efficiently retain and build upon previously learned knowledge while adapting to new information. traditional training methods often suffer from catastrophic forgetting and inefficient resource utilization.</p>
-<p>infinite introduces a <strong>rubric-driven prioritized replay mechanism</strong> that transforms how continual learning systems select, prioritize, and replay experiences. by implementing a diverse and adaptive evaluation framework, infinite aims to ensure that the most educationally valuable experiences are replayed with optimal frequency.</p>
-<p><strong>key innovations:</strong></p>
+<h2 id="abstract">Abstract</h2>
+<p>Continual learning systems face a fundamental challenge: how to efficiently retain and build upon previously learned knowledge while adapting to new information. Traditional training methods often suffer from catastrophic forgetting and inefficient resource utilization.</p>
+<p>infinite introduces a <strong>rubric-driven prioritized replay mechanism</strong> that transforms how continual learning systems select, prioritize, and replay experiences. By implementing a diverse and adaptive evaluation framework, infinite aims to ensure that the most educationally valuable experiences are replayed with optimal frequency.</p>
+<p><strong>Key innovations:</strong></p>
 <ul>
-<li><strong>curriculum-based domain selection</strong>: dynamically prioritizes training domains based on performance bands (low/medium/high) and staleness metrics</li>
-<li><strong>on-policy training with fresh rollouts</strong>: maintains policy freshness without storing old trajectories, using distributed state tracking across domains</li>
-<li><strong>contamination detection</strong>: pre-training validation ensures evaluation data hasn&#39;t leaked into training sets</li>
-<li><strong>upgrade mode</strong>: enhances post-trained models with new capabilities while preserving prior skills via KL anchoring</li>
-<li><strong>mixed/single batch alternation</strong>: alternates between focused single-domain and cross-domain mixed batches for optimal generalization</li>
+<li><strong>Curriculum-based domain selection</strong>: dynamically prioritizes training domains based on performance bands (low/medium/high) and staleness metrics</li>
+<li><strong>On-policy training with fresh rollouts</strong>: maintains policy freshness without storing old trajectories, using distributed state tracking across domains</li>
+<li><strong>Contamination detection</strong>: pre-training validation ensures evaluation data hasn&#39;t leaked into training sets</li>
+<li><strong>Upgrade mode</strong>: enhances post-trained models with new capabilities while preserving prior skills via KL anchoring</li>
+<li><strong>Mixed/single batch alternation</strong>: alternates between focused single-domain and cross-domain mixed batches for optimal generalization</li>
 </ul>
-<p>this approach addresses both (1) minimizing forgetfulness across multiple domains over long horizons, and (2) upgrading post-trained models when original training data is unavailable.</p>
+<p>This approach addresses both (1) minimizing forgetfulness across multiple domains over long horizons, and (2) upgrading post-trained models when original training data is unavailable.</p>
 <hr>
-<h2 id="understanding-infinite-replay">understanding infinite replay</h2>
-<p>imagine you&#39;re training an AI system to master multiple domains. these domains are not necessarily related to each other. they may also vary in complexity. you want to have a single base model that can learn from all of these domains. but also it should be able to learn from new domains as they come in. currently we don&#39;t have anything that tackles this effectively. my question is: how do we do this with what we already have?</p>
-<p>there are many approaches to this problem. most of them being architecture level changes. i want to explore the possibility of doing this with the assumption that it is already possible given the right training methodology.</p>
-<h2 id="the-intuition">the intuition</h2>
-<p>the idea borrows from spaced repetition mechanisms - replay the most important experiences with highest frequency while maintaining minimal coverage of stable areas.</p>
-<p><strong>concrete mechanisms:</strong></p>
-<p><strong>performance band assignment:</strong></p>
+<h2 id="understanding-infinite-replay">Understanding infinite Replay</h2>
+<p>Imagine you&#39;re training an AI system to master multiple domains. These domains are not necessarily related to each other. They may also vary in complexity. You want to have a single base model that can learn from all of these domains. But also it should be able to learn from new domains as they come in. Currently we don&#39;t have anything that tackles this effectively. My question is: how do we do this with what we already have?</p>
+<p>There are many approaches to this problem. Most of them being architecture level changes. I want to explore the possibility of doing this with the assumption that it is already possible given the right training methodology.</p>
+<h2 id="the-intuition">The Intuition</h2>
+<p>The idea borrows from spaced repetition mechanisms - replay the most important experiences with highest frequency while maintaining minimal coverage of stable areas.</p>
+<p><strong>Concrete mechanisms:</strong></p>
+<p><strong>Performance band assignment:</strong></p>
 <ul>
-<li>convert rubric grades (1-4 scale) to pass/fail indicators (pass ≥ 3)</li>
-<li>track exponential moving average (EMA) of pass rates per domain</li>
-<li>assign performance bands: low (&lt;0.4), medium (0.4-0.8), high (&gt;0.8)</li>
+<li>Convert rubric grades (1-4 scale) to pass/fail indicators (pass ≥ 3)</li>
+<li>Track exponential moving average (EMA) of pass rates per domain</li>
+<li>Assign performance bands: low (&lt;0.4), medium (0.4-0.8), high (&gt;0.8)</li>
 </ul>
-<p><strong>adaptive scheduling priorities:</strong></p>
+<p><strong>Adaptive scheduling priorities:</strong></p>
 <ul>
-<li>low performers: 60% of training capacity (frequent practice)</li>
-<li>medium performers: 30% capacity (regular practice)  </li>
-<li>high performers: 10% capacity (occasional refresh)</li>
-<li>staleness boost: domains not seen recently get priority increase</li>
-<li>uncertainty factor: high variance in recent grades indicates exploration value</li>
+<li>Low performers: 60% of training capacity (frequent practice)</li>
+<li>Medium performers: 30% capacity (regular practice)</li>
+<li>High performers: 10% capacity (occasional refresh)</li>
+<li>Staleness boost: domains not seen recently get priority increase</li>
+<li>Uncertainty factor: high variance in recent grades indicates exploration value</li>
 </ul>
-<p><strong>anti-forgetting feedback loop:</strong></p>
-<pre><code>domain performance drops → low band assignment → increased sampling priority → 
+<p><strong>Anti-forgetting feedback loop:</strong></p>
+<pre><code>domain performance drops → low band assignment → increased sampling priority →
 more training → performance recovery → higher band → reduced sampling
 </code></pre>
-<p><strong>distributed state tracking:</strong>
+<p><strong>Distributed state tracking:</strong>
 each domain maintains: <code>acc_ema</code>, <code>performance_band</code>, <code>last_seen_step</code>, <code>grade_uncertainty</code></p>
-<p>this creates a self-regulating system where struggling domains automatically receive more attention while stable domains are maintained with minimal overhead.</p>
-<h2 id="visual-flow">visual flow</h2>
+<p>This creates a self-regulating system where struggling domains automatically receive more attention while stable domains are maintained with minimal overhead.</p>
+<h2 id="visual-flow">Visual Flow</h2>
 <pre><code>INFINITE: Rubric-Driven Prioritized Replay for Continual Learning
 ═══════════════════════════════════════════════════════════════════
 
@@ -166,158 +166,158 @@ each domain maintains: <code>acc_ema</code>, <code>performance_band</code>, <cod
 
 PROCESS FLOW: Domains → Evaluation → Detection → Scheduling → Execution → Learning
 </code></pre>
-<h2 id="contamination-detection-and-data-integrity">contamination detection and data integrity</h2>
-<p>before any training begins, infinite implements comprehensive contamination detection to ensure evaluation data hasn&#39;t leaked into training sets:</p>
-<p><strong>pre-training validation protocol:</strong></p>
+<h2 id="contamination-detection-and-data-integrity">Contamination Detection and Data Integrity</h2>
+<p>Before any training begins, infinite implements comprehensive contamination detection to ensure evaluation data hasn&#39;t leaked into training sets:</p>
+<p><strong>Pre-training validation protocol:</strong></p>
 <ul>
-<li>sample representative subsets from each training domain</li>
-<li>compute semantic similarity (cosine similarity of embeddings) between training and evaluation prompts</li>
-<li>flag matches exceeding configurable threshold (default: 0.95 cosine similarity)</li>
-<li>generate detailed contamination audit report with exact matches and near-duplicates</li>
-<li>either automatically remove contaminated samples or halt with error if contamination exceeds tolerance</li>
-<li>persist contamination logs for reproducibility and compliance</li>
+<li>Sample representative subsets from each training domain</li>
+<li>Compute semantic similarity (cosine similarity of embeddings) between training and evaluation prompts</li>
+<li>Flag matches exceeding configurable threshold (default: 0.95 cosine similarity)</li>
+<li>Generate detailed contamination audit report with exact matches and near-duplicates</li>
+<li>Either automatically remove contaminated samples or halt with error if contamination exceeds tolerance</li>
+<li>Persist contamination logs for reproducibility and compliance</li>
 </ul>
-<p><strong>why this matters:</strong> contaminated evaluation data leads to inflated performance metrics and false confidence in model capabilities. this validation step ensures legitimate measurement of continual learning progress.</p>
-<h2 id="implementation-architecture">implementation architecture</h2>
-<p><strong>core training loop (every step k):</strong></p>
+<p><strong>Why this matters:</strong> contaminated evaluation data leads to inflated performance metrics and false confidence in model capabilities. This validation step ensures legitimate measurement of continual learning progress.</p>
+<h2 id="implementation-architecture">Implementation Architecture</h2>
+<p><strong>Core training loop (every step k):</strong></p>
 <ol>
-<li><p><strong>domain state tracking</strong></p>
+<li><p><strong>Domain state tracking</strong></p>
 <ul>
-<li>maintain domain statistics (performance, staleness, uncertainty)</li>
-<li>synchronize across training nodes when distributed</li>
+<li>Maintain domain statistics (performance, staleness, uncertainty)</li>
+<li>Synchronize across training nodes when distributed</li>
 </ul>
 </li>
-<li><p><strong>domain health assessment</strong></p>
+<li><p><strong>Domain health assessment</strong></p>
 <ul>
-<li>calculate performance bands from acc_ema thresholds</li>
-<li>compute staleness (steps since domain last trained)</li>
-<li>measure uncertainty from recent grade variance</li>
+<li>Calculate performance bands from acc_ema thresholds</li>
+<li>Compute staleness (steps since domain last trained)</li>
+<li>Measure uncertainty from recent grade variance</li>
 </ul>
 </li>
-<li><p><strong>batch composition strategy</strong></p>
+<li><p><strong>Batch composition strategy</strong></p>
 <ul>
-<li>every 10th step: single-domain batch (focused learning)</li>
-<li>other steps: mixed-domain batch (cross-domain transfer)</li>
-<li>research suggests 12% better generalization from alternation</li>
+<li>Every 10th step: single-domain batch (focused learning)</li>
+<li>Other steps: mixed-domain batch (cross-domain transfer)</li>
+<li>Research suggests 12% better generalization from alternation</li>
 </ul>
 </li>
-<li><p><strong>priority-driven domain selection</strong></p>
+<li><p><strong>Priority-driven domain selection</strong></p>
 <pre><code class="language-python">priority = band_weight + staleness_factor + uncertainty_factor + base_weight
 domain_shares = softmax(priorities + anti_starvation_epsilon)
 </code></pre>
 </li>
-<li><p><strong>rollout execution and grading</strong></p>
+<li><p><strong>Rollout execution and grading</strong></p>
 <ul>
-<li>generate model responses for selected prompts</li>
-<li>evaluate using domain-specific rubrics (1-4 scale)</li>
-<li>update acc_ema with pass/fail indicators</li>
+<li>Generate model responses for selected prompts</li>
+<li>Evaluate using domain-specific rubrics (1-4 scale)</li>
+<li>Update acc_ema with pass/fail indicators</li>
 </ul>
 </li>
 <li><p><strong>GRPO gradient updates</strong> with KL regularization</p>
 </li>
 </ol>
-<p><strong>key components to build:</strong></p>
+<p><strong>Key components to build:</strong></p>
 <ul>
 <li><strong>InfiniteGRPOTrainer</strong>: extends base GRPO with curriculum scheduling</li>
-<li><strong>TriageStateManager</strong>: persistent distributed state storage  </li>
+<li><strong>TriageStateManager</strong>: persistent distributed state storage</li>
 <li><strong>ContaminationDetector</strong>: pre-training validation (0.95 cosine similarity threshold)</li>
 <li><strong>TriageSampler</strong>: priority calculation and batch assembly</li>
 <li><strong>RubricEvaluator</strong>: 4-point grading framework</li>
 </ul>
-<p><strong>domain state structure:</strong></p>
+<p><strong>Domain state structure:</strong></p>
 <pre><code class="language-python">class TriageState:
     acc_ema: float           # exponential moving average of pass rates
-    performance_band: str    # &quot;low&quot;, &quot;medium&quot;, &quot;high&quot; 
+    performance_band: str    # &quot;low&quot;, &quot;medium&quot;, &quot;high&quot;
     last_seen_step: int      # staleness tracking
     grade_uncertainty: float # variance in recent rubric scores
 </code></pre>
-<h2 id="upgrade-mode-enhancing-post-trained-models">upgrade mode: enhancing post-trained models</h2>
-<p>upgrade mode addresses a critical real-world scenario: you have a well-trained model M0, but original training data is unavailable. you want to add new capabilities without losing existing skills.</p>
-<p><strong>initialization workflow:</strong></p>
+<h2 id="upgrade-mode-enhancing-post-trained-models">Upgrade Mode: Enhancing Post-trained Models</h2>
+<p>Upgrade mode addresses a critical real-world scenario: you have a well-trained model M0, but original training data is unavailable. You want to add new capabilities without losing existing skills.</p>
+<p><strong>Initialization workflow:</strong></p>
 <ol>
-<li><strong>contamination check</strong>: validate new training data doesn&#39;t overlap with evaluation suites</li>
-<li><strong>baseline establishment</strong>: evaluate frozen model M0 on all domain evaluation suites</li>
-<li><strong>state initialization</strong>: set initial acc_ema values for each domain based on M0&#39;s performance</li>
-<li><strong>anchor setup</strong>: configure KL divergence penalties toward M0 to prevent forgetting</li>
+<li><strong>Contamination check</strong>: validate new training data doesn&#39;t overlap with evaluation suites</li>
+<li><strong>Baseline establishment</strong>: evaluate frozen model M0 on all domain evaluation suites</li>
+<li><strong>State initialization</strong>: set initial acc_ema values for each domain based on M0&#39;s performance</li>
+<li><strong>Anchor setup</strong>: configure KL divergence penalties toward M0 to prevent forgetting</li>
 </ol>
-<p><strong>training modifications:</strong></p>
+<p><strong>Training modifications:</strong></p>
 <ul>
-<li><strong>conservative scheduling</strong>: allocate 70% batch capacity to new domains, 30% to prior domain maintenance</li>
-<li><strong>stronger KL regularization</strong>: apply higher penalties (coefficient ≥0.1) to maintain similarity to M0</li>
-<li><strong>anti-starvation guarantees</strong>: ensure prior domains get minimum sampling even when performing well</li>
-<li><strong>gradual capability transfer</strong>: start with lower learning rates on new domains</li>
+<li><strong>Conservative scheduling</strong>: allocate 70% batch capacity to new domains, 30% to prior domain maintenance</li>
+<li><strong>Stronger KL regularization</strong>: apply higher penalties (coefficient ≥0.1) to maintain similarity to M0</li>
+<li><strong>Anti-starvation guarantees</strong>: ensure prior domains get minimum sampling even when performing well</li>
+<li><strong>Gradual capability transfer</strong>: start with lower learning rates on new domains</li>
 </ul>
-<p><strong>safety mechanisms:</strong></p>
+<p><strong>Safety mechanisms:</strong></p>
 <ul>
-<li><strong>regression monitoring</strong>: track performance on prior domains at every evaluation</li>
-<li><strong>multi-tier alerts</strong>: escalating responses when prior domain performance drops</li>
-<li><strong>automatic rollback</strong>: return to previous checkpoint if regression exceeds thresholds</li>
-<li><strong>human-in-the-loop gating</strong>: require manual review after repeated safety violations</li>
+<li><strong>Regression monitoring</strong>: track performance on prior domains at every evaluation</li>
+<li><strong>Multi-tier alerts</strong>: escalating responses when prior domain performance drops</li>
+<li><strong>Automatic rollback</strong>: return to previous checkpoint if regression exceeds thresholds</li>
+<li><strong>Human-in-the-loop gating</strong>: require manual review after repeated safety violations</li>
 </ul>
-<h2 id="evaluation-metrics-and-success-criteria">evaluation metrics and success criteria</h2>
-<p><strong>forgetting and retention tracking:</strong></p>
+<h2 id="evaluation-metrics-and-success-criteria">Evaluation Metrics and Success Criteria</h2>
+<p><strong>Forgetting and retention tracking:</strong></p>
 <ul>
-<li><strong>backward transfer (BWT)</strong>: performance change on earlier domains after learning new ones</li>
-<li><strong>forward transfer (FWT)</strong>: zero-shot performance gains on unseen domains  </li>
-<li><strong>average accuracy (ACC)</strong>: macro-average across all domains over time</li>
-<li><strong>area under retention curve (AURC)</strong>: long-term stability per domain</li>
-<li><strong>time-to-decay</strong>: steps before performance degrades without practice</li>
+<li><strong>Backward transfer (BWT)</strong>: performance change on earlier domains after learning new ones</li>
+<li><strong>Forward transfer (FWT)</strong>: zero-shot performance gains on unseen domains</li>
+<li><strong>Average accuracy (ACC)</strong>: macro-average across all domains over time</li>
+<li><strong>Area under retention curve (AURC)</strong>: long-term stability per domain</li>
+<li><strong>Time-to-decay</strong>: steps before performance degrades without practice</li>
 </ul>
-<p><strong>continual learning benchmarks:</strong></p>
+<p><strong>Continual learning benchmarks:</strong></p>
 <pre><code class="language-python"># stability curves showing per-domain pass-rate EMA over training steps
 stability_curve = acc_ema_per_domain_over_time
 
 # compare against baselines
 baseline_grpo = standard_grpo_without_scheduling
-infinite_a1 = curriculum_domain_selection_only  
+infinite_a1 = curriculum_domain_selection_only
 infinite_a2 = add_staleness_priority_boosting
 infinite_a3 = add_uncertainty_factors
 infinite_full = mixed_single_batch_alternation
 </code></pre>
-<p><strong>success criteria:</strong></p>
+<p><strong>Success criteria:</strong></p>
 <ul>
-<li>curriculum scheduling improves AURC by ≥25% over baseline GRPO</li>
-<li>mixed/single alternation shows measurable generalization benefit</li>
-<li>upgrade mode: new domain improvement ≥5 points, prior domain drop ≤1 point</li>
-<li>contamination detection catches known overlaps with 95%+ accuracy</li>
+<li>Curriculum scheduling improves AURC by ≥25% over baseline GRPO</li>
+<li>Mixed/single alternation shows measurable generalization benefit</li>
+<li>Upgrade mode: new domain improvement ≥5 points, prior domain drop ≤1 point</li>
+<li>Contamination detection catches known overlaps with 95%+ accuracy</li>
 </ul>
-<p><strong>safety gating policy for upgrade mode:</strong></p>
+<p><strong>Safety gating policy for upgrade mode:</strong></p>
 <ul>
-<li>first alert: increase domain bucket weight to boost sampling</li>
-<li>second alert: strengthen KL penalty toward baseline model M0  </li>
-<li>third alert: reduce new domain sampling temporarily</li>
-<li>final gate: halt training and require human review after H failed evaluations</li>
+<li>First alert: increase domain bucket weight to boost sampling</li>
+<li>Second alert: strengthen KL penalty toward baseline model M0</li>
+<li>Third alert: reduce new domain sampling temporarily</li>
+<li>Final gate: halt training and require human review after H failed evaluations</li>
 </ul>
-<h2 id="planning-the-details">planning the details</h2>
-<p>we need to plan the details of the implementation.</p>
+<h2 id="planning-the-details">Planning the Details</h2>
+<p>We need to plan the details of the implementation.</p>
 <ul>
-<li>choice of base model?</li>
-<li>which domains to use?</li>
-<li>detecting catastrophic forgetting in standard RL training for the base model?</li>
-<li>what to measure for each domain?</li>
-<li>expected challenges with reward hacking?</li>
-<li>known works that tackle this or something similar?</li>
-<li>rough timeline?</li>
-<li>what people with various backgrounds can contribute?</li>
+<li>Choice of base model?</li>
+<li>Which domains to use?</li>
+<li>Detecting catastrophic forgetting in standard RL training for the base model?</li>
+<li>What to measure for each domain?</li>
+<li>Expected challenges with reward hacking?</li>
+<li>Known works that tackle this or something similar?</li>
+<li>Rough timeline?</li>
+<li>What people with various backgrounds can contribute?</li>
 </ul>
-<h2 id="division-by-contribution-areas">division by contribution areas</h2>
-<p>broadly there are six areas of contribution where there are lots of things to be done: </p>
+<h2 id="division-by-contribution-areas">Division by Contribution Areas</h2>
+<p>Broadly there are six areas of contribution where there are lots of things to be done:</p>
 <ul>
-<li>contamination check scripts - to test the base/instruct model on the domains we pick </li>
-<li>collecting small datasets, evals, RL env for math/code/creative language tasks</li>
-<li>contributing to code based on already decided algorithms (scheduling the replay, how to weight the domains, any other policy gradient design decisions)</li>
-<li>contributing to improving the algorithms based on some identified disadvantage</li>
-<li>compute/running experiments</li>
-<li>miscellaneous (any software level, uncategorised feedback/improvement)</li>
+<li>Contamination check scripts - to test the base/instruct model on the domains we pick</li>
+<li>Collecting small datasets, evals, RL env for math/code/creative language tasks</li>
+<li>Contributing to code based on already decided algorithms (scheduling the replay, how to weight the domains, any other policy gradient design decisions)</li>
+<li>Contributing to improving the algorithms based on some identified disadvantage</li>
+<li>Compute/running experiments</li>
+<li>Miscellaneous (any software level, uncategorised feedback/improvement)</li>
 </ul>
-<p>this is a work in progress.
-all updates will be posted here.</p>
-<p><strong>join the discussion:</strong></p>
+<p>This is a work in progress.
+All updates will be posted here.</p>
+<p><strong>Join the discussion:</strong></p>
 <ul>
-<li><a href="https://discord.gg/YaYfPu4ZT4">e/Xperiments discord server</a></li>
-<li><strong>github repo</strong>: <a href="https://github.com/tokenbender/infinite">https://github.com/tokenbender/infinite</a></li>
+<li><a href="https://discord.gg/YaYfPu4ZT4">E/Xperiments Discord server</a></li>
+<li><strong>GitHub Repo</strong>: <a href="https://github.com/tokenbender/infinite">https://github.com/tokenbender/infinite</a></li>
 </ul>
-<p>reach out if you think it is cool and can contribute in any way - collaboration, compute or sponsorship.</p>
+<p>Reach out if you think it is cool and can contribute in any way - collaboration, compute or sponsorship.</p>
 
 <section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">See Also</h2><ul><li><a href="/posts/avatarl/">avatarl: Training Language Models from Scratch with Pure Reinforcement Learning</a><p>Replacing cross-entropy pretraining with a principled RL objective using expert-consensus rewards over active tokens.</p></li><li><a href="/posts/honey-i-shrunk-the-circuits/">Honey, I Shrunk the Circuits!</a><p>Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.</p></li><li><a href="/posts/how-i-bring-the-best-out-of-claude-code-part-2/">How I Bring the Best Out of Claude Code — Part 2</a><p>Custom commands, multi-agent systems, and the protocols that made Claude Code actually useful.</p></li></ul></section>
         </article>

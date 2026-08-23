@@ -7,43 +7,43 @@ status: evergreen
 category: personal
 ---
 
-i'm tokenbender. i love working with large language models.
+I'm tokenbender. I love working with large language models.
 
-## background
+## Background
 
-formerly a technical lead at intel india, i led high-impact projects in the server division and built methods to save significant capital and labour when we had a cap of 5% workforce in office during covid lockdowns. i developed a deep interest in nlp and now focus on end-to-end llm pipelines, including orchestration, dataset curation, filtering, reweighting, and multilingual alignment (indic languages).
+Formerly a technical lead at Intel India, I led high-impact projects in the server division and built methods to save significant capital and labour when we had a cap of 5% workforce in office during COVID-19 lockdowns. I developed a deep interest in NLP and now focus on end-to-end LLM pipelines, including orchestration, dataset curation, filtering, reweighting, and multilingual alignment (Indic languages).
 
-this is how my journey has been so far in the post-chatgpt world.
+This is how my journey has been so far in the post-ChatGPT world.
 
-## key achievements
+## Key Achievements
 
-**codecherrypop**: built from llama 2 7b, the first useful small coder that gained significant attention.
-[linkedin announcement](https://www.linkedin.com/posts/abhishek-harshvardhan-mishra_just-going-to-silently-drop-this-here-my)
+**CodeCherryPop**: built from Llama 2 7B, the first useful small coder that gained significant attention.
+[LinkedIn announcement](https://www.linkedin.com/posts/abhishek-harshvardhan-mishra_just-going-to-silently-drop-this-here-my)
 
-**chai ai success**: achieved top 5 model ranking for multiple months in the chai ai character roleplay hackathon with ~78%+ satisfaction rates.
+**Chai AI Success**: achieved a top-five model ranking for multiple months in the Chai AI character roleplay hackathon with ~78%+ satisfaction rates.
 
-**evolvedseeker**: upgraded the deepseek coder 1.3b base to create what became the best-performing local model in the 1b range for coding tasks.
-[reddit discussion](https://www.reddit.com/r/localllama/comments/181h3lv/13b_with_6829_humaneval_lol_dont_behead_me_part)
+**EvolvedSeeker**: upgraded the DeepSeek Coder 1.3B base to create what became the best-performing local model in the 1B range for coding tasks.
+[Reddit discussion](https://www.reddit.com/r/localllama/comments/181h3lv/13b_with_6829_humaneval_lol_dont_behead_me_part)
 
-**pic series**: secured a top 10 spot on the open hugging face leaderboard with my pic (partner-in-crime) series—demonstrating pioneering function-calling, character engagement, and generic performance boosts all in one model.
-[model on huggingface](https://huggingface.co/tokenbender/pic_7b_mistral_full_v0.2)
+**PIC Series**: secured a top-10 spot on the Open Hugging Face Leaderboard with my PIC (Partner-in-Crime) series—demonstrating pioneering function-calling, character engagement, and generic performance boosts in one model.
+[Model on Hugging Face](https://huggingface.co/tokenbender/pic_7b_mistral_full_v0.2)
 
-**multilingual innovation**: built the first model fine-tuned for both rag and generic chat, also pioneered this approach in indic language space.
-[navarna model](https://huggingface.co/tokenbender/navarna_v0_1_openhermes_hindi)
+**Multilingual Innovation**: built the first model fine-tuned for both RAG and generic chat, and pioneered this approach in the Indic-language space.
+[Navarna model](https://huggingface.co/tokenbender/navarna_v0_1_openhermes_hindi)
 
-## current work
+## Current Work
 
-my datasets and models have amassed several thousand downloads on hugging face, particularly in the coding category. check out my profile: [tokenbender on huggingface](https://huggingface.co/tokenbender)
+My datasets and models have amassed several thousand downloads on Hugging Face, particularly in the coding category. Check out my profile: [tokenbender on Hugging Face](https://huggingface.co/tokenbender)
 
-i spent the last several months diving into multimodal rag (retrieval-augmented generation) for structured/unstructured documents and structured extraction in document visual qa by fine-tuning specialized vlms.
+I spent the last several months diving into multimodal RAG (retrieval-augmented generation) for structured and unstructured documents, and structured extraction in document visual QA by fine-tuning specialized VLMs.
 
-i microblog as [@tokenbender](https://x.com/tokenbender) on twitter—constantly dissecting the latest developments, limits, and advantages of current systems.
+I microblog as [@tokenbender](https://x.com/tokenbender) on Twitter—constantly dissecting the latest developments, limits, and advantages of current systems.
 
-## what to expect
+## What to Expect
 
-i'll be writing about:
-- llm research and practical insights
-- post-training techniques and methodologies
-- multimodal ai and document understanding
-- dataset curation and model alignment
-- thoughts on the evolving ai landscape
+I'll be writing about:
+- LLM research and practical insights
+- Post-training techniques and methodologies
+- Multimodal AI and document understanding
+- Dataset curation and model alignment
+- Thoughts on the evolving AI landscape

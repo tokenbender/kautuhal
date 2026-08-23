@@ -7,84 +7,84 @@ status: evergreen
 category: technical
 ---
 
-## 1. setup requirements
+## 1. Setup Requirements
 
-you need a set of requirements, preferably issues in a repo. take the requirement url and download and save it into an `issues/` folder or have github integration with claude code. then create a file like `<issue_no>.md` or whatever you prefer.
+You need a set of requirements, preferably issues in a repo. Take the requirement URL and download and save it into an `issues/` folder or have GitHub integration with Claude Code. Then create a file like `<issue_no>.md` or whatever you prefer.
 
-> **note:** your requirements list is very crucial, and you should treat it like a wish list for work to be done.
+> **Note:** Your requirements list is very crucial, and you should treat it like a wish list for work to be done.
 
-the more vague you are in describing what you want, the higher the chance you won't get what you wanted. ideally, your instructions should be as unambiguous as a program.
+The more vague you are in describing what you want, the higher the chance you won't get what you wanted. Ideally, your instructions should be as unambiguous as a program.
 
-you also want to be aware of what is already known by the model.
+You also want to be aware of what is already known by the model.
 
-## 2. most important thing: context management
+## 2. Most Important Thing: Context Management
 
-a common pattern:
+A common pattern:
 ```
 [claude code] --> [todo list]
                (fresh context)
 ```
 
-better approach:
+Better approach:
 ```
 well-formalized --> issues/<issue_no>.md (plan)
                 --> docs/plan_<issue_no>.md (issue requirement)
 ```
 
-this `plan_<issue_no>.md` serves as claude's context. the `todo.md` is essentially exactly the same as your to-do list.
+This `plan_<issue_no>.md` serves as Claude's context. The `todo.md` is essentially exactly the same as your to-do list.
 
-> the todo list is nice, but as you consume things in longer context in claude code, it becomes hard to keep up. so we store it inside the `todo.md`.
+> The todo list is nice, but as you consume things in longer context in Claude Code, it becomes hard to keep up. So we store it inside the `todo.md`.
 
-## 3. parallel claude code usage
+## 3. Parallel Claude Code Usage
 
-if you're using multiple claude code windows in parallel, assign each one an issue and its corresponding docs, todos, and requirements. this way, everything is tracked automatically.
+If you're using multiple Claude Code windows in parallel, assign each one an issue and its corresponding docs, todos, and requirements. This way, everything is tracked automatically.
 
-currently, i don't use claude code in parallel much because it tends to create new files for everything, prompt to edit existing files directly, and update code based on outdated or flawed understanding.
+Currently, I don't use Claude Code in parallel much because it tends to create new files for everything, prompt to edit existing files directly, and update code based on outdated or flawed understanding.
 
-that's why i often ask it to detail its plan so i can do smell checks and question intentions like *"oh, you were aiming to do xyz. then why modify abc?"*
+That's why I often ask it to detail its plan so I can do smell checks and question intentions like *"oh, you were aiming to do xyz. Then why modify abc?"*
 
-additionally, claude might start running commands unknowingly and fill context with needless output tokens.
+Additionally, Claude might start running commands unknowingly and fill context with needless output tokens.
 
-> i avoid this by running it manually myself, providing a snippet of the error so it can best debug it.
+> I avoid this by running it manually myself, providing a snippet of the error so it can best debug it.
 
-## 4. execution strategy
+## 4. Execution Strategy
 
-once you're going through each item, do it step by step while enforcing quality standards. you decide how frequently to execute and ensure there are no blindspots.
+Once you're going through each item, do it step by step while enforcing quality standards. You decide how frequently to execute and ensure there are no blindspots.
 
-> personally, i avoid diving into thousands of loc i haven't written or understood.
+> Personally, I avoid diving into thousands of LoC I haven't written or understood.
 
-## 5. iteration and updating context
+## 5. Iteration and Updating Context
 
-as i implement and ensure smooth execution, i iterate with errors and debug, then go back and update crucial observations in the planning docs.
+As I implement and ensure smooth execution, I iterate with errors and debug, then go back and update crucial observations in the planning docs.
 
-> this allows the model to build better understanding of the issue and what is already known.
+> This allows the model to build a better understanding of the issue and what is already known.
 
-## 6. working compactly
+## 6. Working Compactly
 
-in an ideal world, you work on one issue end-to-end in one session.
+In an ideal world, you work on one issue end-to-end in one session.
 
-but usually, context fills out faster and faster. you'll find yourself using "compact" more often.
+But usually, context fills out faster and faster. You'll find yourself using "compact" more often.
 
-if you ever run out of context during execution, claude auto-compacts or asks you to go back to a previous node.
+If you ever run out of context during execution, Claude auto-compacts or asks you to go back to a previous node.
 
-> this is useful when i see a model ignoring feedback and going in loops. in such cases, i jump to a clean node where i was satisfied, compact, generate a summary, and start fresh.
+> This is useful when I see a model ignoring feedback and going in loops. In such cases, I jump to a clean node where I was satisfied, compact, generate a summary, and start fresh.
 
-## 7. integrating claude code into tooling
+## 7. Integrating Claude Code into Tooling
 
-now that claude code sdk exists, you can add it to your tools.
+Now that the Claude Code SDK exists, you can add it to your tools.
 
-i've been using it in shell scripts and proto files. my protocols reflect opinionated views of deep research methodologies and how i debug or visit the ecosystem.
+I've been using it in shell scripts and proto files. My protocols reflect opinionated views of deep research methodologies and how I debug or visit the ecosystem.
 
-for instance, my ecosystem has `issues/` and `todo.md` folders. i use a shell script to invoke tasks in specific ways and let claude interact with other claude instances.
+For instance, my ecosystem has `issues/` and `todo.md` folders. I use a shell script to invoke tasks in specific ways and let Claude interact with other Claude instances.
 
-> essentially, i'm building a local multi-agent system of my own.
+> Essentially, I'm building a local multi-agent system of my own.
 
-## 8. final thoughts
+## 8. Final Thoughts
 
-what are these systems? what protocols are being enforced? how is multi-agent design different? what gives it an edge over standard usage?
+What are these systems? What protocols are being enforced? How is multi-agent design different? What gives it an edge over standard usage?
 
-these are things i'd like to cover in part 2.
+These are things I'd like to cover in part 2.
 
 ---
 
-until then, be well everyone!
+Until then, be well everyone!
