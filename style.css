@@ -1912,6 +1912,37 @@ footer {
 
 }
 
+@media (max-width: 1040px) {
+    .home-hero.kautuhal-ambient-entry {
+        min-height: 720px;
+        padding: 0;
+    }
+
+    .home-identity.kautuhal-ambient-copy {
+        width: min(70%, 520px);
+        min-height: 650px;
+    }
+
+    .kautuhal-ambient-entry .home-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .kautuhal-ambient-entry .intro-action {
+        grid-column: auto;
+    }
+
+    .kautuhal-ambient-entry .primary-action,
+    .kautuhal-ambient-entry .secondary-action,
+    .kautuhal-ambient-entry .intro-action {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .kautuhal-ambient-label {
+        display: none;
+    }
+}
+
 @media (max-width: 960px) {
     .home-page .container,
     .home-page .nav-container {
