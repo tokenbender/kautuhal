@@ -290,8 +290,8 @@ header {
     overflow: hidden;
     border: 1px solid var(--border-color);
     background: var(--bg-color);
-    background: color-mix(in srgb, var(--bg-color) 88%, transparent);
-    backdrop-filter: blur(1px);
+    background: color-mix(in srgb, var(--bg-color) 58%, transparent);
+    backdrop-filter: none;
     font-family: var(--sans);
     isolation: isolate;
 }
