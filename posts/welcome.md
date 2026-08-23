@@ -81,6 +81,7 @@ I like making models do things they have no business doing at their size.
           <span class="journey-glaze-kicker">Nov 2023 · Release-window receipts</span>
           <strong class="journey-glaze-claim">#1 coder in the 1B class.</strong>
           <p class="journey-glaze-lede">Beat models 12× its size.</p>
+          <span class="journey-glaze-voice">“1.3B with 68.29% HumanEval lol, don't behead me.”</span>
           <ul class="journey-glaze-proofs">
             <li>
               <a href="https://huggingface.co/TokenBender/evolvedSeeker_1_3">

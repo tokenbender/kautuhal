@@ -1367,6 +1367,18 @@ header {
     margin: 0.32rem 0 0.9rem;
 }
 
+.journey-glaze-voice {
+    border-left: 1px solid var(--accent-color);
+    color: var(--text-secondary);
+    display: block;
+    font-family: var(--serif);
+    font-size: 0.78rem;
+    font-style: italic;
+    line-height: 1.45;
+    margin: -0.2rem 0 0.9rem;
+    padding-left: 0.62rem;
+}
+
 .post-content .journey-glaze-proofs {
     list-style: none;
     margin: 0 0 0.85rem;
