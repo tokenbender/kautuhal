@@ -7,6 +7,11 @@ status: evergreen
 category: personal
 ---
 
+<figure class="intro-portrait">
+  <img src="/portrait-tokenbender.webp" alt="Portrait of Abhishek Harshvardhan Mishra" width="1158" height="1359" loading="eager" decoding="async">
+  <figcaption><strong>Abhishek Harshvardhan Mishra</strong><span>ML Researcher · Writes as tokenbender</span></figcaption>
+</figure>
+
 Hello!
 
 I am Abhishek Harshvardhan Mishra, though most people who know my work online know me as tokenbender.

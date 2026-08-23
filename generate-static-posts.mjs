@@ -1016,9 +1016,7 @@ function buildArchiveHtml(posts, mode = 'archive') {
 }
 
 function buildHomepageHeroHtml() {
-    const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
-
-    return `<section class="home-hero" aria-labelledby="home-thesis"><div class="home-identity"><p class="home-identity-eyebrow">Kautuhal / Authored Work</p><h1 class="home-thesis" id="home-thesis">I build systems that learn—<em>and systems for learning.</em></h1><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="primary-action" href="#writing">Read Token’s latest writing/research. <span aria-hidden="true">↓</span></a><a class="secondary-action" href="/kalpataru/">Read Token’s collected ideas. <span aria-hidden="true">↗</span></a></div></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}" loading="eager" decoding="async" fetchpriority="high"><figcaption><strong>${escapeHtml(AUTHOR_NAME)}</strong><span>ML Researcher · Writes as ${escapeHtml(AUTHOR_HANDLE)}</span></figcaption></figure></section>`;
+    return `<section class="home-hero" aria-labelledby="home-thesis"><div class="home-identity"><p class="home-identity-eyebrow">Kautuhal / Authored Work</p><h1 class="home-thesis" id="home-thesis">I build systems that learn—<em>and systems for learning.</em></h1><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="#writing">Read my latest writing/research. <span aria-hidden="true">↓</span></a><a class="secondary-action" href="/kalpataru/">Read my collected ideas. <span aria-hidden="true">↗</span></a></div></div></section>`;
 }
 
 function buildKalpataruLinkHtml() {

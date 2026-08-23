@@ -255,8 +255,8 @@ header {
 
 .home-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.45fr) clamp(250px, 24vw, 330px);
-    gap: clamp(2rem, 5vw, 5.8rem);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
     align-items: end;
     min-height: min(760px, calc(100vh - 66px));
     padding: clamp(4rem, 9vh, 7.5rem) 0 clamp(3.2rem, 7vh, 5.5rem);
@@ -264,7 +264,7 @@ header {
 
 .home-identity {
     min-width: 0;
-    max-width: 760px;
+    max-width: 900px;
 }
 
 .home-identity-eyebrow,
@@ -304,19 +304,19 @@ header {
 }
 
 .home-actions {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.85rem;
     margin-top: 2rem;
 }
 
+.intro-action,
 .primary-action,
 .secondary-action {
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    flex: 1 1 285px;
     min-width: 280px;
     min-height: 76px;
     padding: 1rem 1.15rem;
@@ -325,6 +325,21 @@ header {
     font-size: 0.78rem;
     letter-spacing: 0.02em;
     text-decoration: none;
+}
+
+.intro-action {
+    background: var(--panel-color);
+    border-color: var(--border-color);
+    box-shadow: inset 5px 0 0 var(--accent-color);
+    color: var(--text-color);
+    grid-column: 1 / -1;
+    font-family: var(--serif);
+    font-size: 1.08rem;
+}
+
+.intro-action:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
 }
 
 .primary-action {
@@ -382,6 +397,42 @@ header {
 }
 
 .home-portrait figcaption span {
+    color: var(--text-secondary);
+}
+
+.intro-portrait {
+    float: right;
+    margin: 0.2rem 0 2rem 2rem;
+    width: min(38%, 320px);
+}
+
+.intro-portrait img {
+    aspect-ratio: 4 / 5;
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    display: block;
+    height: auto;
+    object-fit: cover;
+    object-position: center 12%;
+    width: 100%;
+}
+
+.intro-portrait figcaption {
+    border-top: 1px solid var(--border-color);
+    display: grid;
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    gap: 0.04rem;
+    line-height: 1.45;
+    margin-top: 0.65rem;
+    padding-top: 0.65rem;
+}
+
+.intro-portrait figcaption strong {
+    font-weight: 600;
+}
+
+.intro-portrait figcaption span {
     color: var(--text-secondary);
 }
 
@@ -1037,6 +1088,7 @@ header {
 
 .journey-tree {
     --journey-trunk: color-mix(in srgb, var(--accent-color) 58%, var(--border-color));
+    clear: both;
     margin: 3.4rem 0 4rem;
     padding: 0.2rem 0;
     position: relative;
@@ -1689,8 +1741,8 @@ footer {
 
 @media (max-width: 1100px) {
     .home-hero {
-        grid-template-columns: minmax(0, 1.2fr) clamp(220px, 24vw, 280px);
-        gap: clamp(1.2rem, 3vw, 2.5rem);
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
     }
 
 }
@@ -1793,13 +1845,28 @@ footer {
     }
 
     .primary-action,
-    .secondary-action {
+    .secondary-action,
+    .intro-action {
         width: 100%;
         min-width: 0;
     }
 
+    .home-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .intro-action {
+        grid-column: auto;
+    }
+
     .home-portrait {
         width: min(100%, 250px);
+    }
+
+    .intro-portrait {
+        float: none;
+        margin: 0.25rem 0 1.8rem;
+        width: min(100%, 280px);
     }
 
     .nav-links {
