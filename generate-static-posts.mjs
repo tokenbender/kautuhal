@@ -1002,120 +1002,7 @@ function buildArchiveHtml(posts, mode = 'archive') {
 }
 
 function buildHomepageHeroHtml() {
-    return `<section class="home-hero home-hero-kautuhal" aria-label="Kautuhal"><div class="home-identity"><p class="home-identity-eyebrow">01 / Kautuhal · Authored Work</p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions home-actions-kautuhal"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my writing/research. <span aria-hidden="true">↗</span></a></div></div></section>`;
-}
-
-function buildKalpataruAmbientHtml() {
-    return `<section class="kalpataru-ambient-entry" aria-labelledby="kalpataru-ambient-title"><canvas width="320" height="210" aria-hidden="true"></canvas><div class="kalpataru-ambient-veil" aria-hidden="true"></div><header class="kalpataru-ambient-masthead"><strong>02 / Kalpataru</strong><span>Agent-Managed Knowledge Tree</span></header><div class="kalpataru-ambient-copy"><div><p class="kalpataru-ambient-kicker">Cultivated by Tokenbender + Agents</p><h2 id="kalpataru-ambient-title">What I cannot stop cultivating.</h2><p class="kalpataru-ambient-description">Kalpataru manages what I want to keep: mechanisms, unfinished ideas, and principles still under cultivation.</p><a class="kalpataru-ambient-enter" href="/kalpataru/">Enter Kalpataru <span aria-hidden="true">↗</span></a></div><div class="kalpataru-ambient-branches" aria-label="Kalpataru branches"><span>Mechanisms</span><span>Principles</span><span>Open Questions</span><span>Specimens</span></div></div><p class="kalpataru-ambient-equation" aria-hidden="true"><strong>De Jong Attractor / Live</strong>x′ = sin(ay) − cos(bx)<br>y′ = sin(cx) − cos(dy)</p></section>`;
-}
-
-function buildKalpataruAmbientScript() {
-    return `(function () {
-        const root = document.querySelector('.kalpataru-ambient-entry');
-        if (!root) return;
-
-        const canvas = root.querySelector('canvas');
-        const context = canvas.getContext('2d', { alpha: true });
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let visible = true;
-        let animationFrame = 0;
-        let lastFrameAt = 0;
-        let elapsed = 0;
-
-        const isDark = function () {
-            const value = getComputedStyle(document.body).backgroundColor;
-            const match = value.match(/rgba?\\(([^)]+)\\)/);
-            if (!match) return true;
-            const channels = match[1].split(',').slice(0, 3).map(Number);
-            return channels.reduce(function (sum, channel) { return sum + channel; }, 0) / 3 < 128;
-        };
-
-        const palette = function () {
-            return isDark()
-                ? { fade: 'rgba(26,21,17,0.13)', point: 'rgba(215,255,57,0.32)', bright: 'rgba(221,210,199,0.22)' }
-                : { fade: 'rgba(255,255,248,0.16)', point: 'rgba(82,107,0,0.28)', bright: 'rgba(17,17,17,0.15)' };
-        };
-
-        const draw = function (time) {
-            const colors = palette();
-            const width = canvas.width;
-            const height = canvas.height;
-            const phase = elapsed * 0.000055;
-            const a = 1.4 + Math.sin(phase * 0.73) * 0.035;
-            const b = -2.3 + Math.cos(phase * 0.47) * 0.035;
-            const c = 2.4 + Math.sin(phase * 0.31) * 0.035;
-            const d = -2.1 + Math.cos(phase * 0.61) * 0.035;
-
-            context.fillStyle = colors.fade;
-            context.fillRect(0, 0, width, height);
-
-            let x = 0.17 + Math.sin(phase) * 0.03;
-            let y = -0.13 + Math.cos(phase) * 0.03;
-            const scale = Math.min(width, height) * 0.19;
-            const centerX = width * 0.71;
-            const centerY = height * 0.48;
-
-            context.fillStyle = colors.point;
-            for (let point = 0; point < 5200; point += 1) {
-                const nextX = Math.sin(a * y) - Math.cos(b * x);
-                const nextY = Math.sin(c * x) - Math.cos(d * y);
-                x = nextX;
-                y = nextY;
-                if (point > 40) context.fillRect(centerX + x * scale, centerY + y * scale, 1.1, 1.1);
-            }
-
-            context.fillStyle = colors.bright;
-            for (let point = 0; point < 900; point += 1) {
-                const nextX = Math.sin(a * y) - Math.cos(b * x);
-                const nextY = Math.sin(c * x) - Math.cos(d * y);
-                x = nextX;
-                y = nextY;
-                context.fillRect(centerX + x * scale, centerY + y * scale, 0.85, 0.85);
-            }
-
-            lastFrameAt = time;
-        };
-
-        const tick = function (time) {
-            if (!visible || document.hidden) return;
-            if (time - lastFrameAt >= 92) {
-                elapsed += time - lastFrameAt;
-                draw(time);
-            }
-            animationFrame = requestAnimationFrame(tick);
-        };
-
-        const start = function () {
-            cancelAnimationFrame(animationFrame);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            draw(performance.now());
-            if (reducedMotion) return;
-            lastFrameAt = performance.now();
-            animationFrame = requestAnimationFrame(tick);
-        };
-
-        const observer = new IntersectionObserver(function (entries) {
-            visible = entries[0] ? entries[0].isIntersecting : false;
-            if (visible) start();
-            else cancelAnimationFrame(animationFrame);
-        }, { threshold: 0.05 });
-
-        observer.observe(root);
-        document.addEventListener('visibilitychange', function () {
-            if (document.hidden) cancelAnimationFrame(animationFrame);
-            else if (visible) start();
-        });
-
-        const themeObserver = new MutationObserver(function () {
-            if (visible) start();
-        });
-        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-            if (visible) start();
-        });
-
-        start();
-    }());`;
+    return `<section class="home-hero"><div class="home-identity"><p class="home-identity-eyebrow">Kautuhal / Authored Work</p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div></section>`;
 }
 
 function buildHomepageStructuredData() {
@@ -1150,7 +1037,6 @@ function buildHomepageStructuredData() {
 
 function buildHomepageHtml() {
     const homepageHero = buildHomepageHeroHtml();
-    const kalpataruAmbient = buildKalpataruAmbientHtml();
     const homepageStructuredData = buildHomepageStructuredData();
     const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
 
@@ -1196,7 +1082,6 @@ function buildHomepageHtml() {
 
     <main class="container">
         ${homepageHero}
-        ${kalpataruAmbient}
     </main>
 
     <footer>
@@ -1204,7 +1089,6 @@ function buildHomepageHtml() {
     </footer>
 
     <script>${buildThemeToggleScript()}</script>
-    <script>${buildKalpataruAmbientScript()}</script>
 </body>
 </html>
 `;
