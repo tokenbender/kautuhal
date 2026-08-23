@@ -88,6 +88,11 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 1.5rem;
+}
+
 ::selection {
     background-color: var(--accent-color);
     color: white;
@@ -311,8 +316,10 @@ header {
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    min-width: 205px;
-    padding: 0.8rem 0.95rem;
+    flex: 1 1 285px;
+    min-width: 280px;
+    min-height: 76px;
+    padding: 1rem 1.15rem;
     border: 1px solid var(--border-color);
     font-family: var(--sans);
     font-size: 0.78rem;
@@ -326,8 +333,18 @@ header {
     color: var(--bg-color) !important;
 }
 
+.primary-action:hover {
+    filter: brightness(1.06);
+}
+
+.secondary-action {
+    border-color: var(--garden-color);
+    background: var(--panel-color);
+    box-shadow: inset 5px 0 0 var(--garden-color);
+}
+
 .secondary-action:hover {
-    border-color: var(--accent-color);
+    color: var(--garden-color);
 }
 
 .home-portrait {
@@ -417,6 +434,7 @@ header {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1.9rem;
+    scroll-margin-top: 1.5rem;
 }
 
 .category-group {
@@ -1315,6 +1333,12 @@ footer {
     .home-identity-summary {
         font-size: 1rem;
         line-height: 1.62;
+    }
+
+    .primary-action,
+    .secondary-action {
+        width: 100%;
+        min-width: 0;
     }
 
     .home-portrait {
