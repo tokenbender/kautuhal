@@ -749,20 +749,6 @@ function getOrderedCategoryGroups(posts) {
     return groups;
 }
 
-function buildHomepageGroupedSections(posts) {
-    const groups = getOrderedCategoryGroups(posts);
-
-    return groups.map((group) => {
-        const items = group.posts.map((post) => {
-            const title = post.metadata.title || post.id;
-            const dateLabel = formatMonthDay(post.metadata.date || '');
-            return `<li><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a><span class="home-post-meta">${escapeHtml(dateLabel)} · ${post.readingTimeMinutes} min</span></li>`;
-        }).join('');
-
-        return `<section class="category-group" id="home-${group.key}"><div class="category-group-head"><h2>${escapeHtml(group.label)}</h2><span class="category-count">${group.posts.length}</span></div><ul class="category-post-list">${items}</ul><a class="see-all-link" href="/archive/#${group.key}">See All →</a></section>`;
-    }).join('');
-}
-
 function buildArchiveTopicSections(posts) {
     const groups = getOrderedCategoryGroups(posts);
 
@@ -1016,11 +1002,7 @@ function buildArchiveHtml(posts, mode = 'archive') {
 }
 
 function buildHomepageHeroHtml() {
-    return `<section class="home-hero"><div class="home-identity"><p class="home-identity-eyebrow">Kautuhal / Authored Work</p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="#writing">Read my latest writing/research. <span aria-hidden="true">↓</span></a><a class="secondary-action" href="/kalpataru/">Read my collected ideas. <span aria-hidden="true">↗</span></a></div></div></section>`;
-}
-
-function buildKalpataruLinkHtml() {
-    return `<aside class="kalpataru-link" aria-labelledby="kalpataru-link-title"><div><p class="section-kicker">Kalpataru</p><h2 id="kalpataru-link-title">Agent-Managed Knowledge Tree.</h2></div><p>Kalpataru maintains everything tokenbender wants to keep: things he curates, ideas of his own, and the life principles he cultivates.</p><a href="/kalpataru/">Open Kalpataru <span aria-hidden="true">↗</span></a></aside>`;
+    return `<section class="home-hero"><div class="home-identity"><p class="home-identity-eyebrow">Kautuhal / Authored Work</p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Read my collected ideas. <span aria-hidden="true">↗</span></a></div></div></section>`;
 }
 
 function buildHomepageStructuredData() {
@@ -1053,10 +1035,8 @@ function buildHomepageStructuredData() {
     });
 }
 
-function buildHomepageHtml(posts) {
-    const groupedSections = buildHomepageGroupedSections(posts);
+function buildHomepageHtml() {
     const homepageHero = buildHomepageHeroHtml();
-    const kalpataruLink = buildKalpataruLinkHtml();
     const homepageStructuredData = buildHomepageStructuredData();
     const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
 
@@ -1102,9 +1082,6 @@ function buildHomepageHtml(posts) {
 
     <main class="container">
         ${homepageHero}
-        ${kalpataruLink}
-
-        <section class="posts grouped-posts" id="writing">${groupedSections}</section>
     </main>
 
     <footer>
@@ -1191,7 +1168,7 @@ async function main() {
     const writingIndexHtml = buildArchiveHtml(publishedPosts, 'writing');
     await fs.writeFile(path.join(ARCHIVE_DIR, 'index.html'), archiveHtml, 'utf8');
     await fs.writeFile(path.join(POSTS_DIR, 'index.html'), writingIndexHtml, 'utf8');
-    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(publishedPosts), 'utf8');
+    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(), 'utf8');
     await fs.writeFile(SITEMAP_FILE, buildSitemap(publishedPosts), 'utf8');
 
     console.log(`generated ${posts.length} static posts, archive, homepage, and sitemap`);
