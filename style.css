@@ -1427,6 +1427,33 @@ header {
     line-height: 1.45;
 }
 
+.journey-tree-crown::before {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent-color) 13%, transparent);
+}
+
+.journey-tree-crown .journey-tree-work,
+.post-content .journey-tree-crown a.journey-tree-work {
+    border-top-color: var(--accent-color);
+}
+
+.journey-tree-crown .journey-tree-work strong,
+.journey-tree-crown .journey-tree-date,
+.journey-glaze-crown .journey-glaze-toggle {
+    color: var(--accent-color);
+}
+
+.journey-glaze-crown .journey-glaze-card {
+    border-color: color-mix(in srgb, var(--accent-color) 54%, var(--border-color));
+    border-top: 2px solid var(--accent-color);
+    box-shadow: 0 1.1rem 3rem color-mix(in srgb, var(--accent-color) 10%, transparent);
+}
+
+.journey-glaze-crown .journey-glaze-claim {
+    font-size: 1.34rem;
+}
+
 .post-content a.journey-tree-work:hover strong {
     color: var(--accent-color);
 }
