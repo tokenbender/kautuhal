@@ -271,6 +271,7 @@ header {
     overflow: hidden;
     border: 1px solid var(--border-color);
     background: var(--bg-color);
+    font-family: var(--sans);
     isolation: isolate;
 }
 
@@ -337,8 +338,13 @@ header {
 .kautuhal-ambient-copy .home-identity-summary {
     max-width: 34ch;
     margin-top: 1.8rem;
+    font-family: var(--sans);
     font-size: clamp(1.25rem, 2.8vw, 2rem);
     line-height: 1.48;
+}
+
+.kautuhal-ambient-entry .intro-action {
+    font-family: var(--sans);
 }
 
 .kautuhal-ambient-label {
