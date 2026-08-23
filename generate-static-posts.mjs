@@ -1228,7 +1228,7 @@ function buildKautuhalRawWebGpuScript() {
                 let groove = (1.0 / (1.0 + exp(6.0 * (hidden + 0.15)))) * alive;
                 let intensity = clamp(edge + groove * 0.18, 0.0, 1.0);
                 let dark_gold = vec3<f32>(218.0, 165.0, 32.0) / 255.0;
-                let light_automaton = vec3<f32>(36.0, 78.0, 96.0) / 255.0;
+                let light_automaton = vec3<f32>(18.0, 73.0, 105.0) / 255.0;
                 let color = select(light_automaton, dark_gold, params.z > 0.5);
                 let alpha = intensity * params.w;
                 return vec4<f32>(color * alpha, alpha);
@@ -1276,7 +1276,7 @@ function buildKautuhalRawWebGpuScript() {
                 pointer.x, pointer.y, 4.0, damageActive ? 1.0 : 0.0
             ]));
             device.queue.writeBuffer(renderParamsBuffer, 0, new Float32Array([
-                canvas.width, canvas.height, isDark() ? 1.0 : 0.0, isDark() ? 0.48 : 0.42
+                canvas.width, canvas.height, isDark() ? 1.0 : 0.0, isDark() ? 0.48 : 0.90
             ]));
             device.queue.writeBuffer(simParamsBuffer, 0, new Float32Array([
                 steps, 0.5, 0.0, 0.0
