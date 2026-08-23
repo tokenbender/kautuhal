@@ -192,6 +192,35 @@ I like making models do things they have no business doing at their size.
         <strong>infinite</strong>
         <span>Rubric-driven prioritized replay for continual learning.</span>
       </a>
+      <div class="journey-glaze">
+        <button class="journey-glaze-toggle" type="button" aria-expanded="false">The bet</button>
+        <div class="journey-glaze-card" aria-label="infinite research thesis">
+          <span class="journey-glaze-kicker">Aug 2025 · Continual learning</span>
+          <strong class="journey-glaze-claim">The model’s failures should choose what it learns next.</strong>
+          <p class="journey-glaze-lede">Infinite turns continual learning into spaced repetition: train what is slipping, refresh what is stable, and keep the model in the game.</p>
+          <ul class="journey-glaze-proofs">
+            <li>
+              <a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">
+                <span class="journey-glaze-index">01</span>
+                <span><b>The bet</b> Spend compute where the model is losing its grip.</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://arxiv.org/html/2601.02648v1#S5">
+                <span class="journey-glaze-index">02</span>
+                <span><b>Then the field caught up</b> Months later, prioritized replay beat uniform GRPO on MATH-500 and AIME.</span>
+              </a>
+            </li>
+            <li>
+              <a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">
+                <span class="journey-glaze-index">03</span>
+                <span><b>The shift</b> The training set stops being a pile of examples. It becomes a curriculum that moves with the model.</span>
+              </a>
+            </li>
+          </ul>
+          <span class="journey-glaze-meta">Continual RL · adaptive curriculum · anti-forgetting</span>
+        </div>
+      </div>
     </li>
     <li class="journey-tree-event journey-tree-event-left journey-tree-current">
       <time class="journey-tree-date" datetime="2026-05">May 2026</time>
