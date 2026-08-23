@@ -14,10 +14,10 @@ const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 const SITE_URL = 'https://tokenbender.com';
 const AUTHOR_NAME = 'Abhishek Harshvardhan Mishra';
 const AUTHOR_HANDLE = 'tokenbender';
-const AUTHOR_IMAGE_PATH = '/IMG_20250407_212513%20Copy.JPG';
-const AUTHOR_IMAGE_URL = `${SITE_URL}${AUTHOR_IMAGE_PATH}`;
-const AUTHOR_IMAGE_WIDTH = 1781;
-const AUTHOR_IMAGE_HEIGHT = 2091;
+const AUTHOR_IMAGE_PATH = '/portrait-tokenbender.webp';
+const AUTHOR_IMAGE_URL = `${SITE_URL}/portrait-tokenbender.jpg`;
+const AUTHOR_IMAGE_WIDTH = 1158;
+const AUTHOR_IMAGE_HEIGHT = 1359;
 const FAVICON_LINKS = '<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n    <link rel="alternate icon" href="/favicon.ico">';
 const HOMEPAGE_TITLE = `Kautuhal — ${AUTHOR_HANDLE}`;
 const HOMEPAGE_DESCRIPTION = `Authored research, experiments, and working theories from ${AUTHOR_NAME} on learning systems for models, agents, and people.`;
@@ -548,6 +548,19 @@ function buildThemeToggleScript() {
     ].join('\n');
 }
 
+function buildJourneyGlazeScript() {
+    return `(function () {
+    document.querySelectorAll('.journey-glaze-toggle').forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+            const glaze = toggle.closest('.journey-glaze');
+            if (!glaze) return;
+            const isOpen = glaze.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    });
+})();`;
+}
+
 function buildTocEnhancementScript() {
     return [
         '(function () {',
@@ -906,7 +919,7 @@ function buildPostHtml(post) {
         <article class="post-content" id="post-content">
             <h1>${escapeHtml(title)}</h1>
             ${buildPostMeta(post)}
-            ${toc.mobile}
+${toc.mobile ? `            ${toc.mobile}` : ''}
             ${post.html}
 ${relatedSection}
         </article>
@@ -918,6 +931,7 @@ ${relatedSection}
     </footer>
 
     <script>${buildThemeToggleScript()}</script>
+    <script>${buildJourneyGlazeScript()}</script>
     <script>${buildTocEnhancementScript()}</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>

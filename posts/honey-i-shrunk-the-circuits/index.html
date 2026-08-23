@@ -379,6 +379,16 @@
     }
 })();</script>
     <script>(function () {
+    document.querySelectorAll('.journey-glaze-toggle').forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+            const glaze = toggle.closest('.journey-glaze');
+            if (!glaze) return;
+            const isOpen = glaze.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    });
+})();</script>
+    <script>(function () {
     const links = Array.from(document.querySelectorAll('[data-toc-link]'));
     if (!links.length) {
         return;

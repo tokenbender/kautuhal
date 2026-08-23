@@ -105,7 +105,7 @@
 <li>Rao and Ballard&#39;s <a href="https://doi.org/10.1038/4580">&quot;Predictive coding in the visual cortex&quot;</a>, plus <a href="https://www.nature.com/articles/nn0199_9">&quot;Predicting the visual world: silence is golden&quot;</a>, for the idea that perception can transmit surprise rather than restating everything.</li>
 </ul>
 
-<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">See Also</h2><ul><li><a href="/posts/honey-i-shrunk-the-circuits/">Honey, I Shrunk the Circuits!</a><p>Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.</p></li><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite — A Rubric-Driven Prioritized Replay to Maximise Continual Learning</a><p>A reinforcement-learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design...</p></li><li><a href="/posts/avatarl/">avatarl: Training Language Models from Scratch with Pure Reinforcement Learning</a><p>Replacing cross-entropy pretraining with a principled RL objective using expert-consensus rewards over active tokens.</p></li></ul></section>
+<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">See Also</h2><ul><li><a href="/posts/honey-i-shrunk-the-circuits/">Honey, I Shrunk the Circuits!</a><p>Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.</p></li><li><a href="/posts/welcome/">Hello, I&#39;m Tokenbender</a><p>I like making models do things they have no business doing at their size.</p></li><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite — A Rubric-Driven Prioritized Replay to Maximise Continual Learning</a><p>A reinforcement-learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design...</p></li></ul></section>
         </article>
         <aside class="post-margin-column" aria-hidden="true"></aside>
     </main>
@@ -173,6 +173,16 @@
             media.addListener(onChange);
         }
     }
+})();</script>
+    <script>(function () {
+    document.querySelectorAll('.journey-glaze-toggle').forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+            const glaze = toggle.closest('.journey-glaze');
+            if (!glaze) return;
+            const isOpen = glaze.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    });
 })();</script>
     <script>(function () {
     const links = Array.from(document.querySelectorAll('[data-toc-link]'));
