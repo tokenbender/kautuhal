@@ -345,6 +345,7 @@ header {
 
 .kautuhal-ambient-entry .intro-action {
     font-family: var(--sans);
+    font-size: 0.78rem;
 }
 
 .kautuhal-ambient-label {
