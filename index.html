@@ -43,6 +43,7 @@
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","name":"Abhishek Harshvardhan Mishra","alternateName":"tokenbender","url":"https://tokenbender.com/","image":"https://tokenbender.com/portrait-tokenbender.jpg","sameAs":["https://github.com/tokenbender","https://huggingface.co/tokenbender","https://x.com/tokenbender"],"jobTitle":"ML researcher"},{"@type":"WebSite","name":"Kautuhal — tokenbender","url":"https://tokenbender.com/","author":{"@type":"Person","name":"Abhishek Harshvardhan Mishra"}}]}</script>
 </head>
 <body class="home-page">
+    <canvas id="kautuhal-neural-background" width="288" height="192" aria-hidden="true"></canvas>
     <header>
         <nav>
             <div class="nav-container">
@@ -55,7 +56,7 @@
     </header>
 
     <main class="container">
-        <section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><canvas width="320" height="220" aria-hidden="true"></canvas><div class="kautuhal-ambient-veil" aria-hidden="true"></div><header class="kautuhal-ambient-masthead"><strong>01 / Kautuhal</strong><span>Authored Work</span></header><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><p class="home-identity-summary">Research on RL, Supersparse inference and agentic workflows.</p></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div><p class="kautuhal-ambient-label" aria-hidden="true"><strong>Capability Substrate / Live</strong>Dense → Sparse · Output Preserved</p></section>
+        <section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><header class="kautuhal-ambient-masthead"><strong>01 / Kautuhal</strong><span>Authored Work</span></header><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><p class="home-identity-summary">Research on RL, Supersparse inference and agentic workflows.</p></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div><p class="kautuhal-ambient-label" aria-live="polite"><strong>Neural Cellular Automaton / Loading</strong>Page Content Does Not Depend on It</p></section>
     </main>
 
     <footer>
@@ -123,153 +124,475 @@
     }
 })();</script>
     <script>(function () {
-        const root = document.querySelector('.kautuhal-ambient-entry');
-        if (!root) return;
+        const canvas = document.getElementById('kautuhal-neural-background');
+        const label = document.querySelector('.kautuhal-ambient-label');
+        if (!canvas || !label) return;
+        if (!navigator.gpu) {
+            label.innerHTML = '<strong>Neural Background Unavailable</strong>WebGPU Is Not Available on This Device';
+            return;
+        }
 
-        const canvas = root.querySelector('canvas');
-        const context = canvas.getContext('2d', { alpha: true });
+        const width = 72;
+        const height = 48;
+        const channels = 12;
+        const hidden = 48;
+        const cellCount = width * height;
+        const stateFloatCount = cellCount * channels;
+        const stateByteSize = stateFloatCount * 4;
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const activeChannels = new Set([3, 9, 14, 22, 31, 39, 46, 51]);
-        let visible = true;
-        let animationFrame = 0;
-        let lastFrameAt = 0;
-        let elapsed = 9000;
+        const pointer = { active: false, x: 0, y: 0, clientX: -1, clientY: -1, hoverSince: 0 };
+        let device = null;
+        let context = null;
+        let format = null;
+        let stateBuffers = [];
+        let readbackBuffer = null;
+        let updateBindGroups = [];
+        let maskBindGroups = [];
+        let renderBindGroups = [];
+        let updatePipeline = null;
+        let maskPipeline = null;
+        let renderPipeline = null;
+        let damageBuffer = null;
+        let renderParamsBuffer = null;
+        let currentState = 0;
+        let steps = 0;
+        let stopped = false;
+        let lastInferenceMs = 0;
 
-        const smoothstep = function (value) {
-            return value * value * (3 - 2 * value);
+        const updateShader = `
+            const WIDTH: u32 = 72u;
+            const HEIGHT: u32 = 48u;
+            const CHANNELS: u32 = 12u;
+            const HIDDEN: u32 = 48u;
+            const CELLS: u32 = WIDTH * HEIGHT;
+
+            @group(0) @binding(0) var<storage, read> state_in: array<f32>;
+            @group(0) @binding(1) var<storage, read_write> proposal: array<f32>;
+            @group(0) @binding(2) var<storage, read> w1: array<f32>;
+            @group(0) @binding(3) var<storage, read> b1: array<f32>;
+            @group(0) @binding(4) var<storage, read> w2: array<f32>;
+            @group(0) @binding(5) var<storage, read> b2: array<f32>;
+
+            fn read_state(channel: u32, x: i32, y: i32) -> f32 {
+                if (x < 0 || y < 0 || x >= i32(WIDTH) || y >= i32(HEIGHT)) { return 0.0; }
+                return state_in[channel * CELLS + u32(y) * WIDTH + u32(x)];
+            }
+
+            @compute @workgroup_size(8, 8)
+            fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+                if (gid.x >= WIDTH || gid.y >= HEIGHT) { return; }
+                let x = i32(gid.x);
+                let y = i32(gid.y);
+                var hidden_values: array<f32, 48>;
+
+                for (var h: u32 = 0u; h < HIDDEN; h = h + 1u) {
+                    var sum = b1[h];
+                    for (var c: u32 = 0u; c < CHANNELS; c = c + 1u) {
+                        let center = read_state(c, x, y);
+                        let sobel_x = (
+                            -read_state(c, x - 1, y - 1) + read_state(c, x + 1, y - 1)
+                            -2.0 * read_state(c, x - 1, y) + 2.0 * read_state(c, x + 1, y)
+                            -read_state(c, x - 1, y + 1) + read_state(c, x + 1, y + 1)
+                        ) / 8.0;
+                        let sobel_y = (
+                            -read_state(c, x - 1, y - 1) - 2.0 * read_state(c, x, y - 1) - read_state(c, x + 1, y - 1)
+                            +read_state(c, x - 1, y + 1) + 2.0 * read_state(c, x, y + 1) + read_state(c, x + 1, y + 1)
+                        ) / 8.0;
+                        let laplace = read_state(c, x - 1, y) + read_state(c, x + 1, y)
+                            + read_state(c, x, y - 1) + read_state(c, x, y + 1) - 4.0 * center;
+                        let base = h * (CHANNELS * 4u);
+                        sum = sum
+                            + w1[base + c] * center
+                            + w1[base + CHANNELS + c] * sobel_x
+                            + w1[base + CHANNELS * 2u + c] * sobel_y
+                            + w1[base + CHANNELS * 3u + c] * laplace;
+                    }
+                    hidden_values[h] = max(sum, 0.0);
+                }
+
+                let cell = gid.y * WIDTH + gid.x;
+                for (var c: u32 = 0u; c < CHANNELS; c = c + 1u) {
+                    var delta = b2[c];
+                    for (var h: u32 = 0u; h < HIDDEN; h = h + 1u) {
+                        delta = delta + w2[c * HIDDEN + h] * hidden_values[h];
+                    }
+                    let index = c * CELLS + cell;
+                    proposal[index] = state_in[index] + delta;
+                }
+            }
+        `;
+
+        const maskShader = `
+            const WIDTH: u32 = 72u;
+            const HEIGHT: u32 = 48u;
+            const CHANNELS: u32 = 12u;
+            const CELLS: u32 = WIDTH * HEIGHT;
+
+            @group(0) @binding(0) var<storage, read> state_before: array<f32>;
+            @group(0) @binding(1) var<storage, read> proposal: array<f32>;
+            @group(0) @binding(2) var<storage, read_write> state_next: array<f32>;
+            @group(0) @binding(3) var<uniform> damage: vec4<f32>;
+
+            fn alpha_before(x: i32, y: i32) -> f32 {
+                if (x < 0 || y < 0 || x >= i32(WIDTH) || y >= i32(HEIGHT)) { return 0.0; }
+                return state_before[3u * CELLS + u32(y) * WIDTH + u32(x)];
+            }
+
+            fn alpha_after(x: i32, y: i32) -> f32 {
+                if (x < 0 || y < 0 || x >= i32(WIDTH) || y >= i32(HEIGHT)) { return 0.0; }
+                return proposal[3u * CELLS + u32(y) * WIDTH + u32(x)];
+            }
+
+            fn alive_before(x: i32, y: i32) -> bool {
+                var value = -1e9;
+                for (var dy: i32 = -1; dy <= 1; dy = dy + 1) {
+                    for (var dx: i32 = -1; dx <= 1; dx = dx + 1) {
+                        value = max(value, alpha_before(x + dx, y + dy));
+                    }
+                }
+                return value > 0.08;
+            }
+
+            fn alive_after(x: i32, y: i32) -> bool {
+                var value = -1e9;
+                for (var dy: i32 = -1; dy <= 1; dy = dy + 1) {
+                    for (var dx: i32 = -1; dx <= 1; dx = dx + 1) {
+                        value = max(value, alpha_after(x + dx, y + dy));
+                    }
+                }
+                return value > 0.08;
+            }
+
+            @compute @workgroup_size(8, 8)
+            fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
+                if (gid.x >= WIDTH || gid.y >= HEIGHT) { return; }
+                let x = i32(gid.x);
+                let y = i32(gid.y);
+                let dx = f32(gid.x) - damage.x;
+                let dy = f32(gid.y) - damage.y;
+                let is_damaged = damage.w > 0.5 && dx * dx + dy * dy <= damage.z * damage.z;
+                let keep = alive_before(x, y) && alive_after(x, y) && !is_damaged;
+                let cell = gid.y * WIDTH + gid.x;
+                for (var c: u32 = 0u; c < CHANNELS; c = c + 1u) {
+                    let index = c * CELLS + cell;
+                    state_next[index] = select(0.0, proposal[index], keep);
+                }
+            }
+        `;
+
+        const renderShader = `
+            const WIDTH: u32 = 72u;
+            const HEIGHT: u32 = 48u;
+            const CELLS: u32 = WIDTH * HEIGHT;
+
+            @group(0) @binding(0) var<storage, read> state: array<f32>;
+            @group(0) @binding(1) var<uniform> params: vec4<f32>;
+
+            fn channel_at(channel: u32, x: i32, y: i32) -> f32 {
+                let cx = clamp(x, 0, i32(WIDTH) - 1);
+                let cy = clamp(y, 0, i32(HEIGHT) - 1);
+                return state[channel * CELLS + u32(cy) * WIDTH + u32(cx)];
+            }
+
+            fn sample_channel(channel: u32, position: vec2<f32>) -> f32 {
+                let base = vec2<i32>(floor(position));
+                let fraction = fract(position);
+                let top = mix(
+                    channel_at(channel, base.x, base.y),
+                    channel_at(channel, base.x + 1, base.y),
+                    fraction.x
+                );
+                let bottom = mix(
+                    channel_at(channel, base.x, base.y + 1),
+                    channel_at(channel, base.x + 1, base.y + 1),
+                    fraction.x
+                );
+                return mix(top, bottom, fraction.y);
+            }
+
+            @vertex
+            fn vertex_main(@builtin(vertex_index) vertex_index: u32) -> @builtin(position) vec4<f32> {
+                var positions = array<vec2<f32>, 3>(
+                    vec2<f32>(-1.0, -1.0),
+                    vec2<f32>(3.0, -1.0),
+                    vec2<f32>(-1.0, 3.0)
+                );
+                return vec4<f32>(positions[vertex_index], 0.0, 1.0);
+            }
+
+            @fragment
+            fn fragment_main(@builtin(position) position: vec4<f32>) -> @location(0) vec4<f32> {
+                let uv = position.xy / params.xy;
+                let grid = uv * vec2<f32>(f32(WIDTH - 1u), f32(HEIGHT - 1u));
+                let gradient_x = sample_channel(3u, grid + vec2<f32>(1.0, 0.0))
+                    - sample_channel(3u, grid - vec2<f32>(1.0, 0.0));
+                let gradient_y = sample_channel(3u, grid + vec2<f32>(0.0, 1.0))
+                    - sample_channel(3u, grid - vec2<f32>(0.0, 1.0));
+                let edge = length(vec2<f32>(gradient_x, gradient_y)) * 2.2;
+                let alive = clamp(sample_channel(3u, grid) * 2.0, 0.0, 1.0);
+                let hidden = sample_channel(4u, grid);
+                let groove = (1.0 / (1.0 + exp(6.0 * (hidden + 0.15)))) * alive;
+                let intensity = clamp(edge + groove * 0.18, 0.0, 1.0);
+                let dark_gold = vec3<f32>(218.0, 165.0, 32.0) / 255.0;
+                let light_gold = vec3<f32>(139.0, 94.0, 0.0) / 255.0;
+                let color = select(light_gold, dark_gold, params.z > 0.5);
+                let alpha = intensity * params.w;
+                return vec4<f32>(color * alpha, alpha);
+            }
+        `;
+
+        const makeStorageBuffer = function (values) {
+            const buffer = device.createBuffer({
+                size: Math.max(16, values.byteLength),
+                usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+            });
+            device.queue.writeBuffer(buffer, 0, values);
+            return buffer;
+        };
+
+        const makeStateBuffer = function () {
+            return device.createBuffer({
+                size: stateByteSize,
+                usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST | GPUBufferUsage.COPY_SRC
+            });
+        };
+
+        const resizeCanvas = function () {
+            const scale = Math.min(window.devicePixelRatio || 1, 1.25);
+            const nextWidth = Math.max(320, Math.ceil(window.innerWidth * scale));
+            const nextHeight = Math.max(240, Math.ceil(window.innerHeight * scale));
+            if (canvas.width !== nextWidth || canvas.height !== nextHeight) {
+                canvas.width = nextWidth;
+                canvas.height = nextHeight;
+                context.configure({ device: device, format: format, alphaMode: 'premultiplied' });
+            }
         };
 
         const isDark = function () {
             const value = getComputedStyle(document.body).backgroundColor;
             const match = value.match(/rgba?\(([^)]+)\)/);
             if (!match) return true;
-            const channels = match[1].split(',').slice(0, 3).map(Number);
-            return channels.reduce(function (sum, channel) { return sum + channel; }, 0) / 3 < 128;
+            const values = match[1].split(',').slice(0, 3).map(Number);
+            return values.reduce(function (sum, item) { return sum + item; }, 0) / 3 < 128;
         };
 
-        const palette = function () {
-            return isDark()
-                ? { fade: 'rgba(26,21,17,0.18)', faint: 'rgba(168,155,142,0.11)', gold: 'rgba(218,165,32,0.58)', ink: 'rgba(221,210,199,0.38)' }
-                : { fade: 'rgba(255,255,248,0.2)', faint: 'rgba(93,88,81,0.1)', gold: 'rgba(139,94,0,0.5)', ink: 'rgba(17,17,17,0.27)' };
+        const updateUniforms = function () {
+            const damageActive = pointer.active && performance.now() - pointer.hoverSince >= 320;
+            device.queue.writeBuffer(damageBuffer, 0, new Float32Array([
+                pointer.x, pointer.y, 4.0, damageActive ? 1.0 : 0.0
+            ]));
+            device.queue.writeBuffer(renderParamsBuffer, 0, new Float32Array([
+                canvas.width, canvas.height, isDark() ? 1.0 : 0.0, isDark() ? 0.48 : 0.34
+            ]));
         };
 
-        const draw = function (time) {
-            const colors = palette();
-            const width = canvas.width;
-            const height = canvas.height;
-            const cycle = (elapsed % 30000) / 30000;
-            const sparse = cycle < 0.2
-                ? smoothstep(cycle / 0.2)
-                : cycle > 0.9
-                    ? smoothstep((1 - cycle) / 0.1)
-                    : 1;
-            const phase = elapsed * 0.00028;
-            const startX = width * 0.46;
-            const endX = width * 0.88;
-            const outputX = width * 0.95;
-            const outputY = height * 0.5;
-            const channelCount = 55;
+        const step = function () {
+            const startedAt = performance.now();
+            resizeCanvas();
+            updateUniforms();
+            const nextState = currentState === 0 ? 1 : 0;
+            const encoder = device.createCommandEncoder();
 
-            context.fillStyle = colors.fade;
-            context.fillRect(0, 0, width, height);
+            const updatePass = encoder.beginComputePass();
+            updatePass.setPipeline(updatePipeline);
+            updatePass.setBindGroup(0, updateBindGroups[currentState]);
+            updatePass.dispatchWorkgroups(Math.ceil(width / 8), Math.ceil(height / 8));
+            updatePass.end();
 
-            for (let channel = 0; channel < channelCount; channel += 1) {
-                const normalized = channel / (channelCount - 1);
-                const y = height * (0.1 + normalized * 0.8);
-                const active = activeChannels.has(channel);
-                const inactiveOpacity = 1 - sparse * 0.88;
+            const maskPass = encoder.beginComputePass();
+            maskPass.setPipeline(maskPipeline);
+            maskPass.setBindGroup(0, maskBindGroups[currentState]);
+            maskPass.dispatchWorkgroups(Math.ceil(width / 8), Math.ceil(height / 8));
+            maskPass.end();
 
-                context.strokeStyle = active ? colors.gold : colors.faint;
-                context.globalAlpha = active ? 0.72 : inactiveOpacity;
-                context.lineWidth = active ? 0.75 : 0.42;
-                context.beginPath();
-                for (let segment = 0; segment <= 32; segment += 1) {
-                    const progress = segment / 32;
-                    const x = startX + progress * (endX - startX);
-                    const displacement = Math.sin(progress * 10 + channel * 0.41 + phase) * (active ? 1.9 : 0.8);
-                    if (segment === 0) context.moveTo(x, y + displacement);
-                    else context.lineTo(x, y + displacement);
-                }
-                context.stroke();
+            const renderPass = encoder.beginRenderPass({
+                colorAttachments: [{
+                    view: context.getCurrentTexture().createView(),
+                    clearValue: { r: 0, g: 0, b: 0, a: 0 },
+                    loadOp: 'clear',
+                    storeOp: 'store'
+                }]
+            });
+            renderPass.setPipeline(renderPipeline);
+            renderPass.setBindGroup(0, renderBindGroups[nextState]);
+            renderPass.draw(3);
+            renderPass.end();
 
-                if (active) {
-                    context.strokeStyle = colors.gold;
-                    context.globalAlpha = 0.23;
-                    context.beginPath();
-                    context.moveTo(endX, y);
-                    context.quadraticCurveTo(outputX - 8, y, outputX, outputY);
-                    context.stroke();
+            device.queue.submit([encoder.finish()]);
+            currentState = nextState;
+            steps += 1;
+            lastInferenceMs = performance.now() - startedAt;
+        };
 
-                    for (let pulse = 0; pulse < 2; pulse += 1) {
-                        const progress = (phase * 0.28 + pulse * 0.53 + channel * 0.071) % 1;
-                        const pulseX = startX + progress * (endX - startX);
-                        const pulseY = y + Math.sin(progress * 10 + channel * 0.41 + phase) * 1.9;
-                        context.fillStyle = colors.gold;
-                        context.globalAlpha = 0.8;
-                        context.beginPath();
-                        context.arc(pulseX, pulseY, 1.05, 0, Math.PI * 2);
-                        context.fill();
-                    }
+        const loop = function () {
+            if (stopped || document.hidden) {
+                window.setTimeout(loop, 250);
+                return;
+            }
+            const startedAt = performance.now();
+            step();
+            if (reducedMotion && steps >= 64) return;
+            const interval = steps < 64 ? 65 : 100;
+            window.setTimeout(loop, Math.max(0, interval - (performance.now() - startedAt)));
+        };
+
+        const setPointer = function (event, immediate) {
+            if (event.pointerType === 'touch' && !immediate) return;
+            const moved = Math.hypot(event.clientX - pointer.clientX, event.clientY - pointer.clientY) > 4;
+            pointer.clientX = event.clientX;
+            pointer.clientY = event.clientY;
+            pointer.x = event.clientX / window.innerWidth * width;
+            pointer.y = event.clientY / window.innerHeight * height;
+            pointer.active = true;
+            if (moved || immediate) pointer.hoverSince = immediate ? 0 : performance.now();
+        };
+
+        window.addEventListener('pointermove', function (event) { setPointer(event, false); }, { passive: true });
+        window.addEventListener('pointerdown', function (event) { setPointer(event, true); }, { passive: true });
+        window.addEventListener('pointerup', function (event) {
+            if (event.pointerType === 'touch') pointer.active = false;
+        }, { passive: true });
+        document.documentElement.addEventListener('mouseleave', function () { pointer.active = false; });
+        window.addEventListener('blur', function () { pointer.active = false; });
+
+        const alphaAt = async function (x, y, radius) {
+            const encoder = device.createCommandEncoder();
+            encoder.copyBufferToBuffer(stateBuffers[currentState], 0, readbackBuffer, 0, stateByteSize);
+            device.queue.submit([encoder.finish()]);
+            await readbackBuffer.mapAsync(GPUMapMode.READ);
+            const values = new Float32Array(readbackBuffer.getMappedRange().slice(0));
+            readbackBuffer.unmap();
+            let total = 0;
+            let count = 0;
+            for (let yy = Math.max(0, y - radius); yy <= Math.min(height - 1, y + radius); yy += 1) {
+                for (let xx = Math.max(0, x - radius); xx <= Math.min(width - 1, x + radius); xx += 1) {
+                    total += Math.max(0, values[3 * cellCount + yy * width + xx]);
+                    count += 1;
                 }
             }
-
-            context.globalAlpha = 1;
-            context.strokeStyle = colors.ink;
-            context.lineWidth = 0.65;
-            context.beginPath();
-            context.moveTo(outputX, height * 0.16);
-            context.lineTo(outputX, height * 0.84);
-            context.stroke();
-
-            context.fillStyle = colors.gold;
-            context.globalAlpha = 0.78;
-            context.beginPath();
-            context.arc(outputX, outputY, 2.4 + Math.sin(phase * 2) * 0.45, 0, Math.PI * 2);
-            context.fill();
-            context.globalAlpha = 1;
-
-            lastFrameAt = time;
+            return count ? total / count : 0;
         };
 
-        const tick = function (time) {
-            if (!visible || document.hidden) return;
-            if (time - lastFrameAt >= 96) {
-                elapsed += time - lastFrameAt;
-                draw(time);
-            }
-            animationFrame = requestAnimationFrame(tick);
+        const initialize = async function () {
+            const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'low-power' });
+            if (!adapter) throw new Error('No WebGPU adapter');
+            device = await adapter.requestDevice();
+            device.lost.then(function () {
+                stopped = true;
+                label.innerHTML = '<strong>Neural Background Stopped</strong>The Page Still Works Without It';
+            });
+            context = canvas.getContext('webgpu');
+            format = navigator.gpu.getPreferredCanvasFormat();
+
+            const weightsResponse = await fetch('/kautuhal-nca.weights.bin');
+            if (!weightsResponse.ok) throw new Error('Weights unavailable');
+            const weights = new Float32Array(await weightsResponse.arrayBuffer());
+            if (weights.length !== 2940) throw new Error('Unexpected weight count');
+            const w1 = weights.slice(0, 2304);
+            const b1 = weights.slice(2304, 2352);
+            const w2 = weights.slice(2352, 2928);
+            const b2 = weights.slice(2928, 2940);
+
+            const stateA = makeStateBuffer();
+            const stateB = makeStateBuffer();
+            const proposal = makeStateBuffer();
+            stateBuffers = [stateA, stateB];
+            const seed = new Float32Array(stateFloatCount);
+            seed[3 * cellCount + 24 * width + 62] = 1;
+            seed[4 * cellCount + 24 * width + 62] = 1;
+            device.queue.writeBuffer(stateA, 0, seed);
+            device.queue.writeBuffer(stateB, 0, seed);
+
+            const w1Buffer = makeStorageBuffer(w1);
+            const b1Buffer = makeStorageBuffer(b1);
+            const w2Buffer = makeStorageBuffer(w2);
+            const b2Buffer = makeStorageBuffer(b2);
+            damageBuffer = device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+            renderParamsBuffer = device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+            readbackBuffer = device.createBuffer({ size: stateByteSize, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
+
+            updatePipeline = device.createComputePipeline({
+                layout: 'auto',
+                compute: { module: device.createShaderModule({ code: updateShader }), entryPoint: 'main' }
+            });
+            maskPipeline = device.createComputePipeline({
+                layout: 'auto',
+                compute: { module: device.createShaderModule({ code: maskShader }), entryPoint: 'main' }
+            });
+            renderPipeline = device.createRenderPipeline({
+                layout: 'auto',
+                vertex: { module: device.createShaderModule({ code: renderShader }), entryPoint: 'vertex_main' },
+                fragment: {
+                    module: device.createShaderModule({ code: renderShader }),
+                    entryPoint: 'fragment_main',
+                    targets: [{
+                        format: format,
+                        blend: {
+                            color: { srcFactor: 'one', dstFactor: 'one-minus-src-alpha', operation: 'add' },
+                            alpha: { srcFactor: 'one', dstFactor: 'one-minus-src-alpha', operation: 'add' }
+                        }
+                    }]
+                },
+                primitive: { topology: 'triangle-list' }
+            });
+
+            const makeUpdateGroup = function (stateBuffer) {
+                return device.createBindGroup({
+                    layout: updatePipeline.getBindGroupLayout(0),
+                    entries: [
+                        { binding: 0, resource: { buffer: stateBuffer } },
+                        { binding: 1, resource: { buffer: proposal } },
+                        { binding: 2, resource: { buffer: w1Buffer } },
+                        { binding: 3, resource: { buffer: b1Buffer } },
+                        { binding: 4, resource: { buffer: w2Buffer } },
+                        { binding: 5, resource: { buffer: b2Buffer } }
+                    ]
+                });
+            };
+            const makeMaskGroup = function (stateBuffer, nextBuffer) {
+                return device.createBindGroup({
+                    layout: maskPipeline.getBindGroupLayout(0),
+                    entries: [
+                        { binding: 0, resource: { buffer: stateBuffer } },
+                        { binding: 1, resource: { buffer: proposal } },
+                        { binding: 2, resource: { buffer: nextBuffer } },
+                        { binding: 3, resource: { buffer: damageBuffer } }
+                    ]
+                });
+            };
+            const makeRenderGroup = function (stateBuffer) {
+                return device.createBindGroup({
+                    layout: renderPipeline.getBindGroupLayout(0),
+                    entries: [
+                        { binding: 0, resource: { buffer: stateBuffer } },
+                        { binding: 1, resource: { buffer: renderParamsBuffer } }
+                    ]
+                });
+            };
+
+            updateBindGroups = [makeUpdateGroup(stateA), makeUpdateGroup(stateB)];
+            maskBindGroups = [makeMaskGroup(stateA, stateB), makeMaskGroup(stateB, stateA)];
+            renderBindGroups = [makeRenderGroup(stateA), makeRenderGroup(stateB)];
+            resizeCanvas();
+            label.innerHTML = '<strong>Neural Cellular Automaton / 2,940 Parameters</strong>Hover Anywhere to Damage · ~5s Recovery';
+
+            window.__kautuhalNca = {
+                get status() { return stopped ? 'stopped' : 'running'; },
+                get backend() { return 'raw-webgpu'; },
+                get steps() { return steps; },
+                get lastInferenceMs() { return lastInferenceMs; },
+                get damageActive() { return pointer.active && performance.now() - pointer.hoverSince >= 320; },
+                damageAt: function (x, y) { pointer.x = x; pointer.y = y; pointer.active = true; pointer.hoverSince = 0; },
+                clearDamage: function () { pointer.active = false; },
+                alphaAt: alphaAt
+            };
+            loop();
         };
 
-        const start = function () {
-            cancelAnimationFrame(animationFrame);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            draw(performance.now());
-            if (reducedMotion) return;
-            lastFrameAt = performance.now();
-            animationFrame = requestAnimationFrame(tick);
-        };
-
-        const observer = new IntersectionObserver(function (entries) {
-            visible = entries[0] ? entries[0].isIntersecting : false;
-            if (visible) start();
-            else cancelAnimationFrame(animationFrame);
-        }, { threshold: 0.05 });
-
-        observer.observe(root);
-        document.addEventListener('visibilitychange', function () {
-            if (document.hidden) cancelAnimationFrame(animationFrame);
-            else if (visible) start();
+        initialize().catch(function () {
+            stopped = true;
+            label.innerHTML = '<strong>Neural Background Unavailable</strong>The Page Still Works Without It';
         });
-
-        const themeObserver = new MutationObserver(function () {
-            if (visible) start();
-        });
-        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
-            if (visible) start();
-        });
-
-        start();
     }());</script>
 </body>
 </html>

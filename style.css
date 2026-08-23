@@ -144,6 +144,25 @@ body::before {
     max-width: 1240px;
 }
 
+.home-page > header,
+.home-page > main,
+.home-page > footer {
+    position: relative;
+    z-index: 2;
+}
+
+#kautuhal-neural-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.38;
+    filter: blur(1.2px) saturate(0.88);
+    pointer-events: none;
+    image-rendering: auto;
+}
+
 header {
     position: static;
     top: auto;
@@ -271,32 +290,10 @@ header {
     overflow: hidden;
     border: 1px solid var(--border-color);
     background: var(--bg-color);
+    background: color-mix(in srgb, var(--bg-color) 88%, transparent);
+    backdrop-filter: blur(1px);
     font-family: var(--sans);
     isolation: isolate;
-}
-
-.kautuhal-ambient-entry canvas {
-    position: absolute;
-    inset: 0;
-    z-index: -3;
-    width: 100%;
-    height: 100%;
-    opacity: 0.68;
-    pointer-events: none;
-}
-
-.kautuhal-ambient-veil {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    background: linear-gradient(
-        90deg,
-        var(--bg-color) 0%,
-        color-mix(in srgb, var(--bg-color) 97%, transparent) 42%,
-        color-mix(in srgb, var(--bg-color) 60%, transparent) 70%,
-        color-mix(in srgb, var(--bg-color) 20%, transparent) 100%
-    );
-    pointer-events: none;
 }
 
 .kautuhal-ambient-masthead {
@@ -2042,23 +2039,6 @@ footer {
         min-height: 660px;
         margin: 2.75rem 0 4rem;
         padding: 0;
-    }
-
-    .kautuhal-ambient-entry canvas {
-        inset: 35% -28% 0 6%;
-        width: 122%;
-        height: 68%;
-        opacity: 0.48;
-    }
-
-    .kautuhal-ambient-veil {
-        background: linear-gradient(
-            180deg,
-            var(--bg-color) 0%,
-            var(--bg-color) 53%,
-            color-mix(in srgb, var(--bg-color) 56%, transparent) 78%,
-            color-mix(in srgb, var(--bg-color) 18%, transparent) 100%
-        );
     }
 
     .kautuhal-ambient-masthead {
