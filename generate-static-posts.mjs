@@ -1002,7 +1002,159 @@ function buildArchiveHtml(posts, mode = 'archive') {
 }
 
 function buildHomepageHeroHtml() {
-    return `<section class="home-hero"><div class="home-identity"><p class="home-identity-eyebrow">Kautuhal / Authored Work</p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div></section>`;
+    return `<section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><canvas width="320" height="220" aria-hidden="true"></canvas><div class="kautuhal-ambient-veil" aria-hidden="true"></div><header class="kautuhal-ambient-masthead"><strong>01 / Kautuhal</strong><span>Authored Work</span></header><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div><p class="kautuhal-ambient-label" aria-hidden="true"><strong>Capability Substrate / Live</strong>Dense → Sparse · Output Preserved</p></section>`;
+}
+
+function buildKautuhalAmbientScript() {
+    return `(function () {
+        const root = document.querySelector('.kautuhal-ambient-entry');
+        if (!root) return;
+
+        const canvas = root.querySelector('canvas');
+        const context = canvas.getContext('2d', { alpha: true });
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const activeChannels = new Set([3, 9, 14, 22, 31, 39, 46, 51]);
+        let visible = true;
+        let animationFrame = 0;
+        let lastFrameAt = 0;
+        let elapsed = 9000;
+
+        const smoothstep = function (value) {
+            return value * value * (3 - 2 * value);
+        };
+
+        const isDark = function () {
+            const value = getComputedStyle(document.body).backgroundColor;
+            const match = value.match(/rgba?\\(([^)]+)\\)/);
+            if (!match) return true;
+            const channels = match[1].split(',').slice(0, 3).map(Number);
+            return channels.reduce(function (sum, channel) { return sum + channel; }, 0) / 3 < 128;
+        };
+
+        const palette = function () {
+            return isDark()
+                ? { fade: 'rgba(26,21,17,0.18)', faint: 'rgba(168,155,142,0.11)', gold: 'rgba(218,165,32,0.58)', ink: 'rgba(221,210,199,0.38)' }
+                : { fade: 'rgba(255,255,248,0.2)', faint: 'rgba(93,88,81,0.1)', gold: 'rgba(139,94,0,0.5)', ink: 'rgba(17,17,17,0.27)' };
+        };
+
+        const draw = function (time) {
+            const colors = palette();
+            const width = canvas.width;
+            const height = canvas.height;
+            const cycle = (elapsed % 30000) / 30000;
+            const sparse = cycle < 0.2
+                ? smoothstep(cycle / 0.2)
+                : cycle > 0.9
+                    ? smoothstep((1 - cycle) / 0.1)
+                    : 1;
+            const phase = elapsed * 0.00028;
+            const startX = width * 0.46;
+            const endX = width * 0.88;
+            const outputX = width * 0.95;
+            const outputY = height * 0.5;
+            const channelCount = 55;
+
+            context.fillStyle = colors.fade;
+            context.fillRect(0, 0, width, height);
+
+            for (let channel = 0; channel < channelCount; channel += 1) {
+                const normalized = channel / (channelCount - 1);
+                const y = height * (0.1 + normalized * 0.8);
+                const active = activeChannels.has(channel);
+                const inactiveOpacity = 1 - sparse * 0.88;
+
+                context.strokeStyle = active ? colors.gold : colors.faint;
+                context.globalAlpha = active ? 0.72 : inactiveOpacity;
+                context.lineWidth = active ? 0.75 : 0.42;
+                context.beginPath();
+                for (let segment = 0; segment <= 32; segment += 1) {
+                    const progress = segment / 32;
+                    const x = startX + progress * (endX - startX);
+                    const displacement = Math.sin(progress * 10 + channel * 0.41 + phase) * (active ? 1.9 : 0.8);
+                    if (segment === 0) context.moveTo(x, y + displacement);
+                    else context.lineTo(x, y + displacement);
+                }
+                context.stroke();
+
+                if (active) {
+                    context.strokeStyle = colors.gold;
+                    context.globalAlpha = 0.23;
+                    context.beginPath();
+                    context.moveTo(endX, y);
+                    context.quadraticCurveTo(outputX - 8, y, outputX, outputY);
+                    context.stroke();
+
+                    for (let pulse = 0; pulse < 2; pulse += 1) {
+                        const progress = (phase * 0.28 + pulse * 0.53 + channel * 0.071) % 1;
+                        const pulseX = startX + progress * (endX - startX);
+                        const pulseY = y + Math.sin(progress * 10 + channel * 0.41 + phase) * 1.9;
+                        context.fillStyle = colors.gold;
+                        context.globalAlpha = 0.8;
+                        context.beginPath();
+                        context.arc(pulseX, pulseY, 1.05, 0, Math.PI * 2);
+                        context.fill();
+                    }
+                }
+            }
+
+            context.globalAlpha = 1;
+            context.strokeStyle = colors.ink;
+            context.lineWidth = 0.65;
+            context.beginPath();
+            context.moveTo(outputX, height * 0.16);
+            context.lineTo(outputX, height * 0.84);
+            context.stroke();
+
+            context.fillStyle = colors.gold;
+            context.globalAlpha = 0.78;
+            context.beginPath();
+            context.arc(outputX, outputY, 2.4 + Math.sin(phase * 2) * 0.45, 0, Math.PI * 2);
+            context.fill();
+            context.globalAlpha = 1;
+
+            lastFrameAt = time;
+        };
+
+        const tick = function (time) {
+            if (!visible || document.hidden) return;
+            if (time - lastFrameAt >= 96) {
+                elapsed += time - lastFrameAt;
+                draw(time);
+            }
+            animationFrame = requestAnimationFrame(tick);
+        };
+
+        const start = function () {
+            cancelAnimationFrame(animationFrame);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            draw(performance.now());
+            if (reducedMotion) return;
+            lastFrameAt = performance.now();
+            animationFrame = requestAnimationFrame(tick);
+        };
+
+        const observer = new IntersectionObserver(function (entries) {
+            visible = entries[0] ? entries[0].isIntersecting : false;
+            if (visible) start();
+            else cancelAnimationFrame(animationFrame);
+        }, { threshold: 0.05 });
+
+        observer.observe(root);
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) cancelAnimationFrame(animationFrame);
+            else if (visible) start();
+        });
+
+        const themeObserver = new MutationObserver(function () {
+            if (visible) start();
+        });
+        themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+            if (visible) start();
+        });
+
+        start();
+    }());`;
 }
 
 function buildHomepageStructuredData() {
@@ -1089,6 +1241,7 @@ function buildHomepageHtml() {
     </footer>
 
     <script>${buildThemeToggleScript()}</script>
+    <script>${buildKautuhalAmbientScript()}</script>
 </body>
 </html>
 `;

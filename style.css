@@ -262,6 +262,107 @@ header {
     padding: clamp(4rem, 9vh, 7.5rem) 0 clamp(3.2rem, 7vh, 5.5rem);
 }
 
+.home-hero.kautuhal-ambient-entry {
+    position: relative;
+    display: block;
+    min-height: 570px;
+    margin: clamp(4rem, 8vh, 6rem) 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    isolation: isolate;
+}
+
+.kautuhal-ambient-entry canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    width: 100%;
+    height: 100%;
+    opacity: 0.68;
+    pointer-events: none;
+}
+
+.kautuhal-ambient-veil {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(
+        90deg,
+        var(--bg-color) 0%,
+        color-mix(in srgb, var(--bg-color) 97%, transparent) 42%,
+        color-mix(in srgb, var(--bg-color) 60%, transparent) 70%,
+        color-mix(in srgb, var(--bg-color) 20%, transparent) 100%
+    );
+    pointer-events: none;
+}
+
+.kautuhal-ambient-masthead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.kautuhal-ambient-masthead strong,
+.kautuhal-ambient-kicker {
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.home-identity.kautuhal-ambient-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: min(60%, 610px);
+    max-width: none;
+    min-height: 500px;
+    padding: clamp(2.5rem, 7vw, 5.5rem) clamp(1.5rem, 5vw, 4.25rem) 1.75rem;
+}
+
+.kautuhal-ambient-kicker {
+    margin: 0;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.kautuhal-ambient-copy .home-identity-summary {
+    max-width: 34ch;
+    margin-top: 1.8rem;
+    font-size: clamp(1.25rem, 2.8vw, 2rem);
+    line-height: 1.48;
+}
+
+.kautuhal-ambient-label {
+    position: absolute;
+    right: 1.25rem;
+    bottom: 1.1rem;
+    margin: 0;
+    color: var(--text-secondary);
+    font-family: var(--sans);
+    font-size: 0.67rem;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+.kautuhal-ambient-label strong {
+    display: block;
+    margin-bottom: 0.25rem;
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
 .home-identity {
     min-width: 0;
     max-width: 900px;
@@ -1897,6 +1998,49 @@ footer {
 @media (max-width: 600px) {
     .home-hero {
         padding-top: 3.5rem;
+    }
+
+    .home-hero.kautuhal-ambient-entry {
+        min-height: 660px;
+        margin: 2.75rem 0 4rem;
+        padding: 0;
+    }
+
+    .kautuhal-ambient-entry canvas {
+        inset: 35% -28% 0 6%;
+        width: 122%;
+        height: 68%;
+        opacity: 0.48;
+    }
+
+    .kautuhal-ambient-veil {
+        background: linear-gradient(
+            180deg,
+            var(--bg-color) 0%,
+            var(--bg-color) 53%,
+            color-mix(in srgb, var(--bg-color) 56%, transparent) 78%,
+            color-mix(in srgb, var(--bg-color) 18%, transparent) 100%
+        );
+    }
+
+    .kautuhal-ambient-masthead {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .home-identity.kautuhal-ambient-copy {
+        width: 100%;
+        min-height: 590px;
+        padding-top: 3rem;
+    }
+
+    .kautuhal-ambient-copy .home-identity-summary {
+        max-width: 27ch;
+        font-size: 1.28rem;
+    }
+
+    .kautuhal-ambient-label {
+        display: none;
     }
 
     .home-thesis {
