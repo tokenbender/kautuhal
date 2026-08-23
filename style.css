@@ -262,6 +262,11 @@ header {
     padding: clamp(4rem, 9vh, 7.5rem) 0 clamp(3.2rem, 7vh, 5.5rem);
 }
 
+.home-hero-kautuhal {
+    min-height: auto;
+    padding: clamp(4rem, 8vh, 6rem) 0;
+}
+
 .home-identity {
     min-width: 0;
     max-width: 900px;
@@ -360,6 +365,154 @@ header {
 
 .secondary-action:hover {
     color: var(--garden-color);
+}
+
+.home-actions-kautuhal .intro-action,
+.home-actions-kautuhal .primary-action {
+    grid-column: auto;
+}
+
+.kalpataru-ambient-entry {
+    position: relative;
+    min-height: 560px;
+    margin: 0 0 clamp(4rem, 9vh, 7rem);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: var(--bg-color);
+    isolation: isolate;
+}
+
+.kalpataru-ambient-entry canvas {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    width: 100%;
+    height: 100%;
+    opacity: 0.48;
+}
+
+.kalpataru-ambient-veil {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(
+        90deg,
+        var(--bg-color) 0%,
+        color-mix(in srgb, var(--bg-color) 96%, transparent) 38%,
+        color-mix(in srgb, var(--bg-color) 48%, transparent) 68%,
+        color-mix(in srgb, var(--bg-color) 18%, transparent) 100%
+    );
+    pointer-events: none;
+}
+
+.kalpataru-ambient-masthead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border-color);
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.kalpataru-ambient-masthead strong,
+.kalpataru-ambient-kicker {
+    color: var(--garden-color);
+    font-weight: 600;
+}
+
+.kalpataru-ambient-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: min(58%, 570px);
+    min-height: 490px;
+    padding: clamp(2.5rem, 7vw, 5.5rem) clamp(1.5rem, 5vw, 4.25rem) 1.75rem;
+}
+
+.kalpataru-ambient-kicker,
+.kalpataru-ambient-branches,
+.kalpataru-ambient-equation {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.kalpataru-ambient-entry h2 {
+    max-width: 8ch;
+    margin: 1.6rem 0 1.35rem;
+    font-size: clamp(3.15rem, 7.5vw, 6rem);
+    font-weight: 400;
+    line-height: 0.91;
+    letter-spacing: -0.06em;
+    text-wrap: balance;
+}
+
+.kalpataru-ambient-description {
+    max-width: 34ch;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.65;
+}
+
+.kalpataru-ambient-enter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    width: min(100%, 260px);
+    margin-top: 2.5rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--garden-color);
+    color: var(--text-color);
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+}
+
+.kalpataru-ambient-enter:hover {
+    color: var(--garden-color);
+}
+
+.kalpataru-ambient-branches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+    margin-top: 3rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.09em;
+}
+
+.kalpataru-ambient-branches span:not(:last-child)::after {
+    content: ' /';
+    color: var(--border-color);
+}
+
+.kalpataru-ambient-equation {
+    position: absolute;
+    right: 1.25rem;
+    bottom: 1.15rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.08em;
+    text-align: right;
+}
+
+.kalpataru-ambient-equation strong {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: var(--garden-color);
+    font-weight: 600;
 }
 
 .home-portrait {
@@ -1897,6 +2050,50 @@ footer {
 @media (max-width: 600px) {
     .home-hero {
         padding-top: 3.5rem;
+    }
+
+    .kalpataru-ambient-entry {
+        min-height: 650px;
+    }
+
+    .kalpataru-ambient-entry canvas {
+        inset: 35% -22% 0 8%;
+        width: 114%;
+        height: 66%;
+        opacity: 0.38;
+    }
+
+    .kalpataru-ambient-veil {
+        background: linear-gradient(
+            180deg,
+            var(--bg-color) 0%,
+            var(--bg-color) 48%,
+            color-mix(in srgb, var(--bg-color) 45%, transparent) 75%,
+            color-mix(in srgb, var(--bg-color) 15%, transparent) 100%
+        );
+    }
+
+    .kalpataru-ambient-masthead {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .kalpataru-ambient-copy {
+        width: 100%;
+        min-height: 580px;
+        padding-top: 3rem;
+    }
+
+    .kalpataru-ambient-entry h2 {
+        font-size: clamp(3rem, 14vw, 4.5rem);
+    }
+
+    .kalpataru-ambient-description {
+        max-width: 30ch;
+    }
+
+    .kalpataru-ambient-equation {
+        display: none;
     }
 
     .home-thesis {
