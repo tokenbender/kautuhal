@@ -56,7 +56,7 @@
     </header>
 
     <main class="container">
-        <section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><header class="kautuhal-ambient-masthead"><strong>01 / Kautuhal</strong><span>Authored Work</span></header><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><p class="home-identity-summary">Research on RL, Supersparse inference and agentic workflows.</p></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div><p class="kautuhal-ambient-label" aria-live="polite"><strong>Neural Cellular Automaton / Loading</strong>Page Content Does Not Depend on It</p></section>
+        <section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><header class="kautuhal-ambient-masthead"><strong>01 / Kautuhal</strong><span>Authored Work</span></header><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><p class="home-identity-summary">Research on RL, Supersparse inference and agentic workflows.</p></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div><p class="kautuhal-ambient-label" aria-live="polite"><strong>Circuit Coral NCA / Loading</strong>Page Content Does Not Depend on It</p></section>
     </main>
 
     <footer>
@@ -154,6 +154,7 @@
         let renderPipeline = null;
         let damageBuffer = null;
         let renderParamsBuffer = null;
+        let simParamsBuffer = null;
         let currentState = 0;
         let steps = 0;
         let stopped = false;
@@ -172,6 +173,15 @@
             @group(0) @binding(3) var<storage, read> b1: array<f32>;
             @group(0) @binding(4) var<storage, read> w2: array<f32>;
             @group(0) @binding(5) var<storage, read> b2: array<f32>;
+            @group(0) @binding(6) var<uniform> sim_params: vec4<f32>;
+
+            fn random01(x: u32, y: u32, step: u32) -> f32 {
+                var value = x * 1664525u + y * 1013904223u + step * 747796405u + 2891336453u;
+                value = (value ^ (value >> 16u)) * 2246822519u;
+                value = (value ^ (value >> 13u)) * 3266489917u;
+                value = value ^ (value >> 16u);
+                return f32(value & 16777215u) / 16777215.0;
+            }
 
             fn read_state(channel: u32, x: i32, y: i32) -> f32 {
                 if (x < 0 || y < 0 || x >= i32(WIDTH) || y >= i32(HEIGHT)) { return 0.0; }
@@ -211,13 +221,14 @@
                 }
 
                 let cell = gid.y * WIDTH + gid.x;
+                let should_update = random01(gid.x, gid.y, u32(sim_params.x)) <= sim_params.y;
                 for (var c: u32 = 0u; c < CHANNELS; c = c + 1u) {
                     var delta = b2[c];
                     for (var h: u32 = 0u; h < HIDDEN; h = h + 1u) {
                         delta = delta + w2[c * HIDDEN + h] * hidden_values[h];
                     }
                     let index = c * CELLS + cell;
-                    proposal[index] = state_in[index] + delta;
+                    proposal[index] = state_in[index] + select(0.0, delta, should_update);
                 }
             }
         `;
@@ -384,6 +395,9 @@
             device.queue.writeBuffer(renderParamsBuffer, 0, new Float32Array([
                 canvas.width, canvas.height, isDark() ? 1.0 : 0.0, isDark() ? 0.48 : 0.34
             ]));
+            device.queue.writeBuffer(simParamsBuffer, 0, new Float32Array([
+                steps, 0.5, 0.0, 0.0
+            ]));
         };
 
         const step = function () {
@@ -431,8 +445,8 @@
             }
             const startedAt = performance.now();
             step();
-            if (reducedMotion && steps >= 64) return;
-            const interval = steps < 64 ? 65 : 100;
+            if (reducedMotion && steps >= 128) return;
+            const interval = 50;
             window.setTimeout(loop, Math.max(0, interval - (performance.now() - startedAt)));
         };
 
@@ -509,6 +523,7 @@
             const b2Buffer = makeStorageBuffer(b2);
             damageBuffer = device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
             renderParamsBuffer = device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+            simParamsBuffer = device.createBuffer({ size: 16, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
             readbackBuffer = device.createBuffer({ size: stateByteSize, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
 
             updatePipeline = device.createComputePipeline({
@@ -545,7 +560,8 @@
                         { binding: 2, resource: { buffer: w1Buffer } },
                         { binding: 3, resource: { buffer: b1Buffer } },
                         { binding: 4, resource: { buffer: w2Buffer } },
-                        { binding: 5, resource: { buffer: b2Buffer } }
+                        { binding: 5, resource: { buffer: b2Buffer } },
+                        { binding: 6, resource: { buffer: simParamsBuffer } }
                     ]
                 });
             };
@@ -574,13 +590,14 @@
             maskBindGroups = [makeMaskGroup(stateA, stateB), makeMaskGroup(stateB, stateA)];
             renderBindGroups = [makeRenderGroup(stateA), makeRenderGroup(stateB)];
             resizeCanvas();
-            label.innerHTML = '<strong>Neural Cellular Automaton / 2,940 Parameters</strong>Hover Anywhere to Damage · ~5s Recovery';
+            label.innerHTML = '<strong>Circuit Coral NCA / 2,940 Parameters</strong>Hover to Obstruct · Branches Reroute';
 
             window.__kautuhalNca = {
                 get status() { return stopped ? 'stopped' : 'running'; },
                 get backend() { return 'raw-webgpu'; },
                 get steps() { return steps; },
                 get lastInferenceMs() { return lastInferenceMs; },
+                get fireRate() { return 0.5; },
                 get damageActive() { return pointer.active && performance.now() - pointer.hoverSince >= 320; },
                 damageAt: function (x, y) { pointer.x = x; pointer.y = y; pointer.active = true; pointer.hoverSince = 0; },
                 clearDamage: function () { pointer.active = false; },
