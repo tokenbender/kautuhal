@@ -1,7 +1,7 @@
 ---
 title: Hello, I'm Tokenbender
 date: 2024-08-24
-excerpt: I like making models do things they have no business doing at their size.
+excerpt: I am good at making models do whatever is needed when the use case is clearly specified.
 tags: meta, llm, engineering, capability-extraction
 status: evergreen
 category: personal
@@ -14,11 +14,11 @@ category: personal
 
 Hello!
 
-I am Abhishek Harshvardhan Mishra, though most people who know my work online know me as tokenbender.
+I am Abhishek Harshvardhan Mishra, aka Tokenbender.
 
-Before all this, I was a technical lead at Intel working on server firmware. Then language models ate my brain.
+I am the founder of Deus Experiments, a lab specialising in post-training for enterprise use cases and supersparse inference. Before this, I was a technical lead at Intel, working on server firmware. Then I fell in love with language models, threw away everything I had done before, and became part of open-source LLM research.
 
-I like making models do things they have no business doing at their size.
+I am good at making models do whatever is needed, as long as the use case is clearly specified.
 
 <section class="journey-tree" aria-labelledby="journey-tree-title">
   <header class="journey-tree-header">
