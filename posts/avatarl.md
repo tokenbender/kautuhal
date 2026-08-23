@@ -1,7 +1,7 @@
 ---
-title: avatarl: training language models from scratch with pure reinforcement learning
+title: avatarl: Training Language Models from Scratch with Pure Reinforcement Learning
 date: 2025-08-09
-excerpt: replacing cross-entropy pretraining with a principled rl objective using expert-consensus rewards over active tokens
+excerpt: Replacing cross-entropy pretraining with a principled RL objective using expert-consensus rewards over active tokens.
 tags: reinforcement-learning, language-models, pretraining
 status: research
 category: research

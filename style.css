@@ -171,7 +171,6 @@ header {
     text-decoration: none;
     letter-spacing: 0.01em;
     transition: color 0.2s ease;
-    text-transform: lowercase;
 }
 
 .logo:hover {
@@ -191,7 +190,6 @@ header {
     font-size: 0.78rem;
     transition: color 0.2s ease, border-color 0.2s ease;
     letter-spacing: 0.03em;
-    text-transform: lowercase;
     border-bottom: 1px solid transparent;
     padding-bottom: 0.1rem;
 }
@@ -219,7 +217,6 @@ header {
     letter-spacing: 0.03em;
     line-height: 1.2;
     padding: 0 0 0.1rem;
-    text-transform: lowercase;
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
@@ -238,7 +235,6 @@ header {
     text-decoration: none;
     font-size: 0.84rem;
     letter-spacing: 0.03em;
-    text-transform: lowercase;
     border-bottom: 1px solid transparent;
 }
 
@@ -274,7 +270,6 @@ header {
     font-weight: 600;
     letter-spacing: 0.13em;
     color: var(--text-secondary);
-    text-transform: uppercase;
 }
 
 .home-thesis {
@@ -444,7 +439,6 @@ header {
     font-family: var(--sans);
     font-size: 0.78rem;
     font-weight: 500;
-    text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-secondary);
 }
@@ -580,7 +574,6 @@ header {
     font-size: 0.8rem;
     font-weight: 500;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
     color: var(--text-secondary);
 }
 
@@ -668,7 +661,6 @@ header {
     font-family: var(--sans);
     font-size: 0.74rem;
     color: var(--text-secondary);
-    text-transform: lowercase;
 }
 
 .archive-date-category {
@@ -737,7 +729,6 @@ header {
     font-size: 0.72rem;
     font-weight: 500;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
     color: var(--text-secondary);
 }
 
@@ -826,7 +817,6 @@ header {
     font-size: 0.78rem;
     color: var(--text-secondary);
     letter-spacing: 0.02em;
-    text-transform: lowercase;
 }
 
 .meta-sep {
@@ -1113,7 +1103,6 @@ footer {
     font-size: 0.8rem;
     font-weight: 500;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
     color: var(--text-secondary);
 }
 
@@ -1292,7 +1281,6 @@ footer {
         color: var(--text-secondary);
         font-size: 0.78rem;
         letter-spacing: 0.02em;
-        text-transform: lowercase;
     }
 
     .post-toc-mobile .post-toc-inner {

@@ -1,7 +1,7 @@
 ---
-title: welcome
+title: Welcome
 date: 2024-08-24
-excerpt: my journey from intel to llm research and the models that defined my path
+excerpt: My journey from Intel to LLM research and the models that defined my path.
 tags: meta, llm, engineering
 status: evergreen
 category: personal

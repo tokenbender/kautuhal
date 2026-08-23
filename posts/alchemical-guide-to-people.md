@@ -1,7 +1,7 @@
 ---
-title: an alchemical outlook to finding human gold
+title: An Alchemical Outlook to Finding Human Gold
 date: 2025-01-25
-excerpt: a framework for evaluating people through proof of interest, work, excellence, and exceptionalism
+excerpt: A framework for evaluating people through proof of interest, work, excellence, and exceptionalism.
 tags: frameworks, people, career
 status: evergreen
 category: personal

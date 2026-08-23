@@ -26,11 +26,30 @@ const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/mark
 const AVERAGE_READING_WPM = 220;
 const CATEGORY_ORDER = ['research', 'technical', 'personal'];
 const CATEGORY_LABELS = {
-    research: 'research',
-    technical: 'technical',
-    personal: 'personal',
-    uncategorized: 'other'
+    research: 'Research',
+    technical: 'Technical',
+    personal: 'Personal',
+    uncategorized: 'Other'
 };
+
+const LABEL_OVERRIDES = {
+    ai: 'AI',
+    api: 'API',
+    llm: 'LLM',
+    lora: 'LoRA',
+    ml: 'ML',
+    prism: 'PRISM',
+    rl: 'RL'
+};
+
+function formatUiLabel(value) {
+    return String(value)
+        .replace(/[-_]+/g, ' ')
+        .split(' ')
+        .filter(Boolean)
+        .map((word) => LABEL_OVERRIDES[word.toLowerCase()] || `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+        .join(' ');
+}
 
 function get(url) {
     return new Promise((resolve, reject) => {
@@ -479,8 +498,9 @@ function buildThemeToggleScript() {
         '        }',
         '',
         "        const targetTheme = activeTheme === 'light' ? 'dark' : 'light';",
-        '        toggle.textContent = targetTheme;',
-        "        toggle.setAttribute('aria-label', `switch to ${targetTheme} theme`);",
+        "        const targetLabel = `${targetTheme.charAt(0).toUpperCase()}${targetTheme.slice(1)}`;",
+        '        toggle.textContent = targetLabel;',
+        "        toggle.setAttribute('aria-label', `Switch to ${targetTheme} theme`);",
         "        toggle.setAttribute('aria-pressed', activeTheme === 'light' ? 'true' : 'false');",
         '    };',
         '',
@@ -580,12 +600,12 @@ function buildPostMeta(post) {
 
     if (post.status) {
         parts.push('<span class="meta-sep">·</span>');
-        parts.push(`<span class="post-status">${escapeHtml(post.status)}</span>`);
+        parts.push(`<span class="post-status">${escapeHtml(formatUiLabel(post.status))}</span>`);
     }
 
     if (post.tags.length) {
         const tagLinks = post.tags
-            .map((tag) => `<span class="post-tag">${escapeHtml(tag)}</span>`)
+            .map((tag) => `<span class="post-tag">${escapeHtml(formatUiLabel(tag))}</span>`)
             .join('');
 
         parts.push('<span class="meta-sep">·</span>');
@@ -601,7 +621,7 @@ function buildPrimaryNavigation(active = '') {
         return `<a href="${href}"${activeAttributes}>${label}</a>`;
     };
 
-    return `${navLink('/posts/', 'writing', 'writing')}${navLink('/kalpataru/', 'kalpataru', 'kalpataru')}${navLink('/archive/', 'archive', 'archive')}${navLink('https://github.com/tokenbender', 'github', 'github', 'nav-github')}<button type="button" class="theme-toggle" data-theme-toggle aria-label="switch theme">light</button>`;
+    return `${navLink('/posts/', 'Writing', 'writing')}${navLink('/kalpataru/', 'Kalpataru', 'kalpataru')}${navLink('/archive/', 'Archive', 'archive')}${navLink('https://github.com/tokenbender', 'GitHub', 'github', 'nav-github')}<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">Light</button>`;
 }
 
 function buildTocMarkup(headings) {
@@ -616,11 +636,11 @@ function buildTocMarkup(headings) {
         return `<li class="toc-item toc-level-${heading.level}"><a href="#${escapeHtml(heading.id)}" data-toc-link="${escapeHtml(heading.id)}">${escapeHtml(heading.text)}</a></li>`;
     }).join('');
 
-    const nav = `<nav class="post-toc-inner" aria-label="table of contents"><h2>contents</h2><ol>${items}</ol></nav>`;
+    const nav = `<nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol>${items}</ol></nav>`;
 
     return {
         desktop: `<aside class="post-toc">${nav}</aside>`,
-        mobile: `<details class="post-toc-mobile"><summary>contents</summary>${nav}</details>`
+        mobile: `<details class="post-toc-mobile"><summary>Contents</summary>${nav}</details>`
     };
 }
 
@@ -691,7 +711,7 @@ function buildRelatedPostsSection(post) {
         return `<li><a href="/posts/${encodeURIComponent(relatedPost.id)}/">${escapeHtml(title)}</a><p>${escapeHtml(excerpt)}</p></li>`;
     }).join('');
 
-    return `<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">see also</h2><ul>${items}</ul></section>`;
+    return `<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">See Also</h2><ul>${items}</ul></section>`;
 }
 
 function getOrderedCategoryGroups(posts) {
@@ -726,7 +746,7 @@ function buildHomepageGroupedSections(posts) {
             return `<li><a href="/posts/${encodeURIComponent(post.id)}/">${escapeHtml(title)}</a><span class="home-post-meta">${escapeHtml(dateLabel)} · ${post.readingTimeMinutes} min</span></li>`;
         }).join('');
 
-        return `<section class="category-group" id="home-${group.key}"><div class="category-group-head"><h2>${escapeHtml(group.label)}</h2><span class="category-count">${group.posts.length}</span></div><ul class="category-post-list">${items}</ul><a class="see-all-link" href="/archive/#${group.key}">see all -></a></section>`;
+        return `<section class="category-group" id="home-${group.key}"><div class="category-group-head"><h2>${escapeHtml(group.label)}</h2><span class="category-count">${group.posts.length}</span></div><ul class="category-post-list">${items}</ul><a class="see-all-link" href="/archive/#${group.key}">See All →</a></section>`;
     }).join('');
 }
 
@@ -894,7 +914,7 @@ ${relatedSection}
     </main>
 
     <footer>
-        <p>for updates and random thoughts, follow <a href="https://x.com/tokenbender" target="_blank" rel="noopener">@tokenbender</a>.</p>
+        <p>For updates and random thoughts, follow <a href="https://x.com/tokenbender" target="_blank" rel="noopener">@tokenbender</a>.</p>
     </footer>
 
     <script>${buildThemeToggleScript()}</script>
@@ -930,7 +950,7 @@ function buildArchiveHtml(posts, mode = 'archive') {
     const topicSections = buildArchiveTopicSections(posts);
     const dateSections = buildArchiveDateSections(posts);
     const isWritingIndex = mode === 'writing';
-    const pageTitle = isWritingIndex ? 'writing' : 'archive';
+    const pageTitle = isWritingIndex ? 'Writing' : 'Archive';
     const pageDescription = isWritingIndex ? 'All published work from Kautuhal.' : 'Browse posts by topic or timeline on tokenbender.';
     const canonicalPath = isWritingIndex ? '/posts/' : '/archive/';
 
@@ -962,12 +982,12 @@ function buildArchiveHtml(posts, mode = 'archive') {
     <main class="container archive-page">
         <section class="archive-hero">
             <h1>${pageTitle}</h1>
-            <p>${isWritingIndex ? 'all published work, organized two ways.' : 'browse by topic or date.'}</p>
+            <p>${isWritingIndex ? 'All published work, organized two ways.' : 'Browse by topic or date.'}</p>
         </section>
 
-        <div class="archive-view-switcher" aria-label="archive view">
-            <button type="button" class="archive-view-toggle is-active" data-archive-view-toggle="topic" aria-pressed="true">[by topic]</button>
-            <button type="button" class="archive-view-toggle" data-archive-view-toggle="date" aria-pressed="false">[by date]</button>
+        <div class="archive-view-switcher" aria-label="Archive view">
+            <button type="button" class="archive-view-toggle is-active" data-archive-view-toggle="topic" aria-pressed="true">[By Topic]</button>
+            <button type="button" class="archive-view-toggle" data-archive-view-toggle="date" aria-pressed="false">[By Date]</button>
         </div>
 
         <section class="archive-view archive-view-topic" data-archive-view="topic">${topicSections}</section>
@@ -985,13 +1005,13 @@ function buildHomepageHeroHtml(posts) {
     const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
     const latestPost = posts.find((post) => !['placeholder', 'draft'].includes(post.status)) ?? posts[0];
     const latestPostLink = latestPost ? `/posts/${encodeURIComponent(latestPost.id)}/` : '/archive/';
-    const latestPostLabel = latestPost ? 'Read the latest essay' : 'Browse the archive';
+    const latestPostLabel = latestPost ? 'Read the Latest Essay' : 'Browse the Archive';
 
-    return `<section class="home-hero" aria-labelledby="home-thesis"><div class="home-identity"><p class="home-identity-eyebrow">KAUTUHAL / AUTHORED WORK</p><h1 class="home-thesis" id="home-thesis">I build systems that learn—<em>and systems for learning.</em></h1><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="primary-action" href="${latestPostLink}">${latestPostLabel} <span aria-hidden="true">→</span></a></div></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}" loading="eager" decoding="async" fetchpriority="high"><figcaption><strong>${escapeHtml(AUTHOR_NAME)}</strong><span>ML researcher · writes as ${escapeHtml(AUTHOR_HANDLE)}</span></figcaption></figure></section>`;
+    return `<section class="home-hero" aria-labelledby="home-thesis"><div class="home-identity"><p class="home-identity-eyebrow">Kautuhal / Authored Work</p><h1 class="home-thesis" id="home-thesis">I build systems that learn—<em>and systems for learning.</em></h1><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p><div class="home-actions"><a class="primary-action" href="${latestPostLink}">${latestPostLabel} <span aria-hidden="true">→</span></a></div></div><figure class="home-portrait"><img src="${escapeHtml(AUTHOR_IMAGE_PATH)}" alt="${escapeHtml(portraitAlt)}" width="${AUTHOR_IMAGE_WIDTH}" height="${AUTHOR_IMAGE_HEIGHT}" loading="eager" decoding="async" fetchpriority="high"><figcaption><strong>${escapeHtml(AUTHOR_NAME)}</strong><span>ML Researcher · Writes as ${escapeHtml(AUTHOR_HANDLE)}</span></figcaption></figure></section>`;
 }
 
 function buildKalpataruLinkHtml() {
-    return `<aside class="kalpataru-link" aria-labelledby="kalpataru-link-title"><div><p class="section-kicker">KALPATARU</p><h2 id="kalpataru-link-title">Agent-managed knowledge tree.</h2></div><p>Kalpataru maintains everything tokenbender wants to keep: things he curates, ideas of his own, and the life principles he cultivates.</p><a href="/kalpataru/">Open Kalpataru <span aria-hidden="true">↗</span></a></aside>`;
+    return `<aside class="kalpataru-link" aria-labelledby="kalpataru-link-title"><div><p class="section-kicker">Kalpataru</p><h2 id="kalpataru-link-title">Agent-Managed Knowledge Tree.</h2></div><p>Kalpataru maintains everything tokenbender wants to keep: things he curates, ideas of his own, and the life principles he cultivates.</p><a href="/kalpataru/">Open Kalpataru <span aria-hidden="true">↗</span></a></aside>`;
 }
 
 function buildHomepageStructuredData() {

@@ -1,5 +1,5 @@
 ---
-title: Honey, I shrunk the circuits!
+title: Honey, I Shrunk the Circuits!
 date: 2026-05-07
 excerpt: Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.
 tags: mechanistic-interpretability, circuit-extractability, model-compression, lora, representation-conditioning, low-rank-conditioning

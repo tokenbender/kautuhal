@@ -1,7 +1,7 @@
 ---
-title: how i bring the best out of claude code - part 1
+title: How I Bring the Best Out of Claude Code — Part 1
 date: 2025-06-15
-excerpt: a comprehensive guide to effective claude code usage, context management, and building local multi-agent systems
+excerpt: A comprehensive guide to effective Claude Code usage, context management, and building local multi-agent systems.
 tags: claude-code, ai-tooling, developer-workflow
 status: evergreen
 category: technical
