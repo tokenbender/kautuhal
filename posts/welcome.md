@@ -235,23 +235,3 @@ I am good at making models do whatever is needed, as long as the use case is cle
     <strong>Extract the capability, not the whole model.</strong>
   </div>
 </section>
-
-The cleanest early example is EvolvedSeeker. I started with the 1.3B-parameter DeepSeek Coder base, fine-tuned it, and got **68.29% on HumanEval**. No heroic origin story. I just wanted to see how much coding ability I could squeeze into something that small.
-
-[The evaluation is still preserved here](https://huggingface.co/TheBloke/evolvedSeeker_1_3-AWQ/blob/main/README.md), along with the [original discussion](https://www.reddit.com/r/LocalLLaMA/comments/181h3lv/13b_with_6829_humaneval_lol_dont_behead_me_part/).
-
-Of course, once you get interested in small models, you eventually ask a worse question: why does a capability need the rest of the model at all?
-
-A model can know how to add numbers, write code, or follow a format, but there is usually no neat little part you can point to and say, "there, that is the thing doing it." The ability is smeared across the network. You can use it, but good luck trying to pick it up and move it somewhere else.
-
-That is the rabbit hole Krishna Pagare and I have been disappearing into. We came up with **low-rank circuit conditioning**, where we keep the model's behaviour intact but push one of its existing capabilities into a form that is easier to isolate.
-
-Before conditioning, compact circuit recovery stalled at **29%**. Afterwards, we recovered **91.33%** of the full autoregressive behaviour from **5.05% of the model's MLP channels**.
-
-[The full experiment is in *Honey, I Shrunk the Circuits!*](/posts/honey-i-shrunk-the-circuits/)
-
-Now, we cannot pop that circuit out and run it by itself. If we could, I would say so. What we have is the handle we would need first: a small causal part that keeps carrying the behaviour even when we mess with the model around it.
-
-That is broadly what I am here for. I want capabilities we can teach without imitation, find without guesswork, inspect while they run, edit without retraining everything, and eventually use without dragging the entire original model along.
-
-Most things I publish here come from somewhere inside that mess. Sometimes it is the experiment. Sometimes it is the machinery I built because the experiments kept breaking my workflow. Sometimes it is simply an idea I could not leave alone.

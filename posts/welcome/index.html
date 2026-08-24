@@ -54,7 +54,7 @@
         <aside class="post-toc post-toc-empty" aria-hidden="true"></aside>
         <article class="post-content" id="post-content">
             <h1>Hello, I&#39;m Tokenbender</h1>
-            <div class="post-meta"><span class="meta-item">August 24, 2024</span><span class="meta-sep">·</span><span class="post-category">Personal</span><span class="meta-sep">·</span><span class="meta-item">6 min read</span><span class="meta-sep">·</span><span class="post-status">Evergreen</span><span class="meta-sep">·</span><span class="post-tags"><span class="post-tag">Meta</span><span class="post-tag">LLM</span><span class="post-tag">Engineering</span><span class="post-tag">Capability Extraction</span></span></div>
+            <div class="post-meta"><span class="meta-item">August 24, 2024</span><span class="meta-sep">·</span><span class="post-category">Personal</span><span class="meta-sep">·</span><span class="meta-item">4 min read</span><span class="meta-sep">·</span><span class="post-status">Evergreen</span><span class="meta-sep">·</span><span class="post-tags"><span class="post-tag">Meta</span><span class="post-tag">LLM</span><span class="post-tag">Engineering</span><span class="post-tag">Capability Extraction</span></span></div>
 
             <figure class="intro-portrait">
   <img src="/portrait-tokenbender.webp" alt="Portrait of Abhishek Harshvardhan Mishra" width="1158" height="1359" loading="eager" decoding="async">
@@ -280,17 +280,6 @@
     <strong>Extract the capability, not the whole model.</strong>
   </div>
 </section>
-
-<p>The cleanest early example is EvolvedSeeker. I started with the 1.3B-parameter DeepSeek Coder base, fine-tuned it, and got <strong>68.29% on HumanEval</strong>. No heroic origin story. I just wanted to see how much coding ability I could squeeze into something that small.</p>
-<p><a href="https://huggingface.co/TheBloke/evolvedSeeker_1_3-AWQ/blob/main/README.md">The evaluation is still preserved here</a>, along with the <a href="https://www.reddit.com/r/LocalLLaMA/comments/181h3lv/13b_with_6829_humaneval_lol_dont_behead_me_part/">original discussion</a>.</p>
-<p>Of course, once you get interested in small models, you eventually ask a worse question: why does a capability need the rest of the model at all?</p>
-<p>A model can know how to add numbers, write code, or follow a format, but there is usually no neat little part you can point to and say, &quot;there, that is the thing doing it.&quot; The ability is smeared across the network. You can use it, but good luck trying to pick it up and move it somewhere else.</p>
-<p>That is the rabbit hole Krishna Pagare and I have been disappearing into. We came up with <strong>low-rank circuit conditioning</strong>, where we keep the model&#39;s behaviour intact but push one of its existing capabilities into a form that is easier to isolate.</p>
-<p>Before conditioning, compact circuit recovery stalled at <strong>29%</strong>. Afterwards, we recovered <strong>91.33%</strong> of the full autoregressive behaviour from <strong>5.05% of the model&#39;s MLP channels</strong>.</p>
-<p><a href="/posts/honey-i-shrunk-the-circuits/">The full experiment is in <em>Honey, I Shrunk the Circuits!</em></a></p>
-<p>Now, we cannot pop that circuit out and run it by itself. If we could, I would say so. What we have is the handle we would need first: a small causal part that keeps carrying the behaviour even when we mess with the model around it.</p>
-<p>That is broadly what I am here for. I want capabilities we can teach without imitation, find without guesswork, inspect while they run, edit without retraining everything, and eventually use without dragging the entire original model along.</p>
-<p>Most things I publish here come from somewhere inside that mess. Sometimes it is the experiment. Sometimes it is the machinery I built because the experiments kept breaking my workflow. Sometimes it is simply an idea I could not leave alone.</p>
 
 <section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">See Also</h2><ul><li><a href="/posts/honey-i-shrunk-the-circuits/">Honey, I Shrunk the Circuits!</a><p>Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.</p></li><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite — A Rubric-Driven Prioritized Replay to Maximise Continual Learning</a><p>A reinforcement-learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design...</p></li><li><a href="/posts/avatarl/">avatarl: Training Language Models from Scratch with Pure Reinforcement Learning</a><p>Replacing cross-entropy pretraining with a principled RL objective using expert-consensus rewards over active tokens.</p></li></ul></section>
         </article>
