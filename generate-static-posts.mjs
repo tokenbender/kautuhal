@@ -21,7 +21,7 @@ const AUTHOR_IMAGE_HEIGHT = 1359;
 const FAVICON_LINKS = '<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n    <link rel="alternate icon" href="/favicon.ico">';
 const HOMEPAGE_TITLE = `Kautuhal — ${AUTHOR_HANDLE}`;
 const HOMEPAGE_DESCRIPTION = `Authored research, experiments, and working theories from ${AUTHOR_NAME} on learning systems for models, agents, and people.`;
-const HOMEPAGE_HERO_SUMMARY = 'Research on RL, Supersparse inference and agentic workflows.';
+const HOMEPAGE_HERO_SUMMARY = 'Research on RL and metaharnesses.';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
 const AVERAGE_READING_WPM = 220;
 const CATEGORY_ORDER = ['research', 'technical', 'personal'];
