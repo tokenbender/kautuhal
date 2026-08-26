@@ -991,7 +991,7 @@ function buildArchiveHtml(posts, mode = 'archive') {
     <main class="container archive-page">
         <section class="archive-hero">
             <h1>${pageTitle}</h1>
-            <p>${isWritingIndex ? 'All published work, organized two ways.' : 'Browse by topic or date.'}</p>
+${isWritingIndex ? '' : '            <p>Browse by topic or date.</p>\n'}
         </section>
 
         <div class="archive-view-switcher" aria-label="Archive view">
