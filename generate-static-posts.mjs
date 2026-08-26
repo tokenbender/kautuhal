@@ -1032,7 +1032,7 @@ function buildKautuhalRawWebGpuScript() {
         const stateFloatCount = cellCount * channels;
         const stateByteSize = stateFloatCount * 4;
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const pointer = { active: false, x: 0, y: 0, clientX: -1, clientY: -1, hoverSince: 0 };
+        const pointer = { active: false, x: 0, y: 0, clientX: -1, clientY: -1 };
         let device = null;
         let context = null;
         let format = null;
@@ -1051,6 +1051,7 @@ function buildKautuhalRawWebGpuScript() {
         let steps = 0;
         let stopped = false;
         let lastInferenceMs = 0;
+        let lastFrameAt = 0;
 
         const updateShader = \`
             const WIDTH: u32 = 72u;
@@ -1280,9 +1281,8 @@ function buildKautuhalRawWebGpuScript() {
         };
 
         const updateUniforms = function () {
-            const damageActive = pointer.active && performance.now() - pointer.hoverSince >= 320;
             device.queue.writeBuffer(damageBuffer, 0, new Float32Array([
-                pointer.x, pointer.y, 4.0, damageActive ? 1.0 : 0.0
+                pointer.x, pointer.y, 4.0, pointer.active ? 1.0 : 0.0
             ]));
             device.queue.writeBuffer(renderParamsBuffer, 0, new Float32Array([
                 canvas.width, canvas.height, isDark() ? 1.0 : 0.0, isDark() ? 0.48 : 0.90
@@ -1330,27 +1330,30 @@ function buildKautuhalRawWebGpuScript() {
             lastInferenceMs = performance.now() - startedAt;
         };
 
-        const loop = function () {
-            if (stopped || document.hidden) {
-                window.setTimeout(loop, 250);
+        const loop = function (now) {
+            if (stopped) {
                 return;
             }
-            const startedAt = performance.now();
-            step();
+            if (document.hidden) {
+                lastFrameAt = now;
+                window.requestAnimationFrame(loop);
+                return;
+            }
+            if (!lastFrameAt || now - lastFrameAt >= 33) {
+                step();
+                lastFrameAt = now;
+            }
             if (reducedMotion && steps >= 128) return;
-            const interval = 50;
-            window.setTimeout(loop, Math.max(0, interval - (performance.now() - startedAt)));
+            window.requestAnimationFrame(loop);
         };
 
         const setPointer = function (event, immediate) {
             if (event.pointerType === 'touch' && !immediate) return;
-            const moved = Math.hypot(event.clientX - pointer.clientX, event.clientY - pointer.clientY) > 4;
             pointer.clientX = event.clientX;
             pointer.clientY = event.clientY;
             pointer.x = event.clientX / window.innerWidth * width;
             pointer.y = event.clientY / window.innerHeight * height;
             pointer.active = true;
-            if (moved || immediate) pointer.hoverSince = immediate ? 0 : performance.now();
         };
 
         window.addEventListener('pointermove', function (event) { setPointer(event, false); }, { passive: true });
@@ -1490,12 +1493,12 @@ function buildKautuhalRawWebGpuScript() {
                 get steps() { return steps; },
                 get lastInferenceMs() { return lastInferenceMs; },
                 get fireRate() { return 0.5; },
-                get damageActive() { return pointer.active && performance.now() - pointer.hoverSince >= 320; },
-                damageAt: function (x, y) { pointer.x = x; pointer.y = y; pointer.active = true; pointer.hoverSince = 0; },
+                get damageActive() { return pointer.active; },
+                damageAt: function (x, y) { pointer.x = x; pointer.y = y; pointer.active = true; },
                 clearDamage: function () { pointer.active = false; },
                 alphaAt: alphaAt
             };
-            loop();
+            window.requestAnimationFrame(loop);
         };
 
         initialize().catch(function () {
