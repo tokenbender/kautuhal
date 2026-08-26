@@ -637,6 +637,10 @@ function buildPrimaryNavigation(active = '') {
     return `${navLink('/posts/', 'Writing', 'writing')}${navLink('/kalpataru/', 'Kalpataru', 'kalpataru')}${navLink('/archive/', 'Archive', 'archive')}${navLink('https://github.com/tokenbender', 'GitHub', 'github', 'nav-github')}<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">Light</button>`;
 }
 
+function buildPressIssueRule(left, right) {
+    return `<div class="site-issue-rule" aria-hidden="true"><span>${escapeHtml(left)}</span><span>${escapeHtml(right)}</span></div>`;
+}
+
 function buildTocMarkup(headings) {
     if (headings.length < 3) {
         return {
@@ -898,15 +902,18 @@ function buildPostHtml(post) {
                 </div>
             </div>
         </nav>
+        ${buildPressIssueRule('Kautuhal / Authored Work', `${getCategoryLabel(post.category)} Note · ${formatDate(post.metadata.date || '')}`)}
     </header>
 
     <main class="${layoutClass}">
         ${toc.desktop}
         <article class="post-content" id="post-content">
+            <p class="post-press-kind" aria-hidden="true">Claim-conditioned field note</p>
             <h1>${escapeHtml(title)}</h1>
             ${buildPostMeta(post)}
 ${toc.mobile ? `            ${toc.mobile}` : ''}
             ${post.html}
+            <div class="post-press-endmark" aria-hidden="true"><span>End of authored note</span><span>Kautuhal / tokenbender</span></div>
 ${relatedSection}
         </article>
         <aside class="post-margin-column" aria-hidden="true"></aside>
@@ -967,7 +974,7 @@ function buildArchiveHtml(posts, mode = 'archive') {
     <script>${buildThemeBootstrapScript()}</script>
     <link rel="stylesheet" href="/style.css">
 </head>
-<body>
+<body class="archive-shell-page ${isWritingIndex ? 'writing-index-page' : 'archive-index-page'}">
     <header>
         <nav>
             <div class="nav-container">
@@ -977,6 +984,7 @@ function buildArchiveHtml(posts, mode = 'archive') {
                 </div>
             </div>
         </nav>
+        ${buildPressIssueRule('Kautuhal / Authored Index', `${pageTitle} · ${posts.length} Published`)}
     </header>
 
     <main class="container archive-page">
@@ -1002,7 +1010,7 @@ function buildArchiveHtml(posts, mode = 'archive') {
 }
 
 function buildHomepageHeroHtml() {
-    return `<section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><header class="kautuhal-ambient-masthead"><strong>01 / Kautuhal</strong><span>Authored Work</span></header><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><p class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</p></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div><p class="kautuhal-ambient-label" aria-live="polite"><strong>Circuit Coral NCA / Loading</strong>Page Content Does Not Depend on It</p></section>`;
+    return `<section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><header class="kautuhal-ambient-masthead"><strong>01 / Kautuhal</strong><span>Authored Work</span></header><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><h1 class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</h1></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div><p class="kautuhal-ambient-label" aria-live="polite"><strong>Circuit Coral NCA / Loading</strong>Page Content Does Not Depend on It</p></section>`;
 }
 
 function buildKautuhalRawWebGpuScript() {
@@ -1570,6 +1578,7 @@ function buildHomepageHtml() {
                 </div>
             </div>
         </nav>
+        ${buildPressIssueRule('Kautuhal / Authored Work', 'Research · Experiments · Working Theories')}
     </header>
 
     <main class="container">
