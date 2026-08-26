@@ -2179,6 +2179,7 @@ footer {
     --press-line: 1.28rem;
     --press-rule: 1.4px;
     --press-measure: 66ch;
+    --press-shell-width: 760px;
     --bg-color: var(--press-paper);
     --bg-secondary: var(--press-paper);
     --text-color: var(--press-ink);
@@ -2245,8 +2246,8 @@ header {
 .home-page .nav-container,
 .post-page .nav-container,
 .archive-shell-page .nav-container {
-    width: min(96ch, 100%);
-    max-width: 96ch;
+    width: min(var(--press-shell-width), 100%);
+    max-width: var(--press-shell-width);
     padding: 1.3rem 24px 0.9rem;
     font-family: var(--press-small-caps);
 }
@@ -2306,7 +2307,7 @@ header {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    width: min(96ch, calc(100% - 48px));
+    width: min(var(--press-shell-width), calc(100% - 48px));
     margin: 0 auto;
     padding: 0.42rem 0 0.36rem;
     color: var(--press-ink);
@@ -2326,7 +2327,7 @@ header {
 }
 
 footer {
-    width: min(96ch, calc(100% - 48px));
+    width: min(var(--press-shell-width), calc(100% - 48px));
     margin: 4rem auto 0;
     padding: 1rem 0 2.2rem;
     color: var(--press-muted);
@@ -2347,8 +2348,8 @@ footer a {
 
 /* Homepage / public identity cover */
 .home-page .container {
-    width: min(96ch, 100%);
-    max-width: 96ch;
+    width: min(var(--press-shell-width), 100%);
+    max-width: var(--press-shell-width);
     padding: 0 24px;
 }
 
@@ -2617,7 +2618,7 @@ footer a {
 .post-page .post-layout,
 .post-page .post-layout.no-sidenotes,
 .post-page .post-layout.has-sidenotes {
-    max-width: 96ch;
+    max-width: var(--press-shell-width);
     grid-template-columns: minmax(13ch, 16ch) minmax(0, var(--press-measure)) minmax(0, 18ch);
     column-gap: 3ch;
     padding: 3.8rem 24px 0;
@@ -3116,7 +3117,7 @@ footer a {
     .post-page .post-layout,
     .post-page .post-layout.no-sidenotes,
     .post-page .post-layout.has-sidenotes {
-        max-width: 88ch;
+        max-width: var(--press-shell-width);
         grid-template-columns: minmax(13ch, 15ch) minmax(0, var(--press-measure));
         column-gap: 2.5ch;
     }
@@ -3159,7 +3160,7 @@ footer a {
 
     .post-page.has-sidenotes .nav-container,
     .post-page.no-sidenotes .nav-container {
-        max-width: 96ch;
+        max-width: var(--press-shell-width);
         padding-left: 24px;
     }
 
