@@ -22,7 +22,7 @@ const FAVICON_LINKS = '<link rel="icon" href="/favicon.svg" type="image/svg+xml"
 const HOMEPAGE_TITLE = `Kautuhal — ${AUTHOR_HANDLE}`;
 const HOMEPAGE_DESCRIPTION = `Authored research, experiments, and working theories from ${AUTHOR_NAME} on learning systems for models, agents, and people.`;
 const HOMEPAGE_HERO_SUMMARY = 'Research on RL and metaharnesses.';
-const STYLE_HREF = '/style.css?v=press-20260826-2';
+const STYLE_HREF = '/style.css?v=press-20260826-3';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
 const AVERAGE_READING_WPM = 220;
 const CATEGORY_ORDER = ['research', 'technical', 'personal'];
@@ -1637,6 +1637,8 @@ async function main() {
         const { contentWithoutFootnotes, footnotes } = extractFootnotes(content);
         let html = marked.parse(contentWithoutFootnotes);
         html = replaceFootnoteReferences(marked, html, footnotes, id);
+        html = html.replace(/^(\s*)<p><em>/, '$1<p class="post-deck"><em>');
+        html = html.replace(/<p>(By [^<]+)<\/p>/, '<p class="post-byline">$1</p>');
 
         const headingResult = addHeadingIdsAndCollect(html);
         const plain = stripMarkdown(contentWithoutFootnotes);

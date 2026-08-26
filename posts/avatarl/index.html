@@ -33,7 +33,7 @@
     const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
     root.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
 })();</script>
-    <link rel="stylesheet" href="/style.css?v=press-20260826-2">
+    <link rel="stylesheet" href="/style.css?v=press-20260826-3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
     <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"avatarl: Training Language Models from Scratch with Pure Reinforcement Learning","description":"Replacing cross-entropy pretraining with a principled RL objective using expert-consensus rewards over active tokens.","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/avatarl/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/avatarl/"},"datePublished":"2025-08-09T00:00:00.000Z","dateModified":"2025-08-09T00:00:00.000Z","keywords":"reinforcement-learning, language-models, pretraining"}</script>
@@ -333,7 +333,7 @@ final rewards r_i over A_t → used by REINFORCE
 <p><strong>3. Evaluating the student&#39;s policy</strong></p>
 <p>The student&#39;s policy, <code>π_student(a | s)</code>, is judged against this reward landscape. The policy gradient loss aims to move the student&#39;s distribution closer to the ideal one. The reinforce rule is <code>loss = -e_{a ~ π_student} [ r(a) ]</code>, where our reward <code>r(a) = p_ideal(a | s)</code>—we also add an entropy bonus <code>−β·H[π_θ(·|s)]</code> to encourage exploration, with <code>β = entropy_coefficient</code> (default 0.01) [2, 4]. In practice, stable policy-gradient updates often use PPO-style clipping and variance reduction such as GAE [6, 7].</p>
 <h4>Learning to Calibrate the Critic Internally</h4>
-<p>By including the student&#39;s top-k predictions in the action space, we create a self-reinforcement mechanism. Not only the model learns to predict the ground truth, but also learns to calibrate the critic&#39;s predictions via its own top-k predictions.</p>
+<p class="post-byline">By including the student&#39;s top-k predictions in the action space, we create a self-reinforcement mechanism. Not only the model learns to predict the ground truth, but also learns to calibrate the critic&#39;s predictions via its own top-k predictions.</p>
 <p><strong>Concurrent top-k evaluation</strong></p>
 <p>Instead of sampling actions and performing k sequential rollouts, avatarl concurrently evaluates the student&#39;s top-k, the critic&#39;s top-k, and the gold token — an efficient 2k+1 rollout-equivalent with guided exploration. Specifically:</p>
 <ul>
