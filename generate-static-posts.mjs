@@ -22,6 +22,7 @@ const FAVICON_LINKS = '<link rel="icon" href="/favicon.svg" type="image/svg+xml"
 const HOMEPAGE_TITLE = `Kautuhal — ${AUTHOR_HANDLE}`;
 const HOMEPAGE_DESCRIPTION = `Authored research, experiments, and working theories from ${AUTHOR_NAME} on learning systems for models, agents, and people.`;
 const HOMEPAGE_HERO_SUMMARY = 'Research on RL and metaharnesses.';
+const STYLE_HREF = '/style.css?v=press-20260826-1';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
 const AVERAGE_READING_WPM = 220;
 const CATEGORY_ORDER = ['research', 'technical', 'personal'];
@@ -887,7 +888,7 @@ function buildPostHtml(post) {
     <link rel="canonical" href="${escapeHtml(canonicalUrl)}">
     ${FAVICON_LINKS}
     <script>${buildThemeBootstrapScript()}</script>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="${STYLE_HREF}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
     <script type="application/ld+json">${JSON.stringify(schema)}</script>
@@ -972,7 +973,7 @@ function buildArchiveHtml(posts, mode = 'archive') {
     <link rel="canonical" href="${SITE_URL}${canonicalPath}">
     ${FAVICON_LINKS}
     <script>${buildThemeBootstrapScript()}</script>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="${STYLE_HREF}">
 </head>
 <body class="archive-shell-page ${isWritingIndex ? 'writing-index-page' : 'archive-index-page'}">
     <header>
@@ -1562,7 +1563,7 @@ function buildHomepageHtml() {
     <link rel="canonical" href="${SITE_URL}/">
     ${FAVICON_LINKS}
     <script>${buildThemeBootstrapScript()}</script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="${STYLE_HREF}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
     <script type="application/ld+json">${homepageStructuredData}</script>
