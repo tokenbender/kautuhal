@@ -2915,6 +2915,14 @@ footer a {
     box-shadow: none;
 }
 
+:root[data-theme='light'] .post-content img[src*='/posts/images/honey-shrunk-circuits-'] {
+    filter: invert(1) hue-rotate(180deg) saturate(0.92) contrast(0.96) brightness(1.1);
+}
+
+:root[data-theme='dark'] .post-content img[src*='/posts/images/honey-shrunk-circuits-'] {
+    filter: none;
+}
+
 .post-cover-figure {
     margin: calc(var(--press-line) * 2) 0;
 }
