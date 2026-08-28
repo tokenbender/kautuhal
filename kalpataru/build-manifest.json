@@ -2,7 +2,7 @@
   "generated": true,
   "notice": "Generated from Tether curation-atlas. Do not edit this directory by hand.",
   "sourceRepository": "tether/curation-atlas",
-  "sourceCommit": "9a4727a27edd7de5ff57653e0e3e093e30109909",
-  "artifactSha256": "e6d29e65d0266678d95bf8aabcdb1b252d9cdfaa9379235bdf10f1f52495542c",
-  "generatedAt": "2026-08-27T00:17:07+05:30"
+  "sourceCommit": "0d6c09db1018d3287b0f71a3e7509a4c841753eb",
+  "artifactSha256": "806c53eb3008328cb8c1d6d3af4eeba3608df15fdf4a98fcca5953c323c01951",
+  "generatedAt": "2026-08-28T18:17:27+05:30"
 }

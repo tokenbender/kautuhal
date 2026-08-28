@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kautuhal — tokenbender</title>
-    <meta name="description" content="Authored research, experiments, and working theories from Abhishek Harshvardhan Mishra on learning systems for models, agents, and people.">
+    <meta name="description" content="Research, experiments, and working theories from Abhishek Harshvardhan Mishra on learning systems for models, agents, and people.">
     <meta name="author" content="Abhishek Harshvardhan Mishra">
     <meta name="robots" content="index,follow,max-image-preview:large">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="tokenbender">
     <meta property="og:title" content="Kautuhal — tokenbender">
-    <meta property="og:description" content="Authored research, experiments, and working theories from Abhishek Harshvardhan Mishra on learning systems for models, agents, and people.">
+    <meta property="og:description" content="Research, experiments, and working theories from Abhishek Harshvardhan Mishra on learning systems for models, agents, and people.">
     <meta property="og:url" content="https://tokenbender.com/">
     <meta property="og:image" content="https://tokenbender.com/portrait-tokenbender.jpg">
     <meta property="og:image:alt" content="Portrait of Abhishek Harshvardhan Mishra">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kautuhal — tokenbender">
-    <meta name="twitter:description" content="Authored research, experiments, and working theories from Abhishek Harshvardhan Mishra on learning systems for models, agents, and people.">
+    <meta name="twitter:description" content="Research, experiments, and working theories from Abhishek Harshvardhan Mishra on learning systems for models, agents, and people.">
     <meta name="twitter:image" content="https://tokenbender.com/portrait-tokenbender.jpg">
     <link rel="canonical" href="https://tokenbender.com/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -53,15 +53,14 @@
                 </div>
             </div>
         </nav>
-        <div class="site-issue-rule" aria-hidden="true"><span>Kautuhal / Authored Work</span><span>Research · Experiments · Working Theories</span></div>
     </header>
 
     <main class="container">
-        <section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><header class="kautuhal-ambient-masthead"><strong>01 / Kautuhal</strong><span>Authored Work</span></header><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><h1 class="home-identity-summary">Research on RL and metaharnesses.</h1></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div><p class="kautuhal-ambient-label" aria-live="polite"><strong>Circuit Coral NCA / Loading</strong>Page Content Does Not Depend on It</p></section>
+        <section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><h1 class="home-identity-summary">Research on RL and metaharnesses.</h1></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div></section>
     </main>
 
     <footer>
-        <p>&copy; 2026 tokenbender. Kautuhal is the authored edge of the garden.</p>
+        <p>&copy; 2026 tokenbender.</p>
     </footer>
 
     <script>(function () {
@@ -126,12 +125,7 @@
 })();</script>
     <script>(function () {
         const canvas = document.getElementById('kautuhal-neural-background');
-        const label = document.querySelector('.kautuhal-ambient-label');
-        if (!canvas || !label) return;
-        if (!navigator.gpu) {
-            label.innerHTML = '<strong>Neural Background Unavailable</strong>WebGPU Is Not Available on This Device';
-            return;
-        }
+        if (!canvas || !navigator.gpu) return;
 
         const width = 72;
         const height = 48;
@@ -497,7 +491,6 @@
             device = await adapter.requestDevice();
             device.lost.then(function () {
                 stopped = true;
-                label.innerHTML = '<strong>Neural Background Stopped</strong>The Page Still Works Without It';
             });
             context = canvas.getContext('webgpu');
             format = navigator.gpu.getPreferredCanvasFormat();
@@ -594,7 +587,6 @@
             maskBindGroups = [makeMaskGroup(stateA, stateB), makeMaskGroup(stateB, stateA)];
             renderBindGroups = [makeRenderGroup(stateA), makeRenderGroup(stateB)];
             resizeCanvas();
-            label.innerHTML = '<strong>Circuit Coral NCA / 2,940 Parameters</strong>Hover to Obstruct · Branches Reroute';
 
             window.__kautuhalNca = {
                 get status() { return stopped ? 'stopped' : 'running'; },
@@ -612,7 +604,6 @@
 
         initialize().catch(function () {
             stopped = true;
-            label.innerHTML = '<strong>Neural Background Unavailable</strong>The Page Still Works Without It';
         });
     }());</script>
 </body>

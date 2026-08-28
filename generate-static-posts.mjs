@@ -20,7 +20,7 @@ const AUTHOR_IMAGE_WIDTH = 1158;
 const AUTHOR_IMAGE_HEIGHT = 1359;
 const FAVICON_LINKS = '<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n    <link rel="alternate icon" href="/favicon.ico">';
 const HOMEPAGE_TITLE = `Kautuhal — ${AUTHOR_HANDLE}`;
-const HOMEPAGE_DESCRIPTION = `Authored research, experiments, and working theories from ${AUTHOR_NAME} on learning systems for models, agents, and people.`;
+const HOMEPAGE_DESCRIPTION = `Research, experiments, and working theories from ${AUTHOR_NAME} on learning systems for models, agents, and people.`;
 const HOMEPAGE_HERO_SUMMARY = 'Research on RL and metaharnesses.';
 const STYLE_HREF = '/style.css?v=press-20260826-5';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
@@ -612,11 +612,6 @@ function buildPostMeta(post) {
     parts.push('<span class="meta-sep">·</span>');
     parts.push(`<span class="meta-item">${post.readingTimeMinutes} min read</span>`);
 
-    if (post.status) {
-        parts.push('<span class="meta-sep">·</span>');
-        parts.push(`<span class="post-status">${escapeHtml(formatUiLabel(post.status))}</span>`);
-    }
-
     if (post.tags.length) {
         const tagLinks = post.tags
             .map((tag) => `<span class="post-tag">${escapeHtml(formatUiLabel(tag))}</span>`)
@@ -636,10 +631,6 @@ function buildPrimaryNavigation(active = '') {
     };
 
     return `${navLink('/posts/', 'Writing', 'writing')}${navLink('/kalpataru/', 'Kalpataru', 'kalpataru')}${navLink('/archive/', 'Archive', 'archive')}${navLink('https://github.com/tokenbender', 'GitHub', 'github', 'nav-github')}<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">Light</button>`;
-}
-
-function buildPressIssueRule(left, right) {
-    return `<div class="site-issue-rule" aria-hidden="true"><span>${escapeHtml(left)}</span><span>${escapeHtml(right)}</span></div>`;
 }
 
 function buildTocMarkup(headings) {
@@ -846,7 +837,8 @@ function buildPostHtml(post) {
     const toc = buildTocMarkup(post.headings);
     const relatedSection = buildRelatedPostsSection(post);
     const hasSidenotes = post.html.includes('class="sidenote"');
-    const bodyClass = hasSidenotes ? 'post-page has-sidenotes' : 'post-page no-sidenotes';
+    const isEssayProse = String(post.metadata.layout || '').trim().toLowerCase() === 'essay';
+    const bodyClass = `${hasSidenotes ? 'post-page has-sidenotes' : 'post-page no-sidenotes'}${isEssayProse ? ' essay-prose' : ''}`;
     const layoutClass = hasSidenotes ? 'post-layout has-sidenotes' : 'post-layout no-sidenotes';
 
     const schema = {
@@ -903,18 +895,15 @@ function buildPostHtml(post) {
                 </div>
             </div>
         </nav>
-        ${buildPressIssueRule('Kautuhal / Authored Work', `${getCategoryLabel(post.category)} Note · ${formatDate(post.metadata.date || '')}`)}
     </header>
 
     <main class="${layoutClass}">
         ${toc.desktop}
         <article class="post-content" id="post-content">
-            <p class="post-press-kind" aria-hidden="true">Claim-conditioned field note</p>
             <h1>${escapeHtml(title)}</h1>
             ${buildPostMeta(post)}
 ${toc.mobile ? `            ${toc.mobile}` : ''}
             ${post.html}
-            <div class="post-press-endmark" aria-hidden="true"><span>End of authored note</span><span>Kautuhal / tokenbender</span></div>
 ${relatedSection}
         </article>
         <aside class="post-margin-column" aria-hidden="true"></aside>
@@ -985,7 +974,6 @@ function buildArchiveHtml(posts, mode = 'archive') {
                 </div>
             </div>
         </nav>
-        ${buildPressIssueRule('Kautuhal / Authored Index', `${pageTitle} · ${posts.length} Published`)}
     </header>
 
     <main class="container archive-page">
@@ -1011,18 +999,13 @@ ${isWritingIndex ? '' : '            <p>Browse by topic or date.</p>\n'}
 }
 
 function buildHomepageHeroHtml() {
-    return `<section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><header class="kautuhal-ambient-masthead"><strong>01 / Kautuhal</strong><span>Authored Work</span></header><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><h1 class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</h1></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div><p class="kautuhal-ambient-label" aria-live="polite"><strong>Circuit Coral NCA / Loading</strong>Page Content Does Not Depend on It</p></section>`;
+    return `<section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><h1 class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</h1></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div></section>`;
 }
 
 function buildKautuhalRawWebGpuScript() {
     return `(function () {
         const canvas = document.getElementById('kautuhal-neural-background');
-        const label = document.querySelector('.kautuhal-ambient-label');
-        if (!canvas || !label) return;
-        if (!navigator.gpu) {
-            label.innerHTML = '<strong>Neural Background Unavailable</strong>WebGPU Is Not Available on This Device';
-            return;
-        }
+        if (!canvas || !navigator.gpu) return;
 
         const width = 72;
         const height = 48;
@@ -1388,7 +1371,6 @@ function buildKautuhalRawWebGpuScript() {
             device = await adapter.requestDevice();
             device.lost.then(function () {
                 stopped = true;
-                label.innerHTML = '<strong>Neural Background Stopped</strong>The Page Still Works Without It';
             });
             context = canvas.getContext('webgpu');
             format = navigator.gpu.getPreferredCanvasFormat();
@@ -1485,7 +1467,6 @@ function buildKautuhalRawWebGpuScript() {
             maskBindGroups = [makeMaskGroup(stateA, stateB), makeMaskGroup(stateB, stateA)];
             renderBindGroups = [makeRenderGroup(stateA), makeRenderGroup(stateB)];
             resizeCanvas();
-            label.innerHTML = '<strong>Circuit Coral NCA / 2,940 Parameters</strong>Hover to Obstruct · Branches Reroute';
 
             window.__kautuhalNca = {
                 get status() { return stopped ? 'stopped' : 'running'; },
@@ -1503,7 +1484,6 @@ function buildKautuhalRawWebGpuScript() {
 
         initialize().catch(function () {
             stopped = true;
-            label.innerHTML = '<strong>Neural Background Unavailable</strong>The Page Still Works Without It';
         });
     }());`;
 }
@@ -1582,7 +1562,6 @@ function buildHomepageHtml() {
                 </div>
             </div>
         </nav>
-        ${buildPressIssueRule('Kautuhal / Authored Work', 'Research · Experiments · Working Theories')}
     </header>
 
     <main class="container">
@@ -1590,7 +1569,7 @@ function buildHomepageHtml() {
     </main>
 
     <footer>
-        <p>&copy; 2026 tokenbender. Kautuhal is the authored edge of the garden.</p>
+        <p>&copy; 2026 tokenbender.</p>
     </footer>
 
     <script>${buildThemeToggleScript()}</script>

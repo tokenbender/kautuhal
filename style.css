@@ -999,10 +999,6 @@ header {
     opacity: 0.55;
 }
 
-.post-status {
-    border-bottom: 1px dashed var(--border-color);
-}
-
 .post-category {
     color: var(--text-color);
     border-bottom: 1px solid var(--border-color);
@@ -2492,18 +2488,6 @@ footer a {
     margin-bottom: 2.4rem;
 }
 
-.archive-hero::before {
-    display: block;
-    margin-bottom: 0.65rem;
-    content: 'Kautuhal / Authored Index';
-    color: var(--press-accent);
-    font-family: var(--press-mono);
-    font-size: 0.64rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
 .archive-hero h1 {
     margin: 0;
     color: var(--press-ink);
@@ -2647,18 +2631,6 @@ footer a {
     font-family: var(--press-serif);
 }
 
-.post-press-kind {
-    margin: 0 0 0.42rem !important;
-    color: var(--press-accent) !important;
-    font-family: var(--press-mono) !important;
-    font-size: 0.64rem !important;
-    font-weight: 700;
-    letter-spacing: 0.08em !important;
-    line-height: 1.2 !important;
-    text-indent: 0 !important;
-    text-transform: uppercase;
-}
-
 .post-page .post-content h1,
 .legacy-post-page .post-content h1 {
     max-width: 15ch;
@@ -2694,7 +2666,6 @@ footer a {
 }
 
 .post-category,
-.post-status,
 .post-tag {
     color: var(--press-muted);
     border: 0;
@@ -3044,26 +3015,6 @@ footer a {
     font-family: var(--press-mono);
 }
 
-.post-press-endmark {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: calc(var(--press-line) * 4);
-    padding-top: calc(var(--press-line) * 0.65);
-    color: var(--press-muted);
-    border-top: var(--press-rule) solid var(--press-ink);
-    font-family: var(--press-mono);
-    font-size: 0.6rem;
-    font-variant-numeric: lining-nums;
-    letter-spacing: 0.055em;
-    line-height: 1.25;
-    text-transform: uppercase;
-}
-
-.post-press-endmark span:first-child {
-    color: var(--press-accent);
-}
-
 .related-posts {
     margin-top: calc(var(--press-line) * 2.5);
     padding: 0;
@@ -3377,12 +3328,6 @@ footer a {
         font-size: 0.72rem;
     }
 
-    .post-press-endmark {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 0.18rem;
-    }
-
     .legacy-post-layout {
         width: calc(100% - 24px);
         padding: 2.7rem 0 0;
@@ -3390,6 +3335,75 @@ footer a {
 
     footer {
         width: calc(100% - 24px);
+    }
+}
+
+/* Personal essays keep the press frame but use conversational prose rhythm. */
+.post-page.essay-prose .post-content h1 {
+    letter-spacing: -0.02em;
+    word-spacing: 0.08em;
+}
+
+.post-page.essay-prose .post-content > p:not(.post-deck, .post-byline) {
+    margin-top: 0.92rem;
+    font-size: 1.06rem;
+    line-height: 1.58;
+    text-align: left;
+    text-indent: 0;
+    text-wrap: pretty;
+    word-break: normal;
+    hyphens: none;
+}
+
+.post-page.essay-prose .post-content > .post-deck {
+    margin-bottom: 1.65rem;
+}
+
+.post-page.essay-prose .post-content > h2 {
+    margin-top: calc(var(--press-line) * 3.65);
+}
+
+@media (max-width: 480px) {
+    .post-page.essay-prose .post-content > p:not(.post-deck, .post-byline) {
+        margin-top: 0.88rem;
+        font-size: 1rem;
+        line-height: 1.52;
+    }
+
+    .post-page.essay-prose .post-content > .post-deck {
+        margin-bottom: 1.4rem;
+    }
+
+    .post-page.essay-prose .post-content > h2 {
+        margin-top: calc(var(--press-line) * 3.15);
+    }
+}
+
+@media (max-width: 360px) {
+    .nav-container,
+    .home-page .nav-container,
+    .post-page .nav-container,
+    .archive-shell-page .nav-container {
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .logo {
+        font-size: 0.96rem;
+    }
+
+    .nav-links {
+        gap: 0.44rem;
+    }
+
+    .nav-links a,
+    .theme-toggle {
+        font-size: 0.72rem;
+    }
+
+    .theme-toggle {
+        min-width: 1.6rem;
+        padding: 0.2rem 0.24rem 0.17rem;
     }
 }
 

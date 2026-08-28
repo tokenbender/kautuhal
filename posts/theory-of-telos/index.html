@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theory of Telos - tokenbender</title>
+    <meta name="description" content="Serious delegation requires more than task competence. An agent must understand why the system under its care exists, what must be preserved, and where it is going.">
+    <meta name="robots" content="index,follow,max-image-preview:large">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="tokenbender">
+    <meta property="og:title" content="Theory of Telos">
+    <meta property="og:description" content="Serious delegation requires more than task competence. An agent must understand why the system under its care exists, what must be preserved, and where it is going.">
+    <meta property="og:url" content="https://tokenbender.com/posts/theory-of-telos/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Theory of Telos">
+    <meta name="twitter:description" content="Serious delegation requires more than task competence. An agent must understand why the system under its care exists, what must be preserved, and where it is going.">
+    <link rel="canonical" href="https://tokenbender.com/posts/theory-of-telos/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="alternate icon" href="/favicon.ico">
+    <script>(function () {
+    const storageKey = 'tokenbender-theme';
+    const root = document.documentElement;
+    let storedTheme = null;
+    try {
+        storedTheme = window.localStorage.getItem(storageKey);
+    } catch (error) {}
+
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+        root.setAttribute('data-theme', storedTheme);
+        return;
+    }
+
+    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+    root.setAttribute('data-theme', prefersLight ? 'light' : 'dark');
+})();</script>
+    <link rel="stylesheet" href="/style.css?v=press-20260826-5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Theory of Telos","description":"Serious delegation requires more than task competence. An agent must understand why the system under its care exists, what must be preserved, and where it is going.","author":{"@type":"Person","name":"tokenbender"},"publisher":{"@type":"Person","name":"tokenbender"},"url":"https://tokenbender.com/posts/theory-of-telos/","mainEntityOfPage":{"@type":"WebPage","@id":"https://tokenbender.com/posts/theory-of-telos/"},"datePublished":"2026-08-27T00:00:00.000Z","dateModified":"2026-08-27T00:00:00.000Z","keywords":"agents, competence, responsibility, telos, software-engineering"}</script>
+</head>
+<body class="post-page no-sidenotes essay-prose">
+    <header>
+        <nav>
+            <div class="nav-container">
+                <a href="/index.html" class="logo">tokenbender</a>
+                <div class="nav-links">
+                    <a href="/posts/" class="is-active" aria-current="page">Writing</a><a href="/kalpataru/">Kalpataru</a><a href="/archive/">Archive</a><a href="https://github.com/tokenbender" class="nav-github">GitHub</a><button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">Light</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="post-layout no-sidenotes">
+        <aside class="post-toc"><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#the-junior-engineer-problem" data-toc-link="the-junior-engineer-problem">The Junior Engineer Problem</a></li><li class="toc-item toc-level-2"><a href="#reconstructing-the-theory-before-acting" data-toc-link="reconstructing-the-theory-before-acting">Reconstructing the Theory Before Acting</a></li><li class="toc-item toc-level-2"><a href="#not-every-knob-needs-to-be-cranked-to-11" data-toc-link="not-every-knob-needs-to-be-cranked-to-11">Not Every Knob Needs to Be Cranked to 11</a></li><li class="toc-item toc-level-2"><a href="#zooming-out-of-software" data-toc-link="zooming-out-of-software">Zooming Out of Software</a></li><li class="toc-item toc-level-2"><a href="#the-security-camera-agent" data-toc-link="the-security-camera-agent">The Security Camera Agent</a></li><li class="toc-item toc-level-2"><a href="#failure-patching-is-not-enough" data-toc-link="failure-patching-is-not-enough">Failure Patching Is Not Enough</a></li><li class="toc-item toc-level-2"><a href="#the-training-run-manager" data-toc-link="the-training-run-manager">The Training Run Manager</a></li><li class="toc-item toc-level-2"><a href="#what-theory-of-telos-means" data-toc-link="what-theory-of-telos-means">What Theory of Telos Means</a></li><li class="toc-item toc-level-2"><a href="#thinking-is-not-enough" data-toc-link="thinking-is-not-enough">Thinking Is Not Enough</a></li><li class="toc-item toc-level-2"><a href="#what-i-actually-care-about" data-toc-link="what-i-actually-care-about">What I Actually Care About</a></li></ol></nav></aside>
+        <article class="post-content" id="post-content">
+            <h1>Theory of Telos</h1>
+            <div class="post-meta"><span class="meta-item">August 27, 2026</span><span class="meta-sep">·</span><span class="post-category">Personal</span><span class="meta-sep">·</span><span class="meta-item">10 min read</span><span class="meta-sep">·</span><span class="post-tags"><span class="post-tag">Agents</span><span class="post-tag">Competence</span><span class="post-tag">Responsibility</span><span class="post-tag">Telos</span><span class="post-tag">Software Engineering</span></span></div>
+            <details class="post-toc-mobile"><summary>Contents</summary><nav class="post-toc-inner" aria-label="Table of contents"><h2>Contents</h2><ol><li class="toc-item toc-level-2"><a href="#the-junior-engineer-problem" data-toc-link="the-junior-engineer-problem">The Junior Engineer Problem</a></li><li class="toc-item toc-level-2"><a href="#reconstructing-the-theory-before-acting" data-toc-link="reconstructing-the-theory-before-acting">Reconstructing the Theory Before Acting</a></li><li class="toc-item toc-level-2"><a href="#not-every-knob-needs-to-be-cranked-to-11" data-toc-link="not-every-knob-needs-to-be-cranked-to-11">Not Every Knob Needs to Be Cranked to 11</a></li><li class="toc-item toc-level-2"><a href="#zooming-out-of-software" data-toc-link="zooming-out-of-software">Zooming Out of Software</a></li><li class="toc-item toc-level-2"><a href="#the-security-camera-agent" data-toc-link="the-security-camera-agent">The Security Camera Agent</a></li><li class="toc-item toc-level-2"><a href="#failure-patching-is-not-enough" data-toc-link="failure-patching-is-not-enough">Failure Patching Is Not Enough</a></li><li class="toc-item toc-level-2"><a href="#the-training-run-manager" data-toc-link="the-training-run-manager">The Training Run Manager</a></li><li class="toc-item toc-level-2"><a href="#what-theory-of-telos-means" data-toc-link="what-theory-of-telos-means">What Theory of Telos Means</a></li><li class="toc-item toc-level-2"><a href="#thinking-is-not-enough" data-toc-link="thinking-is-not-enough">Thinking Is Not Enough</a></li><li class="toc-item toc-level-2"><a href="#what-i-actually-care-about" data-toc-link="what-i-actually-care-about">What I Actually Care About</a></li></ol></nav></details>
+            <p class="post-deck"><em>We cannot delegate anything serious to current AI systems unless we solve this.</em></p>
+<p>So every few weeks I open Twitter and see someone make a post that software engineering is solved, coding is solved. Someone says that models have become better at software engineering, and the reason for such tweets is typically that now they can solve more programming problems, close more benchmark issues, or one-shot tasks that previously took several attempts.</p>
+<p>Now these are real capabilities, but they are also really weak evidence for the claim that you make. And your claim is that software engineering is done, like coding is done.</p>
+<p>And I would like to understand one thing here: is a person who can solve difficult programming problems all that it takes to give an important system and say, take care of this? Or does it require something else?</p>
+<p>And if we say that it requires something else, then what exactly is it?</p>
+<p>In all the competent engineers that I&#39;ve worked with, this has been one central quality that they have: a need to understand what the system is for. They have a need to know which parts are essential, which might be accidental, which are genuinely ugly because nobody had the time to clean them up, and this gives them the understanding of exactly what can change, what must not change, and what depends on anything that we are doing.</p>
+<p>And something might just be scaffolding for future work, where we&#39;re heading towards, right?</p>
+<p>I would like to call this thing theory of telos, and this is how we are going to refer to it throughout this article.</p>
+<p>This particular article is not specifically about software, but software is one of the easiest places to spot this, and this is where we will be leading with examples.</p>
+<h2 id="the-junior-engineer-problem">The Junior Engineer Problem</h2>
+<p>Years ago, when some junior engineers used to join the team, there was a predictable pattern. They would be shown one module or some section that they were asked to work on, and then what would happen is that they would quickly discover something which they would call incredibly stupid.</p>
+<p>And it could be something genuine. It could be a bad abstraction, duplicate logic, some state present in the wrong place, some branch created unnecessarily or for the oddest of purposes, right?</p>
+<p>And some of those junior engineers may even take one step ahead and then fix it.</p>
+<p>So the problem with such an effort to “fix” things is that they acted on this particular information without exactly knowing why that thing existed in the first place or what purpose it may be serving later on.</p>
+<p>They may not know that the duplication supported two slightly different features which were added at the last minute because of some customer escalation issues, because of some report which came due to public security coverage, or it could be something which was decided way late in the software lifecycle because of whatever reason, right?</p>
+<p>And they may not know that this particular weird state exists because something happened five to six months ago and the pace of everything has been such that there was no way for anyone to get back to it.</p>
+<p>Now I&#39;m not saying that all ugliness is just variants of this. Some ugliness is obviously really bad code. I personally hate such things with as much passion as others.</p>
+<p>But I personally think that it is quite easy to get enraged at something without understanding anything about it.</p>
+<h2 id="reconstructing-the-theory-before-acting">Reconstructing the Theory Before Acting</h2>
+<p>I really vouch for something else, and that is essentially developing a theory of telos.</p>
+<p>If a competent engineer is put in the same situation, then how would they behave?</p>
+<p>Their first instinct may be to reconstruct some sort of model or understanding around that object.</p>
+<p>Why does this thing exist? Who depends on it? If I change it, is something going to break? Is this basically some sort of fundamental assumption which needs to stay here so that something else can work?</p>
+<p>Which particular pieces are purely historical or legacy? I myself am a new person on this team and was not part of all the discussions and decisions that have been taken in the past. What exactly might this particular team be trying to build towards?</p>
+<p>So this specific piece is something which is beyond being able to code in a particular language or being able to, let&#39;s say, recreate a particular program from scratch or any of those things.</p>
+<p>It&#39;s not about memorization here. It&#39;s not even about code understanding, actually.</p>
+<p>It&#39;s something one layer of abstraction above this.</p>
+<p>It&#39;s a reconstruction of the theory of what this thing exists for right now, and where exactly it is going.</p>
+<h2 id="not-every-knob-needs-to-be-cranked-to-11">Not Every Knob Needs to Be Cranked to 11</h2>
+<p>And once you notice these things, once you start making this a habit of how you really approach something, then you&#39;ll start finding that a lot of engineering advice, lots of books that exist on how to manage such and such thing better or how to take decisions about X, Y, Z, or about good programming practices or principles, starts looking quite one-dimensional in nature.</p>
+<p>Because there is something fundamental here which is to be understood.</p>
+<p>With a very limited view of the system, when we are quite new and aren&#39;t really exposed to lots of things, we are prone to looking at something like a lever or a knob, right?</p>
+<p>So whichever education culture you may be part of, wherever you&#39;re coming from, let&#39;s say that you&#39;re part of some group that codes and exercises language and you work on some small project or something.</p>
+<p>And there is a notion that this particular knob always needs to be set a certain way. So then you go someplace else, notice that knob, and think that this particular knob should be cranked to 11, right?</p>
+<p>And if I was to give an example of what such a thing looks like:</p>
+<p>Cleaner code is better. Lower latency is better. Always focus on higher recall. Never do something twice. Everything needs to be highly composable. Everything needs to be 100% fragmented, repeatable, recyclable, whatever you want to say, right?</p>
+<p>But the thing is that all of that is essentially a sign of not really caring about the core problem you&#39;re trying to solve or trying to understand exactly what the thing is for, while being blind to all the other factors that exist.</p>
+<p>And real systems are typically a harmony between lots of objects.</p>
+<p>So when we&#39;re improving something, it has to happen with some sort of awareness about what all things might regress.</p>
+<p>That&#39;s what I personally call competence in being able to assume a role.</p>
+<h2 id="zooming-out-of-software">Zooming Out of Software</h2>
+<p>Now let&#39;s zoom out of this thing entirely and talk about something else where we do not say that something is software.</p>
+<p>We take an example where an agent has been given a responsibility: you have to take care of the security cameras around my house.</p>
+<p>Now I have given some role specification.</p>
+<p>Typically, my role specification may be something as simple as: keep cameras online, detect motion, save footage, alert me when something unusual happens.</p>
+<p>And for all of these things, when I say something unusual happens, the burden of defining what is unusual has fallen on me.</p>
+<p>And for anything which I have mentioned, any instruction which I&#39;ve mentioned, it&#39;s going to be interpreted in a very monkey&#39;s paw way.</p>
+<p>If I say keep cameras online, is that going to be applicable 100% of the time? Save footage or alert me, all of those kinds of actions can be misinterpreted in a bunch of ways.</p>
+<p>And that is one of the challenges that we have with the current set of things. And I do not really see us inching towards achieving that right now.</p>
+<h2 id="the-security-camera-agent">The Security Camera Agent</h2>
+<p>So let&#39;s take the same scenario and say: should the agent notify you every time someone is passing the gate?</p>
+<p>How should it treat guests, children, delivery workers?</p>
+<p>How does it know that something could be something?</p>
+<p>And how long should particular footage be retained? Whatever the policies are there, who is going to decide that?</p>
+<p>Should it be deciding all those things, or should it be asking that to a human before it assumes that role?</p>
+<p>So if a particular camera is failing repeatedly, should it keep on restarting it, or should it basically alert in some way that something is wrong here?</p>
+<p>Should it go one step ahead and replace it?</p>
+<p>When should it assume that it can take the responsibility of replacing it?</p>
+<p>Or even maybe decide that the camera was not needed at all, in the case that it also has to take care of some budget or something, right?</p>
+<h2 id="failure-patching-is-not-enough">Failure Patching Is Not Enough</h2>
+<p>So all of these decisions are not something which are simply solved by creating more ENVs.</p>
+<p>Of course, you can focus on one task and go ahead and find out all the failures.</p>
+<p>And then you can find a failure, patch the failure, find a failure, patch the failure.</p>
+<p>Keep on doing that in a loop until you have taken care of both coverage in terms of the variety of use cases that most of the economy has in that particular area where people are paying, and you have also taken care of your quote-unquote long-horizon scenarios, where something was detectable only after four hours or eight hours or twelve hours, where some decision had to be taken on that long of a horizon.</p>
+<p>So you can always take such an approach.</p>
+<p>But while you do all of this, you never really develop what really should be developed.</p>
+<p>And that is essentially that theory of telos.</p>
+<h2 id="the-training-run-manager">The Training Run Manager</h2>
+<p>And one can also take an example of a training run manager here.</p>
+<p>A training run manager can be a simple task agent which is responsible for launching jobs, restarting failures, keeping the GPUs busy, whatever.</p>
+<p>And we do not simply want it to be just a task agent if you want to completely give it some sort of responsibility of a human being.</p>
+<p>Then what does it need to know?</p>
+<p>It needs to assume a role.</p>
+<p>And what is that role?</p>
+<p>That role is understanding what experiment is being done.</p>
+<p>Which results matter?</p>
+<p>What are we looking for?</p>
+<p>Which anomalies may deserve us to change our statement, change our problem statements? Which comparisons are the anchor points for us, and what really is fair in terms of how we are going to establish the entire experimental premise?</p>
+<p>Is a particular approach scientific or too shallow?</p>
+<p>So all of these things have to move away from caring about metrics.</p>
+<p>Now the metrics, if you were to create some verifiers or some functions or checks for these things, could be: keep the GPUs busy, try to keep the MFU high, utilize trustworthy evidence all the time.</p>
+<p>You could be enforcing such things.</p>
+<p>But none of these things will truly enable the sense of the role, the responsibility that the model should be taking.</p>
+<h2 id="what-theory-of-telos-means">What Theory of Telos Means</h2>
+<p>Telos means the purpose or end toward which something is directed.</p>
+<p>And we also use it in the same sense.</p>
+<p>So theory of telos is an agent&#39;s working model of the thing under its care, understood in terms of why it exists, what must be preserved about it, what is likely to change, and in what ways it is supposed to take shape.</p>
+<p>What it currently supports.</p>
+<p>All those things, right?</p>
+<p>And such unknowns, or such questions which are effectively about how that role is done best, are important.</p>
+<p>And that is a central piece which I particularly think is missing.</p>
+<h2 id="thinking-is-not-enough">Thinking Is Not Enough</h2>
+<p>I would love to see that.</p>
+<p>If the belief is that just adding more ENVs or something is going to solve it, then maybe, maybe, but I doubt it given all that we have seen so far.</p>
+<p>I personally believe that while we have taught the models to think, it&#39;s not just about thinking or thinking longer.</p>
+<p>Humans also develop their own sense of understanding, and there are lots of things that we observe and learn from others.</p>
+<p>And how do we enable this theory of telos in general in these models?</p>
+<p>Or at least start caring about it in some way.</p>
+<p>Where all the reliability is not forced on a system externally by creating more guardrails, or by just throwing more “do not do this, do not do this” instructions in your MD files and assuming that just because you have added a strongly worded bold statement in an MD file, it is enough.</p>
+<h2 id="what-i-actually-care-about">What I Actually Care About</h2>
+<p>So these are the things which I personally think matter and are going to be crucial.</p>
+<p>In me looking at any harness or any benchmark that exists, or any module that gets released, and understanding if it is going to actually make my job easier or not.</p>
+
+<section class="related-posts" aria-labelledby="related-posts-heading"><h2 id="related-posts-heading">See Also</h2><ul><li><a href="/posts/honey-i-shrunk-the-circuits/">Honey, I Shrunk the Circuits!</a><p>Low-rank circuit conditioning makes an existing dense-model capability recoverable as a compact causal mask.</p></li><li><a href="/posts/infinite-a-rubric-driven-prioritized-replay-to-maximise-continual-learning/">infinite — A Rubric-Driven Prioritized Replay to Maximise Continual Learning</a><p>A reinforcement-learning replay mechanism that uses rubric-based prioritization to optimize continual learning through evaluation and adaptive curriculum design...</p></li><li><a href="/posts/avatarl/">avatarl: Training Language Models from Scratch with Pure Reinforcement Learning</a><p>Replacing cross-entropy pretraining with a principled RL objective using expert-consensus rewards over active tokens.</p></li></ul></section>
+        </article>
+        <aside class="post-margin-column" aria-hidden="true"></aside>
+    </main>
+
+    <footer>
+        <p>For updates and random thoughts, follow <a href="https://x.com/tokenbender" target="_blank" rel="noopener">@tokenbender</a>.</p>
+    </footer>
+
+    <script>(function () {
+    const storageKey = 'tokenbender-theme';
+    const root = document.documentElement;
+    const toggle = document.querySelector('[data-theme-toggle]');
+
+    const getTheme = () => root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+
+    const renderToggle = (activeTheme) => {
+        if (!toggle) {
+            return;
+        }
+
+        const targetTheme = activeTheme === 'light' ? 'dark' : 'light';
+        const targetLabel = `${targetTheme.charAt(0).toUpperCase()}${targetTheme.slice(1)}`;
+        toggle.textContent = targetLabel;
+        toggle.setAttribute('aria-label', `Switch to ${targetTheme} theme`);
+        toggle.setAttribute('aria-pressed', activeTheme === 'light' ? 'true' : 'false');
+    };
+
+    const setTheme = (theme, persist) => {
+        root.setAttribute('data-theme', theme);
+        renderToggle(theme);
+        if (persist) {
+            try {
+                window.localStorage.setItem(storageKey, theme);
+            } catch (error) {}
+        }
+    };
+
+    setTheme(getTheme(), false);
+
+    if (toggle) {
+        toggle.addEventListener('click', () => {
+            const nextTheme = getTheme() === 'light' ? 'dark' : 'light';
+            setTheme(nextTheme, true);
+        });
+    }
+
+    if (window.matchMedia) {
+        const media = window.matchMedia('(prefers-color-scheme: light)');
+        const onChange = (event) => {
+            let storedTheme = null;
+            try {
+                storedTheme = window.localStorage.getItem(storageKey);
+            } catch (error) {}
+
+            if (storedTheme === 'light' || storedTheme === 'dark') {
+                return;
+            }
+
+            setTheme(event.matches ? 'light' : 'dark', false);
+        };
+
+        if (typeof media.addEventListener === 'function') {
+            media.addEventListener('change', onChange);
+        } else if (typeof media.addListener === "function") {
+            media.addListener(onChange);
+        }
+    }
+})();</script>
+    <script>(function () {
+    document.querySelectorAll('.journey-glaze-toggle').forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+            const glaze = toggle.closest('.journey-glaze');
+            if (!glaze) return;
+            const isOpen = glaze.classList.toggle('is-open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+    });
+})();</script>
+    <script>(function () {
+    const links = Array.from(document.querySelectorAll('[data-toc-link]'));
+    if (!links.length) {
+        return;
+    }
+
+    const mapping = links.map((link) => {
+        const headingId = link.getAttribute('data-toc-link');
+        return {
+            link,
+            heading: document.getElementById(headingId)
+        };
+    }).filter((entry) => entry.heading);
+
+    if (!mapping.length) {
+        return;
+    }
+
+    const setActive = (id) => {
+        mapping.forEach((entry) => {
+            entry.link.classList.toggle('is-active', entry.heading.id === id);
+        });
+    };
+
+    const update = () => {
+        let activeId = mapping[0].heading.id;
+        mapping.forEach((entry) => {
+            if (entry.heading.getBoundingClientRect().top <= 140) {
+                activeId = entry.heading.id;
+            }
+        });
+        setActive(activeId);
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+})();</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
+    <script>
+        if (window.renderMathInElement) {
+            window.renderMathInElement(document.getElementById('post-content'), {
+                delimiters: [
+                    { left: '$$', right: '$$', display: true },
+                    { left: '$', right: '$', display: false },
+                    { left: '\\(', right: '\\)', display: false },
+                    { left: '\\[', right: '\\]', display: true }
+                ],
+                throwOnError: false,
+                trust: false
+            });
+        }
+
+        if (window.Prism) {
+            window.Prism.highlightAll();
+        }
+    </script>
+</body>
+</html>
