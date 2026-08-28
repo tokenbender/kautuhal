@@ -630,7 +630,7 @@ function buildPrimaryNavigation(active = '') {
         return `<a href="${href}"${activeAttributes}>${label}</a>`;
     };
 
-    return `${navLink('/posts/', 'Writing', 'writing')}${navLink('/kalpataru/', 'Kalpataru', 'kalpataru')}${navLink('/archive/', 'Archive', 'archive')}${navLink('https://github.com/tokenbender', 'GitHub', 'github', 'nav-github')}<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">Light</button>`;
+    return `${navLink('/posts/', 'Writing', 'writing')}${navLink('/archive/', 'Archive', 'archive')}${navLink('https://github.com/tokenbender', 'GitHub', 'github', 'nav-github')}<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">Light</button>`;
 }
 
 function buildTocMarkup(headings) {
@@ -999,7 +999,7 @@ ${isWritingIndex ? '' : '            <p>Browse by topic or date.</p>\n'}
 }
 
 function buildHomepageHeroHtml() {
-    return `<section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><h1 class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</h1></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a><a class="secondary-action" href="/kalpataru/">Visit Kalpataru. <span aria-hidden="true">↗</span></a></div></div></section>`;
+    return `<section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><h1 class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</h1></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a></div></div></section>`;
 }
 
 function buildKautuhalRawWebGpuScript() {
@@ -1585,7 +1585,6 @@ function buildSitemap(posts) {
         `${SITE_URL}/index.html`,
         `${SITE_URL}/posts/`,
         `${SITE_URL}/archive/`,
-        `${SITE_URL}/kalpataru/`,
         ...posts.map((post) => `${SITE_URL}/posts/${encodeURIComponent(post.id)}/`)
     ];
 

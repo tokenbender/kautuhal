@@ -543,47 +543,6 @@ header {
     color: var(--text-secondary);
 }
 
-.kalpataru-link {
-    display: grid;
-    grid-template-columns: minmax(230px, 0.8fr) minmax(0, 1.4fr) auto;
-    gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: center;
-    margin-bottom: 3rem;
-    padding: 2rem 0;
-    border-top: 1px solid var(--border-color);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.kalpataru-link .section-kicker {
-    margin-bottom: 0.55rem;
-    color: var(--garden-color);
-}
-
-.kalpataru-link h2 {
-    margin: 0;
-    font-size: clamp(1.55rem, 2.5vw, 2.5rem);
-    font-weight: 400;
-    line-height: 1;
-    letter-spacing: -0.025em;
-}
-
-.kalpataru-link > p {
-    max-width: 58ch;
-    margin: 0;
-    color: var(--text-secondary);
-    font-size: 1rem;
-    line-height: 1.55;
-}
-
-.kalpataru-link > a {
-    white-space: nowrap;
-    color: var(--text-color);
-    font-family: var(--sans);
-    font-size: 0.8rem;
-    text-decoration: none;
-    border-bottom: 1px solid var(--accent-color);
-}
-
 .posts {
     padding: 0.7rem 0 1.4rem;
 }
@@ -1961,12 +1920,6 @@ footer {
     .home-portrait {
         justify-self: start;
         width: min(100%, 280px);
-    }
-
-    .kalpataru-link {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-        align-items: start;
     }
 
     .grouped-posts {
