@@ -3338,6 +3338,77 @@ footer a {
     }
 }
 
+/* Book indexes use space and type, reserving rules for major sections. */
+.archive-view-switcher {
+    margin-bottom: 3.25rem;
+    padding: 0;
+    border: 0;
+}
+
+.archive-group,
+.archive-year-block,
+.archive-group:first-child,
+.archive-year-block:first-child {
+    padding: 0 0 3.4rem;
+    border: 0;
+}
+
+.archive-group + .archive-group,
+.archive-year-block + .archive-year-block {
+    padding-top: 3.2rem;
+    border-top: 1px solid var(--press-faint);
+}
+
+.archive-group-head,
+.archive-year-block h2 {
+    margin-bottom: 1.35rem;
+}
+
+.archive-topic-list li,
+.archive-topic-list li:last-child,
+.archive-date-list li {
+    margin: 0;
+    padding: 0.72rem 0 1.15rem;
+    border: 0;
+}
+
+.archive-topic-list li + li,
+.archive-date-list li + li {
+    margin-top: 0.65rem;
+}
+
+.archive-topic-list a,
+.archive-date-list a {
+    text-decoration: none;
+}
+
+.archive-topic-list a:hover,
+.archive-topic-list a:focus-visible,
+.archive-date-list a:hover,
+.archive-date-list a:focus-visible {
+    text-decoration: underline;
+    text-decoration-color: var(--press-accent);
+    text-underline-offset: 0.16em;
+}
+
+@media (max-width: 640px) {
+    .archive-view-switcher {
+        margin-bottom: 2.5rem;
+    }
+
+    .archive-group,
+    .archive-year-block,
+    .archive-group:first-child,
+    .archive-year-block:first-child {
+        padding-bottom: 2.7rem;
+    }
+
+    .archive-group + .archive-group,
+    .archive-year-block + .archive-year-block {
+        padding-top: 2.6rem;
+    }
+}
+
 /* Personal essays keep the press frame but use conversational prose rhythm. */
 .post-page.essay-prose .post-content h1 {
     letter-spacing: -0.02em;

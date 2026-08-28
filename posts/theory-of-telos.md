@@ -8,8 +8,6 @@ category: personal
 layout: essay
 ---
 
-*We cannot delegate anything serious to current AI systems unless we solve this.*
-
 So every few weeks I open Twitter and see someone make a post that software engineering is solved, coding is solved. Someone says that models have become better at software engineering, and the reason for such tweets is typically that now they can solve more programming problems, close more benchmark issues, or one-shot tasks that previously took several attempts.
 
 Now these are real capabilities, but they are also really weak evidence for the claim that you make. And your claim is that software engineering is done, like coding is done.
