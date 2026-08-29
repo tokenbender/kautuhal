@@ -12,7 +12,7 @@ Hello!
 
 I am Abhishek Harshvardhan Mishra, aka Tokenbender.
 
-Post-training and autoresearch metaharnesses.
+Founder of Deus eXperiments.
 
 <section class="journey-tree" aria-labelledby="journey-tree-title">
   <header class="journey-tree-header">

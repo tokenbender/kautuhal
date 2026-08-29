@@ -3445,7 +3445,8 @@ footer a {
 }
 
 .home-profile-page .kautuhal-ambient-copy .home-identity-summary {
-    max-width: 15ch;
+    max-width: 30ch;
+    font-size: clamp(1.45rem, 3.75vw, 2.7rem);
 }
 
 .home-intro-prose {
@@ -3501,7 +3502,8 @@ footer a {
     }
 
     .home-profile-page .kautuhal-ambient-copy .home-identity-summary {
-        max-width: 12ch;
+        max-width: 24ch;
+        font-size: clamp(1.45rem, 7.5vw, 2.2rem);
     }
 
     .home-intro-prose {
