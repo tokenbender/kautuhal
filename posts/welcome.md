@@ -1,25 +1,18 @@
 ---
 title: Hello, I'm Tokenbender
 date: 2024-08-24
-excerpt: I am good at making models do whatever is needed when the use case is clearly specified.
+excerpt: Post-training and autoresearch metaharnesses.
 tags: meta, llm, engineering, capability-extraction
 status: evergreen
 category: profile
 listed: false
 ---
 
-<figure class="intro-portrait">
-  <img src="/portrait-tokenbender.webp" alt="Portrait of Abhishek Harshvardhan Mishra" width="1158" height="1359" loading="eager" decoding="async">
-  <figcaption><strong>Abhishek Harshvardhan Mishra</strong><span>ML Researcher · Writes as tokenbender</span></figcaption>
-</figure>
-
 Hello!
 
 I am Abhishek Harshvardhan Mishra, aka Tokenbender.
 
-I am the founder of Deus Experiments, a lab specialising in post-training for enterprise use cases and supersparse inference. Before this, I was a technical lead at Intel, working on server firmware. Then I fell in love with language models, threw away everything I had done before, and became part of open-source LLM research.
-
-I am good at making models do whatever is needed, as long as the use case is clearly specified.
+Post-training and autoresearch metaharnesses.
 
 <section class="journey-tree" aria-labelledby="journey-tree-title">
   <header class="journey-tree-header">

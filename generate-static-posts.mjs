@@ -14,14 +14,10 @@ const SITEMAP_FILE = path.join(ROOT, 'sitemap.xml');
 const SITE_URL = 'https://tokenbender.com';
 const AUTHOR_NAME = 'Abhishek Harshvardhan Mishra';
 const AUTHOR_HANDLE = 'tokenbender';
-const AUTHOR_IMAGE_PATH = '/portrait-tokenbender.webp';
-const AUTHOR_IMAGE_URL = `${SITE_URL}/portrait-tokenbender.jpg`;
-const AUTHOR_IMAGE_WIDTH = 1158;
-const AUTHOR_IMAGE_HEIGHT = 1359;
 const FAVICON_LINKS = '<link rel="icon" href="/favicon.svg" type="image/svg+xml">\n    <link rel="alternate icon" href="/favicon.ico">';
 const HOMEPAGE_TITLE = `Kautuhal — ${AUTHOR_HANDLE}`;
-const HOMEPAGE_DESCRIPTION = `Research, experiments, and working theories from ${AUTHOR_NAME} on learning systems for models, agents, and people.`;
-const HOMEPAGE_HERO_SUMMARY = 'Research on RL and metaharnesses.';
+const HOMEPAGE_DESCRIPTION = `${AUTHOR_NAME} works on post-training and autoresearch metaharnesses.`;
+const HOMEPAGE_HERO_SUMMARY = 'Post-training and autoresearch metaharnesses.';
 const STYLE_HREF = '/style.css?v=press-20260829-1';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
 const AVERAGE_READING_WPM = 220;
@@ -1515,7 +1511,6 @@ function buildHomepageStructuredData() {
                 name: AUTHOR_NAME,
                 alternateName: AUTHOR_HANDLE,
                 url: `${SITE_URL}/`,
-                image: AUTHOR_IMAGE_URL,
                 sameAs: [
                     `https://github.com/${AUTHOR_HANDLE}`,
                     `https://huggingface.co/${AUTHOR_HANDLE}`,
@@ -1540,7 +1535,6 @@ function buildHomepageHtml(introPost) {
     const { introHtml, journeyHtml } = splitHomepageProfile(introPost);
     const homepageHero = buildHomepageHeroHtml(introHtml);
     const homepageStructuredData = buildHomepageStructuredData();
-    const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
 
     return `<!doctype html>
 <html lang="en">
@@ -1556,12 +1550,9 @@ function buildHomepageHtml(introPost) {
     <meta property="og:title" content="${escapeHtml(HOMEPAGE_TITLE)}">
     <meta property="og:description" content="${escapeHtml(HOMEPAGE_DESCRIPTION)}">
     <meta property="og:url" content="${SITE_URL}/">
-    <meta property="og:image" content="${escapeHtml(AUTHOR_IMAGE_URL)}">
-    <meta property="og:image:alt" content="${escapeHtml(portraitAlt)}">
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="${escapeHtml(HOMEPAGE_TITLE)}">
     <meta name="twitter:description" content="${escapeHtml(HOMEPAGE_DESCRIPTION)}">
-    <meta name="twitter:image" content="${escapeHtml(AUTHOR_IMAGE_URL)}">
     <link rel="canonical" href="${SITE_URL}/">
     ${FAVICON_LINKS}
     <script>${buildThemeBootstrapScript()}</script>
