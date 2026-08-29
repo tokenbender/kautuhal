@@ -635,7 +635,7 @@ function buildPrimaryNavigation(active = '') {
         return `<a href="${href}"${activeAttributes}>${label}</a>`;
     };
 
-    return `${navLink('/posts/', 'Writing', 'writing')}${navLink('/archive/', 'Archive', 'archive')}${navLink('https://github.com/tokenbender', 'GitHub', 'github', 'nav-github')}<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">Light</button>`;
+    return `${navLink('/posts/', 'Writing', 'writing')}${navLink('https://github.com/tokenbender', 'GitHub', 'github', 'nav-github')}<button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch theme">Light</button>`;
 }
 
 function buildTocMarkup(headings) {
