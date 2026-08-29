@@ -3431,6 +3431,95 @@ footer a {
     }
 }
 
+/* The homepage is the profile: identity first, then the work chronology. */
+.home-profile-page .home-hero.kautuhal-ambient-entry {
+    min-height: 0;
+    margin: clamp(3rem, 7vh, 5.5rem) 0 clamp(4rem, 8vh, 6.5rem);
+}
+
+.home-profile-page .home-identity.kautuhal-ambient-copy {
+    display: block;
+    width: min(100%, 800px);
+    min-height: 0;
+    padding: clamp(2.8rem, 7vw, 5.4rem) 0 0;
+}
+
+.home-profile-page .kautuhal-ambient-copy .home-identity-summary {
+    max-width: 15ch;
+}
+
+.home-intro-prose {
+    width: min(100%, var(--press-measure));
+    max-width: var(--press-measure);
+    margin: clamp(3rem, 7vw, 5rem) 0 0;
+    padding: 0;
+}
+
+.home-intro-prose > p {
+    margin: 0.9rem 0 0;
+    color: var(--press-ink);
+    font-family: var(--press-serif);
+    font-size: 1.08rem;
+    line-height: 1.58;
+    text-align: left;
+    text-indent: 0;
+    text-wrap: pretty;
+    word-break: normal;
+    hyphens: none;
+}
+
+.home-intro-prose > p:first-of-type {
+    margin-top: 0;
+    font-size: 1.18rem;
+    font-style: italic;
+}
+
+.home-intro-prose .intro-portrait {
+    width: min(34%, 270px);
+    margin: 0.15rem 0 2rem 2.5rem;
+}
+
+.home-journey {
+    width: min(100%, var(--press-measure));
+    max-width: var(--press-measure);
+    margin: 0 auto;
+    padding: 0;
+}
+
+.home-journey .journey-tree {
+    margin-top: 0;
+}
+
+@media (max-width: 640px) {
+    .home-profile-page .home-hero.kautuhal-ambient-entry {
+        margin: 2.2rem 0 3.8rem;
+    }
+
+    .home-profile-page .home-identity.kautuhal-ambient-copy {
+        min-height: 0;
+        padding-top: 2.6rem;
+    }
+
+    .home-profile-page .kautuhal-ambient-copy .home-identity-summary {
+        max-width: 12ch;
+    }
+
+    .home-intro-prose {
+        margin-top: 2.7rem;
+    }
+
+    .home-intro-prose > p {
+        font-size: 1rem;
+        line-height: 1.52;
+    }
+
+    .home-intro-prose .intro-portrait {
+        float: none;
+        width: min(100%, 250px);
+        margin: 0 0 2rem;
+    }
+}
+
 @media print {
     :root,
     :root[data-theme='dark'] {

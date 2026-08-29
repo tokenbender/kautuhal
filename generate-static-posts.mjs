@@ -1003,8 +1003,21 @@ ${isWritingIndex ? '' : '            <p>Browse by topic or date.</p>\n'}
 `;
 }
 
-function buildHomepageHeroHtml() {
-    return `<section class="home-hero kautuhal-ambient-entry" aria-label="Kautuhal"><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Research · Experiments · Working Theories</p><h1 class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</h1></div><div class="home-actions"><a class="intro-action" href="/posts/welcome/">Hello, I am Tokenbender <span aria-hidden="true">↗</span></a><a class="primary-action" href="/posts/">Read my latest writing/research. <span aria-hidden="true">↗</span></a></div></div></section>`;
+function splitHomepageProfile(post) {
+    const journeyMarker = '<section class="journey-tree"';
+    const journeyIndex = post.html.indexOf(journeyMarker);
+    if (journeyIndex < 0) {
+        return { introHtml: post.html, journeyHtml: '' };
+    }
+
+    return {
+        introHtml: post.html.slice(0, journeyIndex).trim(),
+        journeyHtml: post.html.slice(journeyIndex).trim()
+    };
+}
+
+function buildHomepageHeroHtml(introHtml) {
+    return `<section class="home-hero kautuhal-ambient-entry" aria-label="Introduction"><div class="home-identity kautuhal-ambient-copy"><div><p class="home-identity-eyebrow kautuhal-ambient-kicker">Hyperverbal intelligence</p><h1 class="home-identity-summary">${escapeHtml(HOMEPAGE_HERO_SUMMARY)}</h1></div><article class="post-content home-intro-prose">${introHtml}</article></div></section>`;
 }
 
 function buildKautuhalRawWebGpuScript() {
@@ -1523,8 +1536,9 @@ function buildHomepageStructuredData() {
     });
 }
 
-function buildHomepageHtml() {
-    const homepageHero = buildHomepageHeroHtml();
+function buildHomepageHtml(introPost) {
+    const { introHtml, journeyHtml } = splitHomepageProfile(introPost);
+    const homepageHero = buildHomepageHeroHtml(introHtml);
     const homepageStructuredData = buildHomepageStructuredData();
     const portraitAlt = `Portrait of ${AUTHOR_NAME}`;
 
@@ -1563,14 +1577,15 @@ function buildHomepageHtml() {
             <div class="nav-container">
                 <a href="./" class="logo">tokenbender</a>
                 <div class="nav-links">
-                    ${buildPrimaryNavigation('writing')}
+                    ${buildPrimaryNavigation()}
                 </div>
             </div>
         </nav>
     </header>
 
-    <main class="container">
+    <main class="container home-profile-page">
         ${homepageHero}
+        ${journeyHtml ? `<article class="post-content home-journey">${journeyHtml}</article>` : ''}
     </main>
 
     <footer>
@@ -1579,6 +1594,7 @@ function buildHomepageHtml() {
 
     <script>${buildThemeToggleScript()}</script>
     <script>${buildKautuhalRawWebGpuScript()}</script>
+    <script>${buildJourneyGlazeScript()}</script>
 </body>
 </html>
 `;
@@ -1660,7 +1676,11 @@ async function main() {
     const writingIndexHtml = buildArchiveHtml(listedPosts, 'writing');
     await fs.writeFile(path.join(ARCHIVE_DIR, 'index.html'), archiveHtml, 'utf8');
     await fs.writeFile(path.join(POSTS_DIR, 'index.html'), writingIndexHtml, 'utf8');
-    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(), 'utf8');
+    const introPost = posts.find((post) => post.id === 'welcome');
+    if (!introPost) {
+        throw new Error('welcome.md is required to build the homepage introduction');
+    }
+    await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(introPost), 'utf8');
     await fs.writeFile(SITEMAP_FILE, buildSitemap(publishedPosts), 'utf8');
 
     console.log(`generated ${posts.length} static posts, archive, homepage, and sitemap`);
