@@ -1158,6 +1158,7 @@ header {
 
 .journey-tree-header {
     margin: 0 auto 2.8rem;
+    background: transparent;
     text-align: center;
 }
 

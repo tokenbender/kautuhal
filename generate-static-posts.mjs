@@ -18,7 +18,7 @@ const FAVICON_LINKS = '<link rel="icon" href="/favicon.svg" type="image/svg+xml"
 const HOMEPAGE_TITLE = `Kautuhal — ${AUTHOR_HANDLE}`;
 const HOMEPAGE_DESCRIPTION = `${AUTHOR_NAME} works on post-training and autoresearch metaharnesses.`;
 const HOMEPAGE_HERO_SUMMARY = 'Post-training and autoresearch metaharnesses.';
-const STYLE_HREF = '/style.css?v=press-20260829-2';
+const STYLE_HREF = '/style.css?v=press-20260829-3';
 const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js';
 const AVERAGE_READING_WPM = 220;
 const CATEGORY_ORDER = ['research', 'technical', 'personal'];
