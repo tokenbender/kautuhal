@@ -27,9 +27,10 @@ const MARKED_CDN_URL = 'https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/mark
 const AVERAGE_READING_WPM = 220;
 const CATEGORY_ORDER = ['research', 'technical', 'personal'];
 const CATEGORY_LABELS = {
-    research: 'Research',
-    technical: 'Technical',
-    personal: 'Personal',
+    research: 'RL / Training',
+    technical: 'Harnesses',
+    personal: 'Culture',
+    profile: 'About',
     uncategorized: 'Other'
 };
 
@@ -240,6 +241,10 @@ function isPublishedPost(post) {
     return !['placeholder', 'draft'].includes(post.status);
 }
 
+function isListedPost(post) {
+    return isPublishedPost(post) && String(post.metadata.listed ?? 'true').trim().toLowerCase() !== 'false';
+}
+
 function normalizeRelated(rawRelated) {
     const values = Array.isArray(rawRelated)
         ? rawRelated
@@ -258,7 +263,7 @@ function normalizeCategory(rawCategory) {
     }
 
     const normalized = rawCategory.trim().toLowerCase();
-    if (CATEGORY_ORDER.includes(normalized)) {
+    if (CATEGORY_ORDER.includes(normalized) || normalized === 'profile') {
         return normalized;
     }
 
@@ -1639,9 +1644,10 @@ async function main() {
 
     posts.sort((left, right) => new Date(right.metadata.date) - new Date(left.metadata.date));
     const publishedPosts = posts.filter(isPublishedPost);
+    const listedPosts = posts.filter(isListedPost);
 
     posts.forEach((post) => {
-        post.relatedPosts = selectRelatedPosts(publishedPosts, post, 3);
+        post.relatedPosts = selectRelatedPosts(listedPosts, post, 3);
     });
 
     for (const post of posts) {
@@ -1650,8 +1656,8 @@ async function main() {
         await fs.writeFile(path.join(outDir, 'index.html'), buildPostHtml(post), 'utf8');
     }
 
-    const archiveHtml = buildArchiveHtml(publishedPosts, 'archive');
-    const writingIndexHtml = buildArchiveHtml(publishedPosts, 'writing');
+    const archiveHtml = buildArchiveHtml(listedPosts, 'archive');
+    const writingIndexHtml = buildArchiveHtml(listedPosts, 'writing');
     await fs.writeFile(path.join(ARCHIVE_DIR, 'index.html'), archiveHtml, 'utf8');
     await fs.writeFile(path.join(POSTS_DIR, 'index.html'), writingIndexHtml, 'utf8');
     await fs.writeFile(path.join(ROOT, 'index.html'), buildHomepageHtml(), 'utf8');

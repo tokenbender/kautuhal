@@ -4,7 +4,8 @@ date: 2024-08-24
 excerpt: I am good at making models do whatever is needed when the use case is clearly specified.
 tags: meta, llm, engineering, capability-extraction
 status: evergreen
-category: personal
+category: profile
+listed: false
 ---
 
 <figure class="intro-portrait">
