@@ -1,6 +1,6 @@
 # Kalpataru feature inventory
 
-Updated 2026-09-21. Generated from the canonical Tether family ledger.
+Updated 2026-10-10. Generated from the canonical Tether family ledger.
 The [full family inventory](https://github.com/tokenbender/tether/blob/main/docs/features.md) follows its source repository's access controls.
 This public projection contains Kalpataru capabilities only. Stable feature IDs are preserved.
 
